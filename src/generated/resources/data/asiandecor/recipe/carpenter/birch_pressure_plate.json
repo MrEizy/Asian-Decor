@@ -1,0 +1,12 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:birch_planks"
+  },
+  "ingredient_count": 2,
+  "result": {
+    "count": 8,
+    "id": "minecraft:birch_pressure_plate"
+  }
+}

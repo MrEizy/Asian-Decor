@@ -1,0 +1,12 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:spruce_planks"
+  },
+  "ingredient_count": 3,
+  "result": {
+    "count": 6,
+    "id": "minecraft:spruce_sign"
+  }
+}

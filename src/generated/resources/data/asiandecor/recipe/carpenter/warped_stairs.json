@@ -1,0 +1,12 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:warped_planks"
+  },
+  "ingredient_count": 4,
+  "result": {
+    "count": 16,
+    "id": "minecraft:warped_stairs"
+  }
+}

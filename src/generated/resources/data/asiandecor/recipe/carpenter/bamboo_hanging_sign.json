@@ -1,0 +1,12 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:bamboo_planks"
+  },
+  "ingredient_count": 6,
+  "result": {
+    "count": 4,
+    "id": "minecraft:bamboo_hanging_sign"
+  }
+}

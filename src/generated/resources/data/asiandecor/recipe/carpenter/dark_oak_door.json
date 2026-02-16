@@ -1,0 +1,12 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:dark_oak_planks"
+  },
+  "ingredient_count": 6,
+  "result": {
+    "count": 4,
+    "id": "minecraft:dark_oak_door"
+  }
+}

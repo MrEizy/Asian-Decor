@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "asiandecor:block/carpenterblock",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "asiandecor:block/carpenterblock"
+    },
+    "facing=south": {
+      "model": "asiandecor:block/carpenterblock",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "asiandecor:block/carpenterblock",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:jungle_planks"
+  },
+  "ingredient_count": 2,
+  "result": {
+    "count": 8,
+    "id": "minecraft:jungle_pressure_plate"
+  }
+}

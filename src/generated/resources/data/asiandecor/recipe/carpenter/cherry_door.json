@@ -1,0 +1,12 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:cherry_planks"
+  },
+  "ingredient_count": 6,
+  "result": {
+    "count": 4,
+    "id": "minecraft:cherry_door"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:oak_planks"
+  },
+  "ingredient_count": 2,
+  "result": {
+    "count": 8,
+    "id": "minecraft:oak_pressure_plate"
+  }
+}
