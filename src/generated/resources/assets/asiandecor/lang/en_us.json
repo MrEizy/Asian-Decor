@@ -1,6 +1,9 @@
 {
-  "block.asiandecor.carpenterblock": "Carpenters Table",
-  "container.asiandecor.carpenter": "Carpenters Table",
+  "block.asiandecor.carpenterblock": "Carpenter's Table",
+  "container.asiandecor.carpenter": "Carpenter's Table",
   "creativetab.asiandecor.wood": "Wood Decor",
+  "emi.category.asiandecor.carpenter": "Carpenter's Table",
+  "jei.category.asiandecor.carpenter": "Carpenter's Table",
+  "rei.category.asiandecor.carpenter": "Carpenter's Table",
   "tooltip.asiandecor.ingredient_cost": "Requires: %s"
 }

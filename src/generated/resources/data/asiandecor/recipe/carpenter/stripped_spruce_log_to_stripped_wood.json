@@ -1,0 +1,11 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:stripped_spruce_log"
+  },
+  "result": {
+    "count": 2,
+    "id": "minecraft:stripped_spruce_wood"
+  }
+}

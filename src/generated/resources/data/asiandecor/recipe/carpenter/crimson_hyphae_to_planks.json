@@ -1,0 +1,11 @@
+{
+  "type": "asiandecor:carpenter",
+  "group": "building",
+  "ingredient": {
+    "item": "minecraft:crimson_hyphae"
+  },
+  "result": {
+    "count": 6,
+    "id": "minecraft:crimson_planks"
+  }
+}

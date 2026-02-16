@@ -14,14 +14,21 @@ public class lang extends LanguageProvider {
 
 
         //Blocks
-        add("block.asiandecor.carpenterblock", "Carpenters Table");
+        add("block.asiandecor.carpenterblock", "Carpenter's Table");
 
         //GUI & Other Stuff
         add("creativetab.asiandecor.wood", "Wood Decor");
 
 
-        add("container.asiandecor.carpenter", "Carpenters Table");
+        add("container.asiandecor.carpenter", "Carpenter's Table");
         add("tooltip.asiandecor.ingredient_cost", "Requires: %s");
+
+
+
+        //Compats
+        add("emi.category.asiandecor.carpenter", "Carpenter's Table");
+        add("jei.category.asiandecor.carpenter", "Carpenter's Table");
+        add("rei.category.asiandecor.carpenter", "Carpenter's Table");
 
     }
 }
