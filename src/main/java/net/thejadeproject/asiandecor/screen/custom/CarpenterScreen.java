@@ -154,10 +154,8 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
             CarpenterRecipes recipe = list.get(i).value();
             ItemStack result = recipe.getResultItem(this.minecraft.level.registryAccess());
 
-            // Create a copy with the actual count for display
             ItemStack displayStack = result.copy();
 
-            // Render the item with count (renderItemDecorations will draw the count automatically)
             guiGraphics.renderItem(displayStack, k, i1);
             guiGraphics.renderItemDecorations(this.font, displayStack, k, i1);
         }
