@@ -1,0 +1,9 @@
+{
+  "type": "ascensionitb:pill_cauldron_low_human",
+  "ingredient": {
+    "item": "minecraft:dirt"
+  },
+  "result": {
+    "id": "minecraft:gold_ingot"
+  }
+}
