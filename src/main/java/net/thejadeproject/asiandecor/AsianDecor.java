@@ -3,11 +3,14 @@ package net.thejadeproject.asiandecor;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.thejadeproject.asiandecor.blocks.ModBlocks;
 import net.thejadeproject.asiandecor.blocks.entity.ModBlockEntities;
+import net.thejadeproject.asiandecor.component.ModDataComponents;
 import net.thejadeproject.asiandecor.guis.ModCreativeModeTabs;
 import net.thejadeproject.asiandecor.items.ModItems;
+import net.thejadeproject.asiandecor.network.ModNetwork;
 import net.thejadeproject.asiandecor.recipe.ModRecipes;
 import net.thejadeproject.asiandecor.screen.ModMenuTypes;
 import net.thejadeproject.asiandecor.screen.custom.CarpenterScreen;
+import net.thejadeproject.asiandecor.screen.custom.PouchScreen;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -45,9 +48,12 @@ public class AsianDecor {
         ModMenuTypes.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModRecipes.register(modEventBus);
+        ModNetwork.register(modEventBus);
+        ModDataComponents.register(modEventBus);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
+
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -78,6 +84,7 @@ public class AsianDecor {
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.CARPENTER.get(), CarpenterScreen::new);
+            event.register(ModMenuTypes.POUCH_MENU.get(), PouchScreen::new);
         }
     }
 }

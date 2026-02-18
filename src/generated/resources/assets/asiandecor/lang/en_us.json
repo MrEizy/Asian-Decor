@@ -1,9 +1,18 @@
 {
   "block.asiandecor.carpenterblock": "Carpenter's Table",
+  "container.asiandecor.block_pouch": "Builder's Pouch",
   "container.asiandecor.carpenter": "Carpenter's Table",
+  "creativetab.asiandecor.items": "Asian Decor Items",
   "creativetab.asiandecor.wood": "Wood Decor",
   "emi.category.asiandecor.carpenter": "Carpenter's Table",
+  "item.asiandecor.white_block_pouch": "White Builder's Pouch",
   "jei.category.asiandecor.carpenter": "Carpenter's Table",
+  "message.asiandecor.block_pouch.empty": "No block selected",
+  "message.asiandecor.block_pouch.selected": "%s",
   "rei.category.asiandecor.carpenter": "Carpenter's Table",
+  "tooltip.asiandecor.block_pouch.count": "Count: %s",
+  "tooltip.asiandecor.block_pouch.empty": "Empty",
+  "tooltip.asiandecor.block_pouch.selected": "Selected: %s",
+  "tooltip.asiandecor.block_pouch.slots": "%s/%s slots filled",
   "tooltip.asiandecor.ingredient_cost": "Requires: %s"
 }

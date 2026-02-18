@@ -8,6 +8,9 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
 import net.thejadeproject.asiandecor.screen.custom.CarpenterMenu;
+import net.thejadeproject.asiandecor.screen.custom.PouchMenu;
+
+import java.util.function.Supplier;
 
 public class ModMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENUS =
@@ -22,6 +25,9 @@ public class ModMenuTypes {
                 }
                 return new CarpenterMenu(windowId, inv);
             }));
+
+    public static final Supplier<MenuType<PouchMenu>> POUCH_MENU = MENUS.register("pouch_menu",
+            () -> IMenuTypeExtension.create(PouchMenu::new));
 
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);

@@ -17,6 +17,13 @@ public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, AsianDecor.MOD_ID);
 
+    public static final Supplier<CreativeModeTab> ASIAN_DECOR_ITEMS = CREATIVE_MODE_TAB.register("asiandecor_items",
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.WHITE_BLOCK_POUCH.get()))
+                    .title(Component.translatable("creativetab.asiandecor.items"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(ModItems.WHITE_BLOCK_POUCH);
+                    }).build());
+
     public static final Supplier<CreativeModeTab> ASIAN_DECOR_WOOD = CREATIVE_MODE_TAB.register("asiandecor_wood_decor",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.CARPENTER.get()))
                     .title(Component.translatable("creativetab.asiandecor.wood"))

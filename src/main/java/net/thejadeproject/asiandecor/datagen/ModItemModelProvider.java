@@ -13,6 +13,6 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        //basicItem(ModItems.REGENERATION_PILL.get());
+        basicItem(ModItems.WHITE_BLOCK_POUCH.get());
     }
 }
