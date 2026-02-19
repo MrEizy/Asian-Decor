@@ -20,6 +20,8 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         dropSelf(ModBlocks.CARPENTER.get());
 
+        dropSelf(ModBlocks.WINGED_TABLE.get());
+
 
     }
 

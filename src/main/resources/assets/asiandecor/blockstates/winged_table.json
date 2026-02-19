@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "facing=east,part=center": {
+      "model": "asiandecor:block/winged_table_center",
+      "y": 90
+    },
+    "facing=east,part=left": {
+      "model": "asiandecor:block/winged_table_left",
+      "y": 90
+    },
+    "facing=east,part=right": {
+      "model": "asiandecor:block/winged_table_right",
+      "y": 90
+    },
+    "facing=north,part=center": {
+      "model": "asiandecor:block/winged_table_center"
+    },
+    "facing=north,part=left": {
+      "model": "asiandecor:block/winged_table_left"
+    },
+    "facing=north,part=right": {
+      "model": "asiandecor:block/winged_table_right"
+    },
+    "facing=south,part=center": {
+      "model": "asiandecor:block/winged_table_center",
+      "y": 180
+    },
+    "facing=south,part=left": {
+      "model": "asiandecor:block/winged_table_left",
+      "y": 180
+    },
+    "facing=south,part=right": {
+      "model": "asiandecor:block/winged_table_right",
+      "y": 180
+    },
+    "facing=west,part=center": {
+      "model": "asiandecor:block/winged_table_center",
+      "y": 270
+    },
+    "facing=west,part=left": {
+      "model": "asiandecor:block/winged_table_left",
+      "y": 270
+    },
+    "facing=west,part=right": {
+      "model": "asiandecor:block/winged_table_right",
+      "y": 270
+    }
+  }
+}

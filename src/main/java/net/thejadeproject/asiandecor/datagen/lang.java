@@ -20,6 +20,9 @@ public class lang extends LanguageProvider {
         //Blocks
         add("block.asiandecor.carpenterblock", "Carpenter's Table");
 
+
+        add("block.asiandecor.oak_winged_table", "Oak Winged Table");
+
         //GUI & Other Stuff
         add("creativetab.asiandecor.items", "Asian Decor Items");
         add("creativetab.asiandecor.wood", "Wood Decor");

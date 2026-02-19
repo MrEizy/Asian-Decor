@@ -19,7 +19,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(BlockTags.MINEABLE_WITH_AXE)
-                .add(ModBlocks.CARPENTER.get());
+                .add(ModBlocks.CARPENTER.get())
+                .add(ModBlocks.WINGED_TABLE.get());
 
 
     }

@@ -29,6 +29,7 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("creativetab.asiandecor.wood"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModBlocks.CARPENTER);
+                        output.accept(ModBlocks.WINGED_TABLE);
                     }).build());
 
 

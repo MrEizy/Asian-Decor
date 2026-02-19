@@ -12,6 +12,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
 import net.thejadeproject.asiandecor.blocks.custom.CarpenterBlock;
+import net.thejadeproject.asiandecor.blocks.custom.furniture.tables.WingedTableBlock;
 import net.thejadeproject.asiandecor.items.ModItems;
 
 import java.util.function.Supplier;
@@ -28,6 +29,15 @@ public class ModBlocks {
                     .strength(2.5F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
+
+    public static final DeferredBlock<Block> WINGED_TABLE = registerBlock("winged_table",
+            () -> new WingedTableBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.5F)
+                    .sound(SoundType.WOOD)
+                    .noOcclusion()
+            ));
 
 
 
