@@ -19,6 +19,13 @@ public class ModDataComponents {
                     .networkSynchronized(PouchContents.STREAM_CODEC)
     );
 
+    public static final Supplier<DataComponentType<BlueprintData>> BLUEPRINT_DATA = REGISTRAR.registerComponentType(
+            "blueprint_data",
+            builder -> builder
+                    .persistent(BlueprintData.CODEC)
+                    .networkSynchronized(BlueprintData.STREAM_CODEC)
+    );
+
     public static void register(IEventBus eventBus) {
         REGISTRAR.register(eventBus);
     }

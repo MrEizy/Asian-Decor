@@ -15,10 +15,32 @@ public class ModNetwork {
                 .versioned("1.0")
                 .optional();
 
+        //Server
         registrar.playToServer(
                 PouchScrollPacket.TYPE,
                 PouchScrollPacket.STREAM_CODEC,
                 PouchScrollPacket::handle
         );
+        registrar.playToServer(
+                BlueprintRotatePacket.TYPE,
+                BlueprintRotatePacket.STREAM_CODEC,
+                BlueprintRotatePacket::handle
+        );
+
+
+
+        //Client
+        registrar.playToClient(
+                BlueprintSetPreviewPacket.TYPE,
+                BlueprintSetPreviewPacket.STREAM_CODEC,
+                BlueprintSetPreviewPacket::handle
+        );
+
+        registrar.playToClient(
+                BlueprintClearPreviewPacket.TYPE,
+                BlueprintClearPreviewPacket.STREAM_CODEC,
+                BlueprintClearPreviewPacket::handle
+        );
+
     }
 }

@@ -22,6 +22,7 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("creativetab.asiandecor.items"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.WHITE_BLOCK_POUCH);
+                        output.accept(ModItems.BLUEPRINT);
                     }).build());
 
     public static final Supplier<CreativeModeTab> ASIAN_DECOR_WOOD = CREATIVE_MODE_TAB.register("asiandecor_wood_decor",

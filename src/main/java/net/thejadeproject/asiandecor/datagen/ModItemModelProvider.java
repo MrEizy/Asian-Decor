@@ -14,5 +14,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         basicItem(ModItems.WHITE_BLOCK_POUCH.get());
+
+        basicItem(ModItems.BLUEPRINT.get());
     }
 }
