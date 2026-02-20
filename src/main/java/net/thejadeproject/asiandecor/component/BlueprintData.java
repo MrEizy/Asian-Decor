@@ -10,6 +10,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -173,13 +174,11 @@ public record BlueprintData(
         return new BlockPos(rx, ry, rz);
     }
 
-    // Rotate block state for all 6 directions
     public BlockState rotateBlockState(BlockState state) {
         // First apply Y rotation (horizontal)
         state = state.rotate(getRotationY());
 
         // Then apply X rotation for vertical placement
-        // This is complex - we need to remap directions
         state = rotateVertical(state);
 
         return state;
@@ -188,7 +187,7 @@ public record BlueprintData(
     private BlockState rotateVertical(BlockState state) {
         if (rotationX == 0) return state; // No vertical rotation
 
-        // Handle directional properties
+        // Handle directional properties (FACING)
         for (Property<?> prop : state.getProperties()) {
             if (prop instanceof DirectionProperty dirProp) {
                 Direction current = state.getValue(dirProp);
@@ -196,9 +195,73 @@ public record BlueprintData(
                 if (dirProp.getPossibleValues().contains(rotated)) {
                     state = state.setValue(dirProp, rotated);
                 }
-            } else if (prop instanceof EnumProperty<?> enumProp) {
-                // Handle other enum properties if needed
             }
+        }
+
+        // Handle AXIS properties (logs, pillars, etc.)
+        state = rotateAxisProperty(state);
+
+        // Handle horizontal facing (for blocks that only use horizontal directions)
+        state = rotateHorizontalFacing(state);
+
+        return state;
+    }
+
+    private BlockState rotateAxisProperty(BlockState state) {
+        // Check if block has AXIS property (logs, pillars, etc.)
+        if (state.hasProperty(BlockStateProperties.AXIS)) {
+            net.minecraft.core.Direction.Axis currentAxis = state.getValue(BlockStateProperties.AXIS);
+            net.minecraft.core.Direction.Axis newAxis = switch (rotationX) {
+                case 1, 3 -> { // Wall mode - axis becomes Z (facing north/south)
+                    yield switch (currentAxis) {
+                        case Y -> net.minecraft.core.Direction.Axis.Z; // Vertical log becomes horizontal facing Z
+                        case Z -> net.minecraft.core.Direction.Axis.Y; // Horizontal Z becomes vertical
+                        case X -> net.minecraft.core.Direction.Axis.X; // X stays X
+                    };
+                }
+                case 2 -> { // Ceiling mode - axis becomes Y (upside down)
+                    yield switch (currentAxis) {
+                        case Y -> net.minecraft.core.Direction.Axis.Y; // Y stays Y (just flipped)
+                        case Z, X -> net.minecraft.core.Direction.Axis.Y; // Horizontal becomes vertical
+                    };
+                }
+                default -> currentAxis;
+            };
+
+            // For wall mode, also consider Y rotation to determine if log should be X or Z aligned
+            if (rotationX == 1 || rotationX == 3) {
+                // On wall, logs should align with the wall plane
+                // If Y rotation is 0 or 2 (north/south), log should be Z aligned
+                // If Y rotation is 1 or 3 (east/west), log should be X aligned
+                if (currentAxis == net.minecraft.core.Direction.Axis.Y) {
+                    // Vertical log placed on wall - make it horizontal along wall
+                    newAxis = (rotationY == 0 || rotationY == 2)
+                            ? net.minecraft.core.Direction.Axis.Z
+                            : net.minecraft.core.Direction.Axis.X;
+                }
+            }
+
+            state = state.setValue(BlockStateProperties.AXIS, newAxis);
+        }
+
+        return state;
+    }
+
+    private BlockState rotateHorizontalFacing(BlockState state) {
+        // Handle HORIZONTAL_FACING for blocks like furnaces, chests, etc.
+        if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            Direction current = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            Direction rotated = rotateDirectionVertical(current);
+            if (rotated.getAxis() != Direction.Axis.Y) { // Keep it horizontal
+                state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, rotated);
+            }
+        }
+
+        // Handle FACING (any direction)
+        if (state.hasProperty(BlockStateProperties.FACING)) {
+            Direction current = state.getValue(BlockStateProperties.FACING);
+            Direction rotated = rotateDirectionVertical(current);
+            state = state.setValue(BlockStateProperties.FACING, rotated);
         }
 
         return state;
@@ -206,21 +269,21 @@ public record BlueprintData(
 
     private Direction rotateDirectionVertical(Direction dir) {
         return switch (rotationX) {
-            case 1 -> switch (dir) { // Wall (pitched 90 forward)
+            case 1 -> switch (dir) { // Wall (pitched 90 forward - facing south)
                 case UP -> Direction.SOUTH;
                 case DOWN -> Direction.NORTH;
                 case SOUTH -> Direction.DOWN;
                 case NORTH -> Direction.UP;
                 default -> dir;
             };
-            case 2 -> switch (dir) { // Ceiling (180)
+            case 2 -> switch (dir) { // Ceiling (180 - upside down)
                 case UP -> Direction.DOWN;
                 case DOWN -> Direction.UP;
                 case NORTH -> Direction.SOUTH;
                 case SOUTH -> Direction.NORTH;
                 default -> dir;
             };
-            case 3 -> switch (dir) { // Wall other side (pitched 90 back)
+            case 3 -> switch (dir) { // Wall other side (pitched 90 back - facing north)
                 case UP -> Direction.NORTH;
                 case DOWN -> Direction.SOUTH;
                 case SOUTH -> Direction.UP;
