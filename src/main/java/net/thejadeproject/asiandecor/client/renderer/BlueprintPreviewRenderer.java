@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -32,13 +31,17 @@ public class BlueprintPreviewRenderer {
 
     public static class PreviewData {
         public final BlockPos anchorPos;
-        public final BlueprintData data;
+        public BlueprintData data; // Not final - allows updating
         public final long timestamp;
 
         public PreviewData(BlockPos anchorPos, BlueprintData data) {
             this.anchorPos = anchorPos;
             this.data = data;
             this.timestamp = System.currentTimeMillis();
+        }
+
+        public void updateData(BlueprintData newData) {
+            this.data = newData;
         }
     }
 
@@ -47,6 +50,13 @@ public class BlueprintPreviewRenderer {
 
     public static void setPreview(UUID playerId, BlockPos anchorPos, BlueprintData data) {
         activePreviews.put(playerId, new PreviewData(anchorPos, data));
+    }
+
+    public static void updatePreviewData(UUID playerId, BlueprintData data) {
+        PreviewData preview = activePreviews.get(playerId);
+        if (preview != null) {
+            preview.updateData(data);
+        }
     }
 
     public static void clearPreview(UUID playerId) {
@@ -74,10 +84,11 @@ public class BlueprintPreviewRenderer {
 
         UUID playerId = mc.player.getUUID();
 
-        // Check if holding blueprint
+        // Check holding blueprint
         ItemStack mainHand = mc.player.getMainHandItem();
         ItemStack offHand = mc.player.getOffhandItem();
-        boolean holdingBlueprint = mainHand.getItem() instanceof BlueprintItem || offHand.getItem() instanceof BlueprintItem;
+        boolean holdingBlueprint = mainHand.getItem() instanceof BlueprintItem ||
+                offHand.getItem() instanceof BlueprintItem;
 
         if (!holdingBlueprint) {
             activePreviews.remove(playerId);
@@ -85,9 +96,10 @@ public class BlueprintPreviewRenderer {
             return;
         }
 
-        // Update selection data from held item
-        BlueprintData heldData = getBlueprintData(mc.player);
-        if (heldData != null) {
+        // Update preview data from held item (for rotation updates)
+        BlueprintData heldData = getHeldBlueprintData(mc.player);
+        if (heldData != null && heldData.hasData()) {
+            updatePreviewData(playerId, heldData);
             setSelection(playerId, heldData);
         }
 
@@ -97,13 +109,13 @@ public class BlueprintPreviewRenderer {
         poseStack.pushPose();
         poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
 
-        // Render selection bounding box (orange) - BEFORE cutting
+        // Render selection box (orange)
         BlueprintData selData = selectionData.get(playerId);
         if (selData != null && selData.hasBothPositions() && !selData.hasData()) {
             renderBoundingBox(poseStack, selData.getMinPos(), selData.getMaxPos(), 1.0f, 0.6f, 0.0f, 1.0f);
         }
 
-        // Render preview (cyan box + ghost blocks)
+        // Render preview
         PreviewData preview = activePreviews.get(playerId);
         if (preview != null && preview.data.hasData()) {
             BlockPos dims = preview.data.getRotatedDimensions();
@@ -117,7 +129,7 @@ public class BlueprintPreviewRenderer {
         poseStack.popPose();
     }
 
-    private static BlueprintData getBlueprintData(net.minecraft.world.entity.player.Player player) {
+    private static BlueprintData getHeldBlueprintData(net.minecraft.world.entity.player.Player player) {
         ItemStack main = player.getMainHandItem();
         if (main.getItem() instanceof BlueprintItem) {
             return main.getOrDefault(ModDataComponents.BLUEPRINT_DATA.get(), BlueprintData.EMPTY);
@@ -129,7 +141,8 @@ public class BlueprintPreviewRenderer {
         return null;
     }
 
-    private static void renderBoundingBox(PoseStack poseStack, BlockPos min, BlockPos max, float r, float g, float b, float a) {
+    private static void renderBoundingBox(PoseStack poseStack, BlockPos min, BlockPos max,
+                                          float r, float g, float b, float a) {
         RenderSystem.enableDepthTest();
         RenderSystem.disableCull();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -199,16 +212,13 @@ public class BlueprintPreviewRenderer {
         poseStack.pushPose();
 
         for (BlueprintData.BlockEntry entry : data.blocks()) {
-            // Rotate position for preview
             BlockPos rotatedPos = data.rotatePos(entry.x(), entry.y(), entry.z());
             BlockPos pos = anchor.offset(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ());
-            BlockState state = entry.state();
 
             poseStack.pushPose();
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
 
-            // Rotate block state for preview
-            BlockState rotatedState = data.rotateBlockState(state);
+            BlockState rotatedState = data.rotateBlockState(entry.state());
 
             blockRenderer.renderSingleBlock(
                     rotatedState,
@@ -227,5 +237,4 @@ public class BlueprintPreviewRenderer {
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
     }
-
 }

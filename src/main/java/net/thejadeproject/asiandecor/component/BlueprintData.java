@@ -8,10 +8,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -27,7 +25,8 @@ public record BlueprintData(
         Optional<BlockPos> pos1,
         Optional<BlockPos> pos2,
         boolean cutMode,
-        int rotation // 0=none, 1=90, 2=180, 3=270 degrees clockwise
+        int rotationY, // 0-3 (horizontal rotation around Y axis)
+        int rotationX  // 0-3 (vertical rotation around X axis - allows wall/ceiling placement)
 ) {
     public static final int MAX_SIZE = 16;
 
@@ -60,7 +59,8 @@ public record BlueprintData(
                     BlockPos.CODEC.optionalFieldOf("pos1").forGetter(BlueprintData::pos1),
                     BlockPos.CODEC.optionalFieldOf("pos2").forGetter(BlueprintData::pos2),
                     Codec.BOOL.fieldOf("cut_mode").forGetter(BlueprintData::cutMode),
-                    Codec.INT.fieldOf("rotation").forGetter(BlueprintData::rotation)
+                    Codec.INT.fieldOf("rotation_y").forGetter(BlueprintData::rotationY),
+                    Codec.INT.fieldOf("rotation_x").forGetter(BlueprintData::rotationX)
             ).apply(instance, BlueprintData::new)
     );
 
@@ -75,8 +75,9 @@ public record BlueprintData(
             Optional<BlockPos> pos1 = ByteBufCodecs.optional(BlockPos.STREAM_CODEC).decode((RegistryFriendlyByteBuf) buf);
             Optional<BlockPos> pos2 = ByteBufCodecs.optional(BlockPos.STREAM_CODEC).decode((RegistryFriendlyByteBuf) buf);
             boolean cutMode = ByteBufCodecs.BOOL.decode(buf);
-            int rotation = ByteBufCodecs.INT.decode(buf);
-            return new BlueprintData(blocks, sizeX, sizeY, sizeZ, hasData, pos1, pos2, cutMode, rotation);
+            int rotationY = ByteBufCodecs.INT.decode(buf);
+            int rotationX = ByteBufCodecs.INT.decode(buf);
+            return new BlueprintData(blocks, sizeX, sizeY, sizeZ, hasData, pos1, pos2, cutMode, rotationY, rotationX);
         }
 
         @Override
@@ -89,30 +90,35 @@ public record BlueprintData(
             ByteBufCodecs.optional(BlockPos.STREAM_CODEC).encode((RegistryFriendlyByteBuf) buf, data.pos1);
             ByteBufCodecs.optional(BlockPos.STREAM_CODEC).encode((RegistryFriendlyByteBuf) buf, data.pos2);
             ByteBufCodecs.BOOL.encode(buf, data.cutMode);
-            ByteBufCodecs.INT.encode(buf, data.rotation);
+            ByteBufCodecs.INT.encode(buf, data.rotationY);
+            ByteBufCodecs.INT.encode(buf, data.rotationX);
         }
     };
 
-    public static final BlueprintData EMPTY = new BlueprintData(new ArrayList<>(), 0, 0, 0, false, Optional.empty(), Optional.empty(), false, 0);
+    public static final BlueprintData EMPTY = new BlueprintData(new ArrayList<>(), 0, 0, 0, false, Optional.empty(), Optional.empty(), false, 0, 0);
 
     public BlueprintData withPos1(BlockPos pos) {
-        return new BlueprintData(blocks, sizeX, sizeY, sizeZ, hasData, Optional.of(pos), pos2, cutMode, rotation);
+        return new BlueprintData(blocks, sizeX, sizeY, sizeZ, hasData, Optional.of(pos), pos2, cutMode, rotationY, rotationX);
     }
 
     public BlueprintData withPos2(BlockPos pos) {
-        return new BlueprintData(blocks, sizeX, sizeY, sizeZ, hasData, pos1, Optional.of(pos), cutMode, rotation);
+        return new BlueprintData(blocks, sizeX, sizeY, sizeZ, hasData, pos1, Optional.of(pos), cutMode, rotationY, rotationX);
     }
 
     public BlueprintData withBlocks(List<BlockEntry> newBlocks, int sx, int sy, int sz, boolean cut) {
-        return new BlueprintData(newBlocks, sx, sy, sz, true, Optional.empty(), Optional.empty(), cut, 0);
+        return new BlueprintData(newBlocks, sx, sy, sz, true, Optional.empty(), Optional.empty(), cut, 0, 0);
     }
 
-    public BlueprintData withRotation(int newRotation) {
-        return new BlueprintData(blocks, sizeX, sizeY, sizeZ, hasData, pos1, pos2, cutMode, newRotation & 3); // Clamp 0-3
+    public BlueprintData withRotationY(int newRotation) {
+        return new BlueprintData(blocks, sizeX, sizeY, sizeZ, hasData, pos1, pos2, cutMode, newRotation & 3, rotationX);
     }
 
-    public Rotation getRotation() {
-        return switch (rotation) {
+    public BlueprintData withRotationX(int newRotation) {
+        return new BlueprintData(blocks, sizeX, sizeY, sizeZ, hasData, pos1, pos2, cutMode, rotationY, newRotation & 3);
+    }
+
+    public Rotation getRotationY() {
+        return switch (rotationY) {
             case 1 -> Rotation.CLOCKWISE_90;
             case 2 -> Rotation.CLOCKWISE_180;
             case 3 -> Rotation.COUNTERCLOCKWISE_90;
@@ -121,32 +127,108 @@ public record BlueprintData(
     }
 
     public String getRotationName() {
-        return switch (rotation) {
+        String y = switch (rotationY) {
             case 1 -> "90°";
             case 2 -> "180°";
             case 3 -> "270°";
             default -> "0°";
         };
+        String x = switch (rotationX) {
+            case 1 -> " (Wall)";
+            case 2 -> " (Ceiling)";
+            case 3 -> " (Wall Inv)";
+            default -> "";
+        };
+        return y + x;
     }
 
-    // Rotate a relative position based on current rotation
-    public BlockPos rotatePos(int x, int y, int z) {
-        return switch (rotation) {
-            case 1 -> new BlockPos(-z, y, x); // 90 clockwise
-            case 2 -> new BlockPos(-x, y, -z); // 180
-            case 3 -> new BlockPos(z, y, -x); // 270 clockwise
-            default -> new BlockPos(x, y, z); // 0
+    public String getFacingName() {
+        return switch (rotationX) {
+            case 0 -> "Floor";
+            case 1 -> "Wall (South)";
+            case 2 -> "Ceiling";
+            case 3 -> "Wall (North)";
+            default -> "Floor";
         };
     }
 
-    // Rotate block state based on rotation
-    public BlockState rotateBlockState(BlockState state) {
-        Rotation rot = getRotation();
+    // Full 3D rotation of position
+    public BlockPos rotatePos(int x, int y, int z) {
+        int rx = x, ry = y, rz = z;
 
-        // Try to rotate the block state
-        state = state.rotate(rot);
+        // Apply Y rotation first (horizontal)
+        switch (rotationY) {
+            case 1 -> { int t = rx; rx = -rz; rz = t; } // 90 clockwise
+            case 2 -> { rx = -rx; rz = -rz; } // 180
+            case 3 -> { int t = rx; rx = rz; rz = -t; } // 270 clockwise
+        }
+
+        // Apply X rotation (vertical - pitch)
+        switch (rotationX) {
+            case 1 -> { int t = ry; ry = -rz; rz = t; } // Forward 90 (wall)
+            case 2 -> { ry = -ry; rz = -rz; } // 180 (ceiling)
+            case 3 -> { int t = ry; ry = rz; rz = -t; } // Back 90 (wall other side)
+        }
+
+        return new BlockPos(rx, ry, rz);
+    }
+
+    // Rotate block state for all 6 directions
+    public BlockState rotateBlockState(BlockState state) {
+        // First apply Y rotation (horizontal)
+        state = state.rotate(getRotationY());
+
+        // Then apply X rotation for vertical placement
+        // This is complex - we need to remap directions
+        state = rotateVertical(state);
 
         return state;
+    }
+
+    private BlockState rotateVertical(BlockState state) {
+        if (rotationX == 0) return state; // No vertical rotation
+
+        // Handle directional properties
+        for (Property<?> prop : state.getProperties()) {
+            if (prop instanceof DirectionProperty dirProp) {
+                Direction current = state.getValue(dirProp);
+                Direction rotated = rotateDirectionVertical(current);
+                if (dirProp.getPossibleValues().contains(rotated)) {
+                    state = state.setValue(dirProp, rotated);
+                }
+            } else if (prop instanceof EnumProperty<?> enumProp) {
+                // Handle other enum properties if needed
+            }
+        }
+
+        return state;
+    }
+
+    private Direction rotateDirectionVertical(Direction dir) {
+        return switch (rotationX) {
+            case 1 -> switch (dir) { // Wall (pitched 90 forward)
+                case UP -> Direction.SOUTH;
+                case DOWN -> Direction.NORTH;
+                case SOUTH -> Direction.DOWN;
+                case NORTH -> Direction.UP;
+                default -> dir;
+            };
+            case 2 -> switch (dir) { // Ceiling (180)
+                case UP -> Direction.DOWN;
+                case DOWN -> Direction.UP;
+                case NORTH -> Direction.SOUTH;
+                case SOUTH -> Direction.NORTH;
+                default -> dir;
+            };
+            case 3 -> switch (dir) { // Wall other side (pitched 90 back)
+                case UP -> Direction.NORTH;
+                case DOWN -> Direction.SOUTH;
+                case SOUTH -> Direction.UP;
+                case NORTH -> Direction.DOWN;
+                default -> dir;
+            };
+            default -> dir;
+        };
     }
 
     public boolean hasBothPositions() {
@@ -194,9 +276,19 @@ public record BlueprintData(
     // Get rotated dimensions for preview/placement
     public BlockPos getRotatedDimensions() {
         BlockPos dims = getDimensions();
-        return switch (rotation) {
-            case 1, 3 -> new BlockPos(dims.getZ(), dims.getY(), dims.getX()); // Swapped X/Z
-            default -> dims;
-        };
+        int rx = dims.getX(), ry = dims.getY(), rz = dims.getZ();
+
+        // Apply Y rotation to dimensions
+        switch (rotationY) {
+            case 1, 3 -> { int t = rx; rx = rz; rz = t; }
+        }
+
+        // Apply X rotation to dimensions
+        switch (rotationX) {
+            case 1, 3 -> { int t = ry; ry = rz; rz = t; }
+            case 2 -> { ry = dims.getY(); } // Ceiling keeps same
+        }
+
+        return new BlockPos(rx, ry, rz);
     }
 }

@@ -151,22 +151,23 @@ public class BlueprintItem extends Item {
 
         ServerPlayer serverPlayer = (ServerPlayer) player;
         BlockPos anchor = clickedPos.above();
+
+        // Get current preview position for this player
         BlockPos currentPreview = BlueprintSetPreviewPacket.getPlayerPreviewPos(player.getUUID());
 
         if (currentPreview != null && currentPreview.equals(anchor)) {
-            // Place and CLEAR the blueprint
+            // Place and CLEAR
             placeBlueprint((ServerLevel) level, anchor, data, player, stack);
             BlueprintClearPreviewPacket.sendToPlayer(serverPlayer);
-
-            // CLEAR THE DATA - set to empty
             stack.set(ModDataComponents.BLUEPRINT_DATA.get(), BlueprintData.EMPTY);
-
             return InteractionResult.sidedSuccess(false);
         } else {
+            // Show/update preview
             BlueprintSetPreviewPacket.sendToPlayer(serverPlayer, anchor, data);
             player.displayClientMessage(
                     Component.translatable("message.asiandecor.blueprint.preview",
-                            data.sizeX(), data.sizeY(), data.sizeZ()),
+                            data.sizeX(), data.sizeY(), data.sizeZ(),
+                            data.getRotationName()),
                     true
             );
             return InteractionResult.sidedSuccess(false);
@@ -179,11 +180,8 @@ public class BlueprintItem extends Item {
         int failed = 0;
 
         for (BlueprintData.BlockEntry entry : data.blocks()) {
-            // Rotate the position
             BlockPos rotatedPos = data.rotatePos(entry.x(), entry.y(), entry.z());
             BlockPos targetPos = origin.offset(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ());
-
-            // Rotate the block state
             BlockState rotatedState = data.rotateBlockState(entry.state());
 
             BlockState existing = level.getBlockState(targetPos);
@@ -220,6 +218,10 @@ public class BlueprintItem extends Item {
                     data.sizeX(), data.sizeY(), data.sizeZ()).withStyle(net.minecraft.ChatFormatting.GREEN));
             tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.block_count",
                     data.blocks().size()).withStyle(net.minecraft.ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.rotation",
+                    data.getRotationName()).withStyle(net.minecraft.ChatFormatting.AQUA));
+            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.facing",
+                    data.getFacingName()).withStyle(net.minecraft.ChatFormatting.YELLOW));
             if (data.cutMode()) {
                 tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.cut_mode")
                         .withStyle(net.minecraft.ChatFormatting.RED));
@@ -250,6 +252,10 @@ public class BlueprintItem extends Item {
         tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.usage.cut")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
         tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.usage.preview")
+                .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.usage.rotate")
+                .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.usage.rotate_vertical")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
     }
 }

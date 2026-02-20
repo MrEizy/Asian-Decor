@@ -13,8 +13,7 @@ import net.thejadeproject.asiandecor.component.BlueprintData;
 import net.thejadeproject.asiandecor.component.ModDataComponents;
 import net.thejadeproject.asiandecor.items.buildersgadgets.BlueprintItem;
 
-
-public record BlueprintRotatePacket(boolean mainHand, int direction) implements CustomPacketPayload {
+public record BlueprintRotatePacket(boolean mainHand, int directionY, int directionX) implements CustomPacketPayload {
     public static final Type<BlueprintRotatePacket> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(AsianDecor.MOD_ID, "blueprint_rotate"));
 
@@ -22,7 +21,9 @@ public record BlueprintRotatePacket(boolean mainHand, int direction) implements 
             ByteBufCodecs.BOOL,
             BlueprintRotatePacket::mainHand,
             ByteBufCodecs.INT,
-            BlueprintRotatePacket::direction,
+            BlueprintRotatePacket::directionY,
+            ByteBufCodecs.INT,
+            BlueprintRotatePacket::directionX,
             BlueprintRotatePacket::new
     );
 
@@ -41,15 +42,28 @@ public record BlueprintRotatePacket(boolean mainHand, int direction) implements 
                 BlueprintData data = stack.getOrDefault(ModDataComponents.BLUEPRINT_DATA.get(), BlueprintData.EMPTY);
 
                 if (data.hasData()) {
-                    int newRotation = (data.rotation() + packet.direction() + 4) % 4;
-                    BlueprintData rotated = data.withRotation(newRotation);
+                    BlueprintData rotated = data;
+
+                    // Apply Y rotation (horizontal)
+                    if (packet.directionY() != 0) {
+                        int newRotY = (data.rotationY() + packet.directionY() + 4) % 4;
+                        rotated = rotated.withRotationY(newRotY);
+                    }
+
+                    // Apply X rotation (vertical)
+                    if (packet.directionX() != 0) {
+                        int newRotX = (data.rotationX() + packet.directionX() + 4) % 4;
+                        rotated = rotated.withRotationX(newRotX);
+                    }
+
                     stack.set(ModDataComponents.BLUEPRINT_DATA.get(), rotated);
 
                     // Show rotation in action bar
                     player.displayClientMessage(
                             net.minecraft.network.chat.Component.translatable(
                                     "message.asiandecor.blueprint.rotated",
-                                    rotated.getRotationName()
+                                    rotated.getRotationName(),
+                                    rotated.getFacingName()
                             ),
                             true
                     );

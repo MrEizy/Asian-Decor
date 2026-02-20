@@ -54,7 +54,9 @@ public class lang extends LanguageProvider {
         add("tooltip.asiandecor.blueprint.usage.cut", "Shift+Right Click again: CUT the area");
         add("tooltip.asiandecor.blueprint.usage.preview", "Right Click: Preview / Place");
         add("tooltip.asiandecor.blueprint.rotation", "Rotation: %s");
-        add("tooltip.asiandecor.blueprint.usage.rotate", "Shift+Scroll: Rotate");
+        add("tooltip.asiandecor.blueprint.facing", "Facing: %s");
+        add("tooltip.asiandecor.blueprint.usage.rotate", "Shift+Scroll: Rotate Y (Horizontal)");
+        add("tooltip.asiandecor.blueprint.usage.rotate_vertical", "Ctrl+Shift+Scroll: Rotate X (Vertical/Wall)");
 
 
         //Action Bar
@@ -68,10 +70,10 @@ public class lang extends LanguageProvider {
         add("message.asiandecor.blueprint.cut", "Cut %sx%sx%s area (%s blocks)");
         add("message.asiandecor.blueprint.empty", "Blueprint empty! Shift+Click to select area");
         add("message.asiandecor.blueprint.ready_to_cut", "Area selected! Shift+Click to CUT");
-        add("message.asiandecor.blueprint.preview", "Previewing %sx%sx%s - Click again to place");
+        add("message.asiandecor.blueprint.preview", "Previewing %sx%sx%s [%s]");
         add("message.asiandecor.blueprint.placed", "Placed %s blocks (%s failed)");
         add("message.asiandecor.blueprint.placed_cleared", "Placed %s blocks (%s failed) - Blueprint cleared");
-        add("message.asiandecor.blueprint.rotated", "Rotation: %s");
+        add("message.asiandecor.blueprint.rotated", "Rotation: %s | Facing: %s");
 
 
 

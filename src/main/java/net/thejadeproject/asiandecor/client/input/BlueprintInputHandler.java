@@ -1,5 +1,6 @@
 package net.thejadeproject.asiandecor.client.input;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
@@ -10,6 +11,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.thejadeproject.asiandecor.AsianDecor;
+import net.thejadeproject.asiandecor.component.BlueprintData;
 import net.thejadeproject.asiandecor.component.ModDataComponents;
 import net.thejadeproject.asiandecor.items.buildersgadgets.BlueprintItem;
 import net.thejadeproject.asiandecor.network.BlueprintRotatePacket;
@@ -24,31 +26,52 @@ public class BlueprintInputHandler {
 
         if (player == null || !player.isShiftKeyDown()) return;
 
-        // Check both hands for blueprint
         for (InteractionHand hand : InteractionHand.values()) {
             ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem() instanceof BlueprintItem) {
-                // Only rotate if blueprint has data
                 var data = stack.getOrDefault(ModDataComponents.BLUEPRINT_DATA.get(),
                         net.thejadeproject.asiandecor.component.BlueprintData.EMPTY);
 
                 if (!data.hasData()) continue;
 
-                // Cancel the event so we don't scroll hotbar
                 event.setCanceled(true);
 
                 double scrollDelta = event.getScrollDeltaY();
                 if (scrollDelta == 0) return;
 
-                int direction = scrollDelta > 0 ? 1 : -1; // Scroll up = rotate right, down = rotate left
+                int direction = scrollDelta > 0 ? 1 : -1;
 
-                // Send packet to server
-                PacketDistributor.sendToServer(new BlueprintRotatePacket(hand == InteractionHand.MAIN_HAND, direction));
+                // Check Ctrl using GLFW
+                long window = mc.getWindow().getWindow();
+                boolean ctrlDown = InputConstants.isKeyDown(window, InputConstants.KEY_LCONTROL) ||
+                        InputConstants.isKeyDown(window, InputConstants.KEY_RCONTROL);
 
-                // Update client side immediately for responsiveness
-                int newRotation = (data.rotation() + direction + 4) % 4;
-                var rotated = data.withRotation(newRotation);
+                int dirY = ctrlDown ? 0 : direction;
+                int dirX = ctrlDown ? direction : 0;
+
+                // Send to server
+                PacketDistributor.sendToServer(new BlueprintRotatePacket(
+                        hand == InteractionHand.MAIN_HAND, dirY, dirX));
+
+                // Update client immediately for instant preview feedback
+                BlueprintData rotated = data;
+                if (dirY != 0) {
+                    rotated = rotated.withRotationY((data.rotationY() + dirY + 4) % 4);
+                }
+                if (dirX != 0) {
+                    rotated = rotated.withRotationX((data.rotationX() + dirX + 4) % 4);
+                }
                 stack.set(ModDataComponents.BLUEPRINT_DATA.get(), rotated);
+
+                // Show message
+                player.displayClientMessage(
+                        net.minecraft.network.chat.Component.translatable(
+                                "message.asiandecor.blueprint.rotated",
+                                rotated.getRotationName(),
+                                rotated.getFacingName()
+                        ),
+                        true
+                );
 
                 break;
             }
