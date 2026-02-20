@@ -31,7 +31,7 @@ import java.util.Optional;
 public class BlueprintItem extends Item {
 
     public BlueprintItem(Properties properties) {
-        super(properties.component(ModDataComponents.BLUEPRINT_DATA.get(), BlueprintData.EMPTY));
+        super(properties.component(ModDataComponents.BLUEPRINT_DATA.get(), BlueprintData.EMPTY).stacksTo(1));
     }
 
     @Override
