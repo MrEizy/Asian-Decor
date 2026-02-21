@@ -113,7 +113,7 @@ public class lang extends LanguageProvider {
         //Keybinds
         add("key.categories.asiandecor", "Asian Decor");
         add("key.asiandecor.radial_menu", "Open Pouch Radial Menu");
-        add("key.asiandecor.toggle_mode", "Toggle Between Modes");
+        add("key.asiandecor.mode_toggle", "Toggle Between Modes");
 
 
 
