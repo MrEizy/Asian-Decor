@@ -15,6 +15,7 @@ public class lang extends LanguageProvider {
         //Items
         add("item.asiandecor.white_block_pouch", "White Builder's Pouch");
         add("item.asiandecor.blueprint", "Blueprint");
+        add("item.asiandecor.tape_measure", "Tape Measure");
 
 
 
@@ -58,6 +59,14 @@ public class lang extends LanguageProvider {
         add("tooltip.asiandecor.blueprint.usage.rotate", "Shift+Scroll: Rotate Y (Horizontal)");
         add("tooltip.asiandecor.blueprint.usage.rotate_vertical", "Ctrl+Shift+Scroll: Rotate X (Vertical/Wall)");
 
+        add("tooltip.asiandecor.tape_measure.pos1_set", "§7Pos 1: §f[%s, %s, %s]");
+        add("tooltip.asiandecor.tape_measure.pos2_set", "§7Pos 2: §f[%s, %s, %s]");
+        add("tooltip.asiandecor.tape_measure.no_selection", "§7Right Click to set §fPosition 1");
+        add("tooltip.asiandecor.tape_measure.select_pos2", "§7Right Click to set §fPosition 2");
+        add("tooltip.asiandecor.tape_measure.dimensions", "§aDimensions: §f%s§7x§f%s§7x§f%s");
+        add("tooltip.asiandecor.tape_measure.clear", "§8Shift+Right Click to clear");
+
+
 
         //Action Bar
         add("message.asiandecor.block_pouch.selected", "%s");
@@ -75,6 +84,17 @@ public class lang extends LanguageProvider {
         add("message.asiandecor.blueprint.placed_cleared", "Placed %s blocks (%s failed) - Blueprint cleared");
         add("message.asiandecor.blueprint.rotated", "Rotation: %s | Facing: %s");
 
+        add("message.asiandecor.tape_measure.pos1_set", "§ePosition 1 set §7at §f%s§7, §f%s§7, §f%s");
+        add("message.asiandecor.tape_measure.cleared", "§cMeasurement cleared");
+        add("message.asiandecor.tape_measure.measured", "§aLength §7| §f%sB  §aWidth §7| §f%sB  §aHeight §7| §f%sB  §7(§f%s§7 blocks total)");
+
+
+
+
+
+        //Keybinds
+        add("key.categories.asiandecor", "Asian Decor");
+        add("key.asiandecor.radial_menu", "Open Pouch Radial Menu");
 
 
 

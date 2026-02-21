@@ -26,6 +26,12 @@ public class ModNetwork {
                 BlueprintRotatePacket.STREAM_CODEC,
                 BlueprintRotatePacket::handle
         );
+        registrar.playToServer(
+                PouchRadialSelectPacket.TYPE,
+                PouchRadialSelectPacket.STREAM_CODEC,
+                PouchRadialSelectPacket::handle
+        );
+
 
 
 
@@ -41,6 +47,7 @@ public class ModNetwork {
                 BlueprintClearPreviewPacket.STREAM_CODEC,
                 BlueprintClearPreviewPacket::handle
         );
+
 
     }
 }

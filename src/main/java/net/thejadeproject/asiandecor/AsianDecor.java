@@ -55,6 +55,7 @@ public class AsianDecor {
         modEventBus.addListener(this::addCreative);
 
 
+
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -79,6 +80,7 @@ public class AsianDecor {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
+
 
         }
         @SubscribeEvent

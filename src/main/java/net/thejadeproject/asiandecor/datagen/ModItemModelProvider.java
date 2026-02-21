@@ -16,5 +16,6 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.WHITE_BLOCK_POUCH.get());
 
         basicItem(ModItems.BLUEPRINT.get());
+        basicItem(ModItems.TAPE_MEASURE.get());
     }
 }

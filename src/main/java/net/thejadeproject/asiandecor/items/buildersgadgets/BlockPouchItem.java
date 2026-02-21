@@ -30,7 +30,7 @@ public class BlockPouchItem extends Item {
     public static final Component CONTAINER_TITLE = Component.translatable("container.asiandecor.block_pouch");
 
     public BlockPouchItem(Properties properties) {
-        super(properties.component(ModDataComponents.POUCH_CONTENTS.get(), PouchContents.EMPTY));
+        super(properties.component(ModDataComponents.POUCH_CONTENTS.get(), PouchContents.EMPTY).stacksTo(1));
     }
 
     @Override

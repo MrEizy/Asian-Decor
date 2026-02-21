@@ -145,4 +145,6 @@ public record PouchContents(List<SlotEntry> entries, int selectedSlot) {
         int newIndex = (currentIndex + direction + occupiedSlots.size()) % occupiedSlots.size();
         return new PouchContents(entries, occupiedSlots.get(newIndex));
     }
+
+
 }

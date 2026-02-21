@@ -26,6 +26,14 @@ public class ModDataComponents {
                     .networkSynchronized(BlueprintData.STREAM_CODEC)
     );
 
+    public static final Supplier<DataComponentType<TapeMeasureDataComponent>> TAPE_MEASURE_DATA =
+            REGISTRAR.register("tape_measure_data", () ->
+                    DataComponentType.<TapeMeasureDataComponent>builder()
+                            .persistent(TapeMeasureDataComponent.CODEC)
+                            .build()
+            );
+
+
     public static void register(IEventBus eventBus) {
         REGISTRAR.register(eventBus);
     }
