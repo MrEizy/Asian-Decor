@@ -17,5 +17,6 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         basicItem(ModItems.BLUEPRINT.get());
         basicItem(ModItems.TAPE_MEASURE.get());
+        basicItem(ModItems.TROWEL.get());
     }
 }

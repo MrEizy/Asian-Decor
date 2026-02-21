@@ -12,6 +12,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.thejadeproject.asiandecor.AsianDecor;
+import net.thejadeproject.asiandecor.client.ModKeybinds;
 import net.thejadeproject.asiandecor.client.gui.RadialMenuRenderer;
 import net.thejadeproject.asiandecor.component.ModDataComponents;
 import net.thejadeproject.asiandecor.component.PouchContents;
@@ -27,18 +28,7 @@ import java.util.Map;
 @EventBusSubscriber(modid = AsianDecor.MOD_ID, value = Dist.CLIENT)
 public class RadialMenuKeyHandler {
 
-    public static final KeyMapping RADIAL_MENU_KEY = new KeyMapping(
-            "key.asiandecor.radial_menu",
-            KeyConflictContext.IN_GAME,
-            InputConstants.Type.KEYSYM,
-            InputConstants.KEY_G,
-            "key.categories.asiandecor"
-    );
 
-    @SubscribeEvent
-    public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(RADIAL_MENU_KEY);
-    }
 
     private static boolean wasKeyDown = false;
 
@@ -47,7 +37,7 @@ public class RadialMenuKeyHandler {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
 
-        boolean isKeyDown = RADIAL_MENU_KEY.isDown();
+        boolean isKeyDown = ModKeybinds.RADIAL_MENU_KEY.isDown();
 
         ItemStack pouch = null;
         InteractionHand hand = null;

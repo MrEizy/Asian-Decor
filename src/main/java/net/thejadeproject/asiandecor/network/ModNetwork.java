@@ -32,6 +32,11 @@ public class ModNetwork {
                 PouchRadialSelectPacket::handle
         );
 
+        registrar.playToServer(
+                TrowelTogglePacket.TYPE,
+                TrowelTogglePacket.STREAM_CODEC,
+                TrowelTogglePacket::handle
+        );
 
 
 

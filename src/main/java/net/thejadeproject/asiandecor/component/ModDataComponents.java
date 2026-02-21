@@ -33,6 +33,13 @@ public class ModDataComponents {
                             .build()
             );
 
+    public static final Supplier<DataComponentType<TrowelDataComponent>> TROWEL_DATA =
+            REGISTRAR.register("trowel_data", () ->
+                    DataComponentType.<TrowelDataComponent>builder()
+                            .persistent(TrowelDataComponent.CODEC)
+                            .build()
+            );
+
 
     public static void register(IEventBus eventBus) {
         REGISTRAR.register(eventBus);

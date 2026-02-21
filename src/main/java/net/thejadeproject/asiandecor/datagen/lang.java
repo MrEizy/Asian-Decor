@@ -16,6 +16,7 @@ public class lang extends LanguageProvider {
         add("item.asiandecor.white_block_pouch", "White Builder's Pouch");
         add("item.asiandecor.blueprint", "Blueprint");
         add("item.asiandecor.tape_measure", "Tape Measure");
+        add("item.asiandecor.trowel", "Builder's Trowel");
 
 
 
@@ -67,6 +68,18 @@ public class lang extends LanguageProvider {
         add("tooltip.asiandecor.tape_measure.clear", "§8Shift+Right Click to clear");
 
 
+        add("tooltip.asiandecor.trowel.mode", "§7Mode: §f%s");
+        add("tooltip.asiandecor.trowel.mode.hotbar", "Hotbar Only");
+        add("tooltip.asiandecor.trowel.mode.inventory", "Entire Inventory");
+        add("tooltip.asiandecor.trowel.mode.pouch", "Linked Pouch");
+        add("tooltip.asiandecor.trowel.linked_pouch", "§aLinked to Block Pouch");
+        add("tooltip.asiandecor.trowel.pouch_slots", "§7Pouch: §f%s§7/§f%s slots");
+        add("tooltip.asiandecor.trowel.no_pouch_link", "§cNo pouch linked!");
+        add("tooltip.asiandecor.trowel.usage", "§8Right Click: Place random block");
+        add("tooltip.asiandecor.trowel.toggle_key", "§8Press §f%s§8 to toggle mode");
+        add("tooltip.asiandecor.trowel.link_instruction", "§7Link: Hold trowel and click on Block Pouch");
+
+
 
         //Action Bar
         add("message.asiandecor.block_pouch.selected", "%s");
@@ -89,12 +102,18 @@ public class lang extends LanguageProvider {
         add("message.asiandecor.tape_measure.measured", "§aLength §7| §f%sB  §aWidth §7| §f%sB  §aHeight §7| §f%sB  §7(§f%s§7 blocks total)");
 
 
+        add("message.asiandecor.trowel.mode_changed", "§eMode: §f%s");
+        add("message.asiandecor.trowel.no_blocks", "§cNo blocks available!");
+        add("message.asiandecor.trowel.pouch_linked", "§aTrowel linked to Block Pouch!");
+
+
 
 
 
         //Keybinds
         add("key.categories.asiandecor", "Asian Decor");
         add("key.asiandecor.radial_menu", "Open Pouch Radial Menu");
+        add("key.asiandecor.toggle_mode", "Toggle Between Modes");
 
 
 

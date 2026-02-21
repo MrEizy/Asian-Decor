@@ -8,6 +8,7 @@ import net.thejadeproject.asiandecor.AsianDecor;
 import net.thejadeproject.asiandecor.items.buildersgadgets.BlockPouchItem;
 import net.thejadeproject.asiandecor.items.buildersgadgets.BlueprintItem;
 import net.thejadeproject.asiandecor.items.buildersgadgets.TapeMeasureItem;
+import net.thejadeproject.asiandecor.items.buildersgadgets.TrowelItem;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(AsianDecor.MOD_ID);
@@ -21,6 +22,10 @@ public class ModItems {
 
     public static final DeferredItem<Item> TAPE_MEASURE = ITEMS.register("tape_measure",
             () -> new TapeMeasureItem(new Item.Properties().stacksTo(1).durability(64)));
+
+
+    public static final DeferredItem<Item> TROWEL = ITEMS.register("trowel",
+            () -> new TrowelItem(new Item.Properties().stacksTo(1).durability(64)));
 
 
 
