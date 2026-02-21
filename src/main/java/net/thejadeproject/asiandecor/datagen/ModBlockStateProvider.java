@@ -15,10 +15,16 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
 
+        simpleBlockWithItem(ModBlocks.PREVIEW_BLOCK, "translucent");
+
 
     }
 
-    private void simpleBlockWithItem(DeferredBlock<?> deferredBlock) {
-        simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
+    private void simpleBlockWithItem(DeferredBlock<?> deferredBlock, String renderType) {
+        var model = models().cubeAll(
+                deferredBlock.getId().getPath(),
+                blockTexture(deferredBlock.get())
+        ).renderType(renderType);
+        simpleBlockWithItem(deferredBlock.get(), model);
     }
 }

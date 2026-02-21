@@ -22,6 +22,7 @@ public class lang extends LanguageProvider {
 
         //Blocks
         add("block.asiandecor.carpenterblock", "Carpenter's Table");
+        add("block.asiandecor.preview_block", "Preview Block");
 
 
         add("block.asiandecor.oak_winged_table", "Oak Winged Table");

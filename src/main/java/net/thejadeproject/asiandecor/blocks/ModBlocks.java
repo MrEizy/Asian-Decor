@@ -40,6 +40,20 @@ public class ModBlocks {
             ));
 
 
+    public static final DeferredBlock<Block> PREVIEW_BLOCK = registerBlock("preview_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.0F, 0.0F)
+                    .sound(SoundType.AMETHYST)
+                    .noLootTable()
+                    .noCollission()
+                    .noOcclusion()
+                    .instabreak()
+                    .replaceable()
+            ));
+
+
+
 
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
