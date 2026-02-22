@@ -14,6 +14,13 @@ public class ModBlockEntities {
             DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, AsianDecor.MOD_ID);
 
 
+    public static final Supplier<BlockEntityType<ShapeMakerBlockEntity>> SHAPE_MAKER =
+            BLOCK_ENTITIES.register("shape_maker",
+                    () -> BlockEntityType.Builder.of(
+                            ShapeMakerBlockEntity::new,
+                            ModBlocks.SHAPE_MAKER.get()
+                    ).build(null));
+
 
 
 

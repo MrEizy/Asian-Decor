@@ -11,6 +11,7 @@ import net.thejadeproject.asiandecor.recipe.ModRecipes;
 import net.thejadeproject.asiandecor.screen.ModMenuTypes;
 import net.thejadeproject.asiandecor.screen.custom.CarpenterScreen;
 import net.thejadeproject.asiandecor.screen.custom.PouchScreen;
+import net.thejadeproject.asiandecor.screen.custom.ShapeMakerScreen;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -87,6 +88,7 @@ public class AsianDecor {
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.CARPENTER.get(), CarpenterScreen::new);
             event.register(ModMenuTypes.POUCH_MENU.get(), PouchScreen::new);
+            event.register(ModMenuTypes.SHAPE_MAKER.get(), ShapeMakerScreen::new);
         }
     }
 }

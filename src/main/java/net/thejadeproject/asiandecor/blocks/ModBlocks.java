@@ -3,6 +3,7 @@ package net.thejadeproject.asiandecor.blocks;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -12,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
 import net.thejadeproject.asiandecor.blocks.custom.CarpenterBlock;
+import net.thejadeproject.asiandecor.blocks.custom.ShapeMakerBlock;
 import net.thejadeproject.asiandecor.blocks.custom.furniture.tables.WingedTableBlock;
 import net.thejadeproject.asiandecor.items.ModItems;
 
@@ -29,6 +31,11 @@ public class ModBlocks {
                     .strength(2.5F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
+
+    public static final DeferredBlock<Block> SHAPE_MAKER = registerBlock("shape_maker",
+            () -> new ShapeMakerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                    .strength(3.0f)
+                    .requiresCorrectToolForDrops()));
 
     public static final DeferredBlock<Block> WINGED_TABLE = registerBlock("winged_table",
             () -> new WingedTableBlock(BlockBehaviour.Properties.of()
