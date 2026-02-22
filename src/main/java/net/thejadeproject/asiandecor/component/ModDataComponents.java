@@ -3,10 +3,13 @@ package net.thejadeproject.asiandecor.component;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
 
 import java.util.function.Supplier;
+
+import static net.minecraft.util.datafix.fixes.References.DATA_COMPONENTS;
 
 public class ModDataComponents {
     public static final DeferredRegister.DataComponents REGISTRAR =
@@ -37,6 +40,14 @@ public class ModDataComponents {
             REGISTRAR.register("trowel_data", () ->
                     DataComponentType.<TrowelDataComponent>builder()
                             .persistent(TrowelDataComponent.CODEC)
+                            .build()
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DyedBrickData>> BRICK_DATA =
+            REGISTRAR.register("brick_data", () ->
+                    DataComponentType.<DyedBrickData>builder()
+                            .persistent(DyedBrickData.CODEC)
+                            .networkSynchronized(DyedBrickData.STREAM_CODEC)
                             .build()
             );
 

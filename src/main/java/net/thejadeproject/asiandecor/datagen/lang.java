@@ -23,13 +23,15 @@ public class lang extends LanguageProvider {
         //Blocks
         add("block.asiandecor.carpenterblock", "Carpenter's Table");
         add("block.asiandecor.preview_block", "Preview Block");
+        add("block.asiandecor.shape_maker", "Shape Builder");
+        add("block.asiandecor.dyed_brick", "Dyed Bricks");
 
 
         add("block.asiandecor.oak_winged_table", "Oak Winged Table");
 
         //GUI & Other Stuff
         add("creativetab.asiandecor.items", "Asian Decor Items");
-        add("creativetab.asiandecor.wood", "Wood Decor");
+        add("creativetab.asiandecor.blocks", "Asian Decor Blocks");
 
 
         add("container.asiandecor.carpenter", "Carpenter's Table");

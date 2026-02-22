@@ -13,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
 import net.thejadeproject.asiandecor.blocks.custom.CarpenterBlock;
+import net.thejadeproject.asiandecor.blocks.custom.DyedBrickBlock;
 import net.thejadeproject.asiandecor.blocks.custom.ShapeMakerBlock;
 import net.thejadeproject.asiandecor.blocks.custom.furniture.tables.WingedTableBlock;
 import net.thejadeproject.asiandecor.items.ModItems;
@@ -59,6 +60,13 @@ public class ModBlocks {
                     .replaceable()
             ));
 
+    public static final DeferredBlock<Block> DYED_BRICK = registerBlockWithoutItem("dyed_brick",
+            () -> new DyedBrickBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.0F, 6.0F)
+                    .sound(SoundType.STONE)));
+
 
 
 
@@ -67,6 +75,10 @@ public class ModBlocks {
         DeferredBlock<T> toReturn = BLOCK.register(name, block);
         registerBlockItem(name, toReturn);
         return toReturn;
+    }
+
+    private static <T extends Block> DeferredBlock<T> registerBlockWithoutItem(String name, Supplier<T> block) {
+        return BLOCK.register(name, block);
     }
 
     private static <T extends Block> void registerBlockItem(String name, DeferredBlock<T> block) {

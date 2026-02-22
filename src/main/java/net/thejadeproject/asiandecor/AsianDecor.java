@@ -1,7 +1,11 @@
 package net.thejadeproject.asiandecor;
 
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.thejadeproject.asiandecor.blocks.ModBlocks;
+import net.thejadeproject.asiandecor.blocks.custom.DyedBrickBlock;
 import net.thejadeproject.asiandecor.blocks.entity.ModBlockEntities;
 import net.thejadeproject.asiandecor.component.ModDataComponents;
 import net.thejadeproject.asiandecor.guis.ModCreativeModeTabs;
@@ -83,12 +87,51 @@ public class AsianDecor {
         public static void onClientSetup(FMLClientSetupEvent event) {
 
 
+
+
+
+
         }
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.CARPENTER.get(), CarpenterScreen::new);
             event.register(ModMenuTypes.POUCH_MENU.get(), PouchScreen::new);
             event.register(ModMenuTypes.SHAPE_MAKER.get(), ShapeMakerScreen::new);
+        }
+
+
+        @SubscribeEvent
+        public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+            event.register((state, level, pos, tintIndex) -> {
+                // Direct property access - don't check hasProperty, just try to get
+                try {
+                    DyeColor color = switch (tintIndex) {
+                        case 0 -> state.getValue(DyedBrickBlock.BRICK_COLOR);
+                        case 1 -> state.getValue(DyedBrickBlock.MORTAR_COLOR);
+                        default -> DyeColor.WHITE;
+                    };
+                    return color.getTextureDiffuseColor();
+                } catch (IllegalArgumentException e) {
+                    // Property doesn't exist in this state
+                    return 0xFFFFFF;
+                }
+            }, ModBlocks.DYED_BRICK.get());
+        }
+
+        @SubscribeEvent
+        public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+            event.register((stack, tintIndex) -> {
+                var data = stack.get(ModDataComponents.BRICK_DATA);
+
+                DyeColor color = switch (tintIndex) {
+                    case 0 -> data != null ? data.brickColor() : DyeColor.WHITE;
+                    case 1 -> data != null ? data.mortarColor() : DyeColor.LIGHT_GRAY;
+                    default -> DyeColor.WHITE;
+                };
+
+                return color.getTextureDiffuseColor();
+
+            }, ModBlocks.DYED_BRICK.get().asItem());
         }
     }
 }

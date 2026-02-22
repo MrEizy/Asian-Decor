@@ -5,6 +5,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
+import net.thejadeproject.asiandecor.blocks.ModBlocks;
+import net.thejadeproject.asiandecor.items.blockitem.DyedBrickBlockItem;
 import net.thejadeproject.asiandecor.items.buildersgadgets.BlockPouchItem;
 import net.thejadeproject.asiandecor.items.buildersgadgets.BlueprintItem;
 import net.thejadeproject.asiandecor.items.buildersgadgets.TapeMeasureItem;
@@ -26,6 +28,9 @@ public class ModItems {
 
     public static final DeferredItem<Item> TROWEL = ITEMS.register("trowel",
             () -> new TrowelItem(new Item.Properties().stacksTo(1).durability(64)));
+
+    public static final DeferredItem<Item> DYED_BRICK = ITEMS.register("dyed_brick",
+            () -> new DyedBrickBlockItem(ModBlocks.DYED_BRICK.get(), new Item.Properties()));
 
 
 

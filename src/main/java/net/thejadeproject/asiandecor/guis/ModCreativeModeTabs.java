@@ -4,11 +4,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
 import net.thejadeproject.asiandecor.blocks.ModBlocks;
+import net.thejadeproject.asiandecor.component.DyedBrickData;
+import net.thejadeproject.asiandecor.component.ModDataComponents;
 import net.thejadeproject.asiandecor.items.ModItems;
 
 import java.util.function.Supplier;
@@ -27,14 +30,34 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.TROWEL);
                     }).build());
 
-    public static final Supplier<CreativeModeTab> ASIAN_DECOR_WOOD = CREATIVE_MODE_TAB.register("asiandecor_wood_decor",
+    public static final Supplier<CreativeModeTab> ASIAN_DECOR_WOOD = CREATIVE_MODE_TAB.register("asiandecor_blocks",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.CARPENTER.get()))
-                    .title(Component.translatable("creativetab.asiandecor.wood"))
+                    .title(Component.translatable("creativetab.asiandecor.blocks"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModBlocks.CARPENTER);
+                        output.accept(ModBlocks.SHAPE_MAKER);
                         output.accept(ModBlocks.WINGED_TABLE);
+
+                        // Add ALL 256 Dyed Brick variants
+                        addAllDyedBrickVariants(output);
                     }).build());
 
+    // Add ALL 256 combinations (16 brick colors × 16 mortar colors)
+    private static void addAllDyedBrickVariants(CreativeModeTab.Output output) {
+        for (DyeColor brickColor : DyeColor.values()) {
+            for (DyeColor mortarColor : DyeColor.values()) {
+                // Create stack with the item from ModItems
+                ItemStack stack = new ItemStack(ModItems.DYED_BRICK.get());
+
+                // Set the data component
+                DyedBrickData data = new DyedBrickData(brickColor, mortarColor);
+                stack.set(ModDataComponents.BRICK_DATA.get(), data);
+
+                // Accept into creative tab
+                output.accept(stack);
+            }
+        }
+    }
 
     public static void register(IEventBus eventBus) {
         CREATIVE_MODE_TAB.register(eventBus);
