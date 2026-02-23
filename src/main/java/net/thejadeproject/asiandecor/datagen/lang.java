@@ -22,6 +22,7 @@ public class lang extends LanguageProvider {
 
         //Blocks
         add("block.asiandecor.carpenterblock", "Carpenter's Table");
+        add("block.asiandecor.brick_mixer", "Brick Mixer");
         add("block.asiandecor.preview_block", "Preview Block");
         add("block.asiandecor.shape_maker", "Shape Builder");
         add("block.asiandecor.dyed_brick", "Dyed Bricks");
@@ -35,6 +36,7 @@ public class lang extends LanguageProvider {
 
 
         add("container.asiandecor.carpenter", "Carpenter's Table");
+        add("container.asiandecor.brick_mixer", "Brick Mixer");
         add("tooltip.asiandecor.ingredient_cost", "Requires: %s");
 
         add("container.asiandecor.block_pouch", "Builder's Pouch");

@@ -7,6 +7,7 @@ import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
+import net.thejadeproject.asiandecor.screen.custom.BrickMixerMenu;
 import net.thejadeproject.asiandecor.screen.custom.CarpenterMenu;
 import net.thejadeproject.asiandecor.screen.custom.PouchMenu;
 import net.thejadeproject.asiandecor.screen.custom.ShapeMakerMenu;
@@ -26,6 +27,9 @@ public class ModMenuTypes {
                 }
                 return new CarpenterMenu(windowId, inv);
             }));
+
+    public static final Supplier<MenuType<BrickMixerMenu>> BRICK_MIXER =
+            MENUS.register("brick_mixer", () -> IMenuTypeExtension.create((windowId, inv, data) -> new BrickMixerMenu(windowId, inv)));
 
     public static final Supplier<MenuType<ShapeMakerMenu>> SHAPE_MAKER = MENUS.register("shape_maker",
             () -> IMenuTypeExtension.create((windowId, inv, data) -> {

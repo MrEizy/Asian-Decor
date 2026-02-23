@@ -25,6 +25,17 @@ public class ModRecipes {
                 }
             });
 
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BrickMixerRecipe>> BRICK_MIXER_SERIALIZER =
+            SERIALIZERS.register("brick_mixer", BrickMixerRecipe.Serializer::new);
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<BrickMixerRecipe>> BRICK_MIXER_TYPE =
+            TYPES.register("brick_mixer", () -> new RecipeType<BrickMixerRecipe>() {
+                @Override
+                public String toString() {
+                    return "brick_mixer";
+                }
+            });
+
     public static void register(IEventBus eventBus) {
         SERIALIZERS.register(eventBus);
         TYPES.register(eventBus);

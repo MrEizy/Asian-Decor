@@ -37,27 +37,9 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.CARPENTER);
                         output.accept(ModBlocks.SHAPE_MAKER);
                         output.accept(ModBlocks.WINGED_TABLE);
-
-                        // Add ALL 256 Dyed Brick variants
-                        addAllDyedBrickVariants(output);
+                        output.accept(ModBlocks.DYED_BRICK);
                     }).build());
 
-    // Add ALL 256 combinations (16 brick colors × 16 mortar colors)
-    private static void addAllDyedBrickVariants(CreativeModeTab.Output output) {
-        for (DyeColor brickColor : DyeColor.values()) {
-            for (DyeColor mortarColor : DyeColor.values()) {
-                // Create stack with the item from ModItems
-                ItemStack stack = new ItemStack(ModItems.DYED_BRICK.get());
-
-                // Set the data component
-                DyedBrickData data = new DyedBrickData(brickColor, mortarColor);
-                stack.set(ModDataComponents.BRICK_DATA.get(), data);
-
-                // Accept into creative tab
-                output.accept(stack);
-            }
-        }
-    }
 
     public static void register(IEventBus eventBus) {
         CREATIVE_MODE_TAB.register(eventBus);

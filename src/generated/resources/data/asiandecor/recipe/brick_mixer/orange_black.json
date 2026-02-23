@@ -1,0 +1,19 @@
+{
+  "type": "asiandecor:brick_mixer",
+  "base_ingredient": {
+    "item": "asiandecor:dyed_brick"
+  },
+  "default_brick_color": "orange",
+  "default_mortar_color": "black",
+  "group": "dyed_bricks",
+  "result": {
+    "components": {
+      "asiandecor:brick_data": {
+        "brick_color": "orange",
+        "mortar_color": "black"
+      }
+    },
+    "count": 8,
+    "id": "asiandecor:dyed_brick"
+  }
+}

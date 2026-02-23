@@ -1,10 +1,12 @@
 {
+  "block.asiandecor.brick_mixer": "Brick Mixer",
   "block.asiandecor.carpenterblock": "Carpenter's Table",
   "block.asiandecor.dyed_brick": "Dyed Bricks",
   "block.asiandecor.oak_winged_table": "Oak Winged Table",
   "block.asiandecor.preview_block": "Preview Block",
   "block.asiandecor.shape_maker": "Shape Builder",
   "container.asiandecor.block_pouch": "Builder's Pouch",
+  "container.asiandecor.brick_mixer": "Brick Mixer",
   "container.asiandecor.carpenter": "Carpenter's Table",
   "creativetab.asiandecor.blocks": "Asian Decor Blocks",
   "creativetab.asiandecor.items": "Asian Decor Items",

@@ -18,6 +18,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(ModBlocks.PREVIEW_BLOCK, "translucent");
 
         simpleBlockWithItem(ModBlocks.SHAPE_MAKER, "full");
+        simpleBlockWithItem(ModBlocks.BRICK_MIXER, "full");
 
 
     }
