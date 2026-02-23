@@ -1,18 +1,10 @@
 package net.thejadeproject.asiandecor.items.blockitem;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.thejadeproject.asiandecor.blocks.custom.DyedBrickBlock;
-import net.thejadeproject.asiandecor.component.DyedBrickData;
-import net.thejadeproject.asiandecor.component.ModDataComponents;
-
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,8 +39,7 @@ public class DyedBrickBlockItem extends BlockItem {
         }
     }
 
-    // Helper method to format enum name to readable string (RED -> Red, LIGHT_BLUE -> Light Blue)
-    private String formatColorName(net.minecraft.world.item.DyeColor color) {
+    private String formatColorName(DyeColor color) {
         String name = color.getName();
         String[] parts = name.split("_");
         StringBuilder result = new StringBuilder();
@@ -66,15 +57,22 @@ public class DyedBrickBlockItem extends BlockItem {
 
     @Override
     public BlockState getPlacementState(BlockPlaceContext context) {
-        BlockState state = super.getPlacementState(context);
+        // Get base state from the block itself, not super
+        BlockState state = this.getBlock().getStateForPlacement(context);
         if (state == null) return null;
 
         ItemStack stack = context.getItemInHand();
-        DyedBrickData data = stack.getOrDefault(ModDataComponents.BRICK_DATA.get(),
-                new DyedBrickData(net.minecraft.world.item.DyeColor.WHITE, net.minecraft.world.item.DyeColor.LIGHT_GRAY));
+        DyedBrickData data = stack.get(ModDataComponents.BRICK_DATA.get());
 
-        return state
+        if (data == null) {
+            data = new DyedBrickData(DyeColor.WHITE, DyeColor.LIGHT_GRAY);
+        }
+
+
+        BlockState result = state
                 .setValue(DyedBrickBlock.BRICK_COLOR, data.brickColor())
                 .setValue(DyedBrickBlock.MORTAR_COLOR, data.mortarColor());
+
+        return result;
     }
 }

@@ -19,4 +19,5 @@ public record DyedBrickData(DyeColor brickColor, DyeColor mortarColor) {
             DyeColor.STREAM_CODEC, DyedBrickData::mortarColor,
             DyedBrickData::new
     );
+
 }

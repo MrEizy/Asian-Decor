@@ -121,7 +121,7 @@ public class AsianDecor {
         @SubscribeEvent
         public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
             event.register((stack, tintIndex) -> {
-                var data = stack.get(ModDataComponents.BRICK_DATA);
+                var data = stack.get(ModDataComponents.BRICK_DATA.get());
 
                 DyeColor color = switch (tintIndex) {
                     case 0 -> data != null ? data.brickColor() : DyeColor.WHITE;
@@ -133,5 +133,7 @@ public class AsianDecor {
 
             }, ModBlocks.DYED_BRICK.get().asItem());
         }
+
+
     }
 }

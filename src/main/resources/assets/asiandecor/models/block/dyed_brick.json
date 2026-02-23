@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
   "textures": {
     "particle": "asiandecor:block/brick_base",
     "brick_base": "asiandecor:block/brick_base",
