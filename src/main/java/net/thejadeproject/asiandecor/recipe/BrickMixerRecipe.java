@@ -38,19 +38,11 @@ public class BrickMixerRecipe implements Recipe<SingleRecipeInput> {
 
     @Override
     public boolean matches(SingleRecipeInput input, Level level) {
-        // Direct item check - bypass ingredient component matching issues
-        // Check if input is a DyedBrick item by checking the item registry name
-        String itemId = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(input.item().getItem()).toString();
-        boolean isDyedBrick = itemId.equals("asiandecor:dyed_brick");
+        // Use the ingredient to test - this respects the item registration properly
+        boolean matchesIngredient = this.baseIngredient.test(input.item());
         boolean enoughCount = input.item().getCount() >= this.baseCount;
 
-        System.out.println("BrickMixerRecipe.matches() - itemId: " + itemId +
-                ", isDyedBrick: " + isDyedBrick +
-                ", baseCount: " + this.baseCount +
-                ", inputCount: " + input.item().getCount() +
-                ", enoughCount: " + enoughCount);
-
-        return isDyedBrick && enoughCount;
+        return matchesIngredient && enoughCount;
     }
 
     @Override

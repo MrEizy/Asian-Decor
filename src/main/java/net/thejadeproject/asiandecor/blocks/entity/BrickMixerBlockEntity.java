@@ -109,6 +109,15 @@ public class BrickMixerBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
+    public void setChanged() {
+        super.setChanged();
+        // This ensures the menu gets notified when items change
+        if (this.level != null && !this.level.isClientSide()) {
+            this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
+        }
+    }
+
+    @Override
     public boolean stillValid(Player player) {
         return Container.stillValidBlockEntity(this, player);
     }

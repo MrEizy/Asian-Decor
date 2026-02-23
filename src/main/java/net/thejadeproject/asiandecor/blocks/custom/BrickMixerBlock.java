@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.thejadeproject.asiandecor.blocks.entity.BrickMixerBlockEntity;
 import net.thejadeproject.asiandecor.screen.custom.BrickMixerMenu;
 
 import javax.annotation.Nullable;
@@ -62,10 +64,14 @@ public class BrickMixerBlock extends Block {
     @Nullable
     @Override
     protected MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
-        return new SimpleMenuProvider((containerId, playerInventory, player) ->
-                new BrickMixerMenu(containerId, playerInventory, ContainerLevelAccess.create(level, pos)),
-                CONTAINER_TITLE
-        );
+        return new SimpleMenuProvider((containerId, playerInventory, player) -> {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof BrickMixerBlockEntity mixer) {
+                return new BrickMixerMenu(containerId, playerInventory, mixer, mixer.getDataAccess());
+            }
+            // Fallback - should not happen normally
+            return new BrickMixerMenu(containerId, playerInventory, ContainerLevelAccess.create(level, pos));
+        }, CONTAINER_TITLE);
     }
 
     @Override

@@ -11,6 +11,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.thejadeproject.asiandecor.AsianDecor;
+import net.thejadeproject.asiandecor.datagen.builders.BrickMixerRecipeBuilder;
 import net.thejadeproject.asiandecor.recipe.CarpenterRecipes;
 
 import java.util.concurrent.CompletableFuture;
@@ -225,7 +226,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
 
     private void generateBrickMixerRecipes(RecipeOutput output) {
-        net.thejadeproject.asiandecor.datagen.BrickMixerRecipeBuilder.generateAllRecipes(output);
+        BrickMixerRecipeBuilder.generateAllRecipes(output);
     }
 
     private void carpenter(RecipeOutput output, ItemLike input, ItemLike result,

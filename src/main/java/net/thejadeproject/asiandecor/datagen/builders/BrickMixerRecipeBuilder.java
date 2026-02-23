@@ -1,4 +1,4 @@
-package net.thejadeproject.asiandecor.datagen;
+package net.thejadeproject.asiandecor.datagen.builders;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -22,8 +22,8 @@ public class BrickMixerRecipeBuilder {
     }
 
     private static void generateColorRecipe(RecipeOutput output, DyeColor brickColor, DyeColor mortarColor) {
-        // Create ingredient from item - this should match any stack of this item regardless of components
-        Ingredient baseIngredient = Ingredient.of(ModItems.DYED_BRICK);
+        // Use .get() to ensure we have the actual item
+        Ingredient baseIngredient = Ingredient.of(ModItems.DYED_BRICK.get());
 
         ItemStack result = new ItemStack(ModItems.DYED_BRICK.get(), 8);
         DyedBrickData data = new DyedBrickData(brickColor, mortarColor);
