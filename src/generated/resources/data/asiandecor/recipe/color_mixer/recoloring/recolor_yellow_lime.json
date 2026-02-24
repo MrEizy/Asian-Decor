@@ -1,0 +1,23 @@
+{
+  "type": "asiandecor:color_mixer",
+  "component": {
+    "brick_color": "yellow",
+    "mortar_color": "lime"
+  },
+  "group": "dyed_bricks_recolor",
+  "ingredients": [
+    {
+      "item": "asiandecor:dyed_brick"
+    },
+    {
+      "item": "minecraft:yellow_dye"
+    },
+    {
+      "item": "minecraft:lime_dye"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "asiandecor:dyed_brick"
+  }
+}

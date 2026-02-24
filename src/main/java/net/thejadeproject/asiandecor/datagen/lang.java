@@ -36,7 +36,7 @@ public class lang extends LanguageProvider {
 
 
         add("container.asiandecor.carpenter", "Carpenter's Table");
-        add("container.asiandecor.brick_mixer", "Brick Mixer");
+        add("container.asiandecor.color_mixer", "Color Mixer");
         add("tooltip.asiandecor.ingredient_cost", "Requires: %s");
 
         add("container.asiandecor.block_pouch", "Builder's Pouch");

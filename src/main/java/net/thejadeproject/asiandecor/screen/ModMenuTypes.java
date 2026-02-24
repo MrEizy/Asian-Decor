@@ -1,13 +1,16 @@
 package net.thejadeproject.asiandecor.screen;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
-import net.thejadeproject.asiandecor.screen.custom.BrickMixerMenu;
+import net.thejadeproject.asiandecor.blocks.entity.ColorMixerBlockEntity;
+import net.thejadeproject.asiandecor.screen.custom.ColorMixerMenu;
 import net.thejadeproject.asiandecor.screen.custom.CarpenterMenu;
 import net.thejadeproject.asiandecor.screen.custom.PouchMenu;
 import net.thejadeproject.asiandecor.screen.custom.ShapeMakerMenu;
@@ -28,8 +31,15 @@ public class ModMenuTypes {
                 return new CarpenterMenu(windowId, inv);
             }));
 
-    public static final Supplier<MenuType<BrickMixerMenu>> BRICK_MIXER =
-            MENUS.register("brick_mixer", () -> IMenuTypeExtension.create((windowId, inv, data) -> new BrickMixerMenu(windowId, inv)));
+    public static final Supplier<MenuType<ColorMixerMenu>> COLOR_MIXER =
+            MENUS.register("color_mixer", () -> IMenuTypeExtension.create((windowId, inv, data) -> {
+                BlockPos pos = data.readBlockPos();
+                BlockEntity be = inv.player.level().getBlockEntity(pos);
+                if (be instanceof ColorMixerBlockEntity mixer) {
+                    return new ColorMixerMenu(windowId, inv, mixer, mixer.getDataAccess());
+                }
+                return null; // Return null if BE not found - menu won't open
+            }));
 
     public static final Supplier<MenuType<ShapeMakerMenu>> SHAPE_MAKER = MENUS.register("shape_maker",
             () -> IMenuTypeExtension.create((windowId, inv, data) -> {

@@ -51,6 +51,14 @@ public class ModDataComponents {
                             .build()
             );
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ColorMixerData>> COLOR_MIXER_DATA =
+            REGISTRAR.register("color_mixer_data", () ->
+                    DataComponentType.<ColorMixerData>builder()
+                            .persistent(ColorMixerData.CODEC)
+                            .networkSynchronized(ColorMixerData.STREAM_CODEC)
+                            .build()
+            );
+
 
     public static void register(IEventBus eventBus) {
         REGISTRAR.register(eventBus);

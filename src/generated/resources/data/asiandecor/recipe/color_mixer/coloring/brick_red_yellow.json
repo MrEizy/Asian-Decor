@@ -1,0 +1,23 @@
+{
+  "type": "asiandecor:color_mixer",
+  "component": {
+    "brick_color": "red",
+    "mortar_color": "yellow"
+  },
+  "group": "dyed_bricks",
+  "ingredients": [
+    {
+      "item": "minecraft:bricks"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:yellow_dye"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "asiandecor:dyed_brick"
+  }
+}

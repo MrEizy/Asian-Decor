@@ -1,10 +1,10 @@
-// 1.21.1	2026-02-23T15:08:18.4122555	Block States: asiandecor
-f8cf87935696c88120f24514323b00b047a58fbc assets/asiandecor/blockstates/brick_mixer.json
+// 1.21.1	2026-02-24T11:48:32.1907904	Block States: asiandecor
+1181c170bf21bcffde8961bf46630efcf4557eaa assets/asiandecor/blockstates/color_mixer.json
 d0eefb0b3ef4507491c796addaed15107401d773 assets/asiandecor/blockstates/preview_block.json
 ca6f3df54515580e79e0191dd24ea7f61334f87a assets/asiandecor/blockstates/shape_maker.json
-2cfa8ce4fcea6985eb937e5503f6d05e1ce32560 assets/asiandecor/models/block/brick_mixer.json
+6566dcf4338c3fec51608acf80c2a5a597a2c732 assets/asiandecor/models/block/color_mixer.json
 d6a567cdb5f347eac5c926940df2b9b910d30439 assets/asiandecor/models/block/preview_block.json
 283f5795ac1ab2010332d558cf1b70746a6a138c assets/asiandecor/models/block/shape_maker.json
-1192c71cf1499bc85e6743c0004a0c6c0fb12202 assets/asiandecor/models/item/brick_mixer.json
+5beddfd0583aaec195554d522fa854b5be40a88d assets/asiandecor/models/item/color_mixer.json
 fd87b6374187f51368930c9872c4f65ffd017f82 assets/asiandecor/models/item/preview_block.json
 cb0fbb730918f1bd3dbe4dc661cd6c9e78d2c907 assets/asiandecor/models/item/shape_maker.json

@@ -20,7 +20,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         dropSelf(ModBlocks.CARPENTER.get());
         dropSelf(ModBlocks.SHAPE_MAKER.get());
-        dropSelf(ModBlocks.BRICK_MIXER.get());
+        dropSelf(ModBlocks.COLOR_MIXER.get());
 
         dropSelf(ModBlocks.WINGED_TABLE.get());
         dropSelf(ModBlocks.DYED_BRICK.get());

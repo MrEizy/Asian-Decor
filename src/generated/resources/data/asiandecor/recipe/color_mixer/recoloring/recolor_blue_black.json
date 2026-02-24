@@ -1,0 +1,23 @@
+{
+  "type": "asiandecor:color_mixer",
+  "component": {
+    "brick_color": "blue",
+    "mortar_color": "black"
+  },
+  "group": "dyed_bricks_recolor",
+  "ingredients": [
+    {
+      "item": "asiandecor:dyed_brick"
+    },
+    {
+      "item": "minecraft:blue_dye"
+    },
+    {
+      "item": "minecraft:black_dye"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "asiandecor:dyed_brick"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "asiandecor:color_mixer",
+  "component": {
+    "brick_color": "gray",
+    "mortar_color": "purple"
+  },
+  "group": "dyed_bricks_recolor",
+  "ingredients": [
+    {
+      "item": "asiandecor:dyed_brick"
+    },
+    {
+      "item": "minecraft:gray_dye"
+    },
+    {
+      "item": "minecraft:purple_dye"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "asiandecor:dyed_brick"
+  }
+}

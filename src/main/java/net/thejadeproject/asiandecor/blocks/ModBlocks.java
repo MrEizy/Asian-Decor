@@ -12,7 +12,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
-import net.thejadeproject.asiandecor.blocks.custom.BrickMixerBlock;
+import net.thejadeproject.asiandecor.blocks.custom.ColorMixerBlock;
 import net.thejadeproject.asiandecor.blocks.custom.CarpenterBlock;
 import net.thejadeproject.asiandecor.blocks.custom.DyedBrickBlock;
 import net.thejadeproject.asiandecor.blocks.custom.ShapeMakerBlock;
@@ -39,8 +39,8 @@ public class ModBlocks {
                     .strength(3.0f)
                     .requiresCorrectToolForDrops()));
 
-    public static final DeferredBlock<Block> BRICK_MIXER = registerBlock("brick_mixer",
-            () -> new BrickMixerBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<Block> COLOR_MIXER = registerBlock("color_mixer",
+            () -> new ColorMixerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5F)

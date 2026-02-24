@@ -11,7 +11,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.thejadeproject.asiandecor.AsianDecor;
-import net.thejadeproject.asiandecor.datagen.builders.BrickMixerRecipeBuilder;
+import net.thejadeproject.asiandecor.datagen.builders.ColorMixerRecipeBuilder;
 import net.thejadeproject.asiandecor.recipe.CarpenterRecipes;
 
 import java.util.concurrent.CompletableFuture;
@@ -25,8 +25,13 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     @Override
     protected void buildRecipes(RecipeOutput recipeOutput) {
         generateCarpenterRecipes(recipeOutput);
-        generateBrickMixerRecipes(recipeOutput);
+        generateColorMixerRecipes(recipeOutput);
     }
+
+    private void generateColorMixerRecipes(RecipeOutput output) {
+        ColorMixerRecipeBuilder.generateAllRecipes(output);
+    }
+
 
     private void generateCarpenterRecipes(RecipeOutput output) {
         // ========== OAK ==========
@@ -222,11 +227,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         carpenter(output, Blocks.STRIPPED_WARPED_HYPHAE, Blocks.WARPED_PLANKS, 1, 6, "stripped_warped_hyphae_to_planks");
         carpenter(output, Blocks.WARPED_STEM, Blocks.WARPED_HYPHAE, 1, 2, "warped_stem_to_hyphae");
         carpenter(output, Blocks.STRIPPED_WARPED_STEM, Blocks.STRIPPED_WARPED_HYPHAE, 1, 2, "stripped_warped_stem_to_stripped_hyphae");
-    }
-
-
-    private void generateBrickMixerRecipes(RecipeOutput output) {
-        BrickMixerRecipeBuilder.generateAllRecipes(output);
     }
 
     private void carpenter(RecipeOutput output, ItemLike input, ItemLike result,

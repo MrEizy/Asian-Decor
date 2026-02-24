@@ -1,7 +1,6 @@
 package net.thejadeproject.asiandecor;
 
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.thejadeproject.asiandecor.blocks.ModBlocks;
@@ -13,7 +12,7 @@ import net.thejadeproject.asiandecor.items.ModItems;
 import net.thejadeproject.asiandecor.network.ModNetwork;
 import net.thejadeproject.asiandecor.recipe.ModRecipes;
 import net.thejadeproject.asiandecor.screen.ModMenuTypes;
-import net.thejadeproject.asiandecor.screen.custom.BrickMixerScreen;
+import net.thejadeproject.asiandecor.screen.custom.ColorMixerScreen;
 import net.thejadeproject.asiandecor.screen.custom.CarpenterScreen;
 import net.thejadeproject.asiandecor.screen.custom.PouchScreen;
 import net.thejadeproject.asiandecor.screen.custom.ShapeMakerScreen;
@@ -98,7 +97,7 @@ public class AsianDecor {
             event.register(ModMenuTypes.CARPENTER.get(), CarpenterScreen::new);
             event.register(ModMenuTypes.POUCH_MENU.get(), PouchScreen::new);
             event.register(ModMenuTypes.SHAPE_MAKER.get(), ShapeMakerScreen::new);
-            event.register(ModMenuTypes.BRICK_MIXER.get(), BrickMixerScreen::new);
+            event.register(ModMenuTypes.COLOR_MIXER.get(), ColorMixerScreen::new);
         }
 
 
@@ -134,6 +133,19 @@ public class AsianDecor {
                 return color.getTextureDiffuseColor();
 
             }, ModBlocks.DYED_BRICK.get().asItem());
+
+
+            event.register((stack, tintIndex) -> {
+                var data = stack.get(ModDataComponents.COLOR_MIXER_DATA.get());
+                if (data == null) return 0xFFFFFF;
+
+                DyeColor color = switch (tintIndex) {
+                    case 0 -> data.primaryColor();
+                    case 1 -> data.secondaryColor();
+                    default -> DyeColor.WHITE;
+                };
+                return color.getTextureDiffuseColor();
+            }, ModItems.DYED_BRICK.get()); // Or a generic colorable block item
         }
 
 

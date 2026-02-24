@@ -21,10 +21,10 @@ public class ModBlockEntities {
                             ModBlocks.SHAPE_MAKER.get()
                     ).build(null));
 
-    public static final Supplier<BlockEntityType<BrickMixerBlockEntity>> BRICK_MIXER =
-            BLOCK_ENTITIES.register("brick_mixer", () -> BlockEntityType.Builder.of(
-                    BrickMixerBlockEntity::new,
-                    ModBlocks.BRICK_MIXER.get()
+    public static final Supplier<BlockEntityType<ColorMixerBlockEntity>> COLOR_MIXER =
+            BLOCK_ENTITIES.register("color_mixer", () -> BlockEntityType.Builder.of(
+                    ColorMixerBlockEntity::new,
+                    ModBlocks.COLOR_MIXER.get()
             ).build(null));
 
 
