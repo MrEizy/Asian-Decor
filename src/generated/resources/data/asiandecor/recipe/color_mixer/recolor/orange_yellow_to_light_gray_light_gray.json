@@ -1,0 +1,19 @@
+{
+  "type": "asiandecor:color_mixer",
+  "group": "dyed_bricks",
+  "ingredients": [
+    {
+      "item": "asiandecor:dyed_brick_orange_yellow"
+    },
+    {
+      "item": "minecraft:light_gray_dye"
+    },
+    {
+      "item": "minecraft:light_gray_dye"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "asiandecor:dyed_brick_light_gray_light_gray"
+  }
+}

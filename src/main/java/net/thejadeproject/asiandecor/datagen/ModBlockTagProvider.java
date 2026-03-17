@@ -22,6 +22,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.CARPENTER.get())
                 .add(ModBlocks.WINGED_TABLE.get());
 
+        var pickaxeBuilder = tag(BlockTags.MINEABLE_WITH_PICKAXE);
+        ModBlocks.DYED_BRICKS.values().forEach(blockDeferred ->
+                pickaxeBuilder.add(blockDeferred.get())
+        );
 
     }
 }

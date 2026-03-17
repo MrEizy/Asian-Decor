@@ -12,18 +12,33 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
-import net.thejadeproject.asiandecor.blocks.custom.ColorMixerBlock;
-import net.thejadeproject.asiandecor.blocks.custom.CarpenterBlock;
-import net.thejadeproject.asiandecor.blocks.custom.DyedBrickBlock;
-import net.thejadeproject.asiandecor.blocks.custom.ShapeMakerBlock;
+import net.thejadeproject.asiandecor.blocks.custom.*;
 import net.thejadeproject.asiandecor.blocks.custom.furniture.tables.WingedTableBlock;
 import net.thejadeproject.asiandecor.items.ModItems;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCK =
             DeferredRegister.createBlocks(AsianDecor.MOD_ID);
+
+    //Blocks
+
+    public static final Map<DyedBrickType, DeferredBlock<Block>> DYED_BRICKS = new HashMap<>();
+
+    static {
+        // Register all 256 dyed brick variants with custom BlockItem for tooltips
+        for (DyedBrickType type : DyedBrickType.values()) {
+            String name = "dyed_brick_" + type.getSerializedName();
+            DeferredBlock<Block> block = registerDyedBrickBlock(name, type);
+            DYED_BRICKS.put(type, block);
+        }
+    }
+
+
+
 
     public static final DeferredBlock<Block> CARPENTER = registerBlock("carpenterblock",
             () -> new CarpenterBlock(BlockBehaviour.Properties.of()
@@ -69,12 +84,23 @@ public class ModBlocks {
                     .replaceable()
             ));
 
-    public static final DeferredBlock<Block> DYED_BRICK = registerBlockWithoutItem("dyed_brick",
-            () -> new DyedBrickBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .requiresCorrectToolForDrops()
-                    .strength(2.0F, 6.0F)
-                    .sound(SoundType.STONE)));
+    private static DeferredBlock<Block> registerDyedBrickBlock(String name, DyedBrickType type) {
+        DeferredBlock<Block> deferredBlock = BLOCK.register(name,
+                () -> new Block(BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.STONE)
+                        .requiresCorrectToolForDrops()
+                        .strength(2.0F, 6.0F)
+                        .sound(SoundType.STONE)));
+
+        // Register custom BlockItem with type for tooltips
+        ModItems.ITEMS.register(name, () -> new DyedBrickBlockItem(
+                deferredBlock.get(),
+                new Item.Properties(),
+                type
+        ));
+
+        return deferredBlock;
+    }
 
 
 

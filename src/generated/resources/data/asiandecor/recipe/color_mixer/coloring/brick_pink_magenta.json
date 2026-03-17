@@ -1,9 +1,5 @@
 {
   "type": "asiandecor:color_mixer",
-  "component": {
-    "brick_color": "pink",
-    "mortar_color": "magenta"
-  },
   "group": "dyed_bricks",
   "ingredients": [
     {
@@ -18,6 +14,6 @@
   ],
   "result": {
     "count": 8,
-    "id": "asiandecor:dyed_brick"
+    "id": "asiandecor:dyed_brick_pink_magenta"
   }
 }

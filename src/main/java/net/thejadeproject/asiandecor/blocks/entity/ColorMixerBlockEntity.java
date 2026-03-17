@@ -1,3 +1,4 @@
+// ColorMixerBlockEntity.java
 package net.thejadeproject.asiandecor.blocks.entity;
 
 import net.minecraft.core.BlockPos;
@@ -18,8 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.thejadeproject.asiandecor.component.DyedBrickData;
-import net.thejadeproject.asiandecor.component.ModDataComponents;
 import net.thejadeproject.asiandecor.recipe.ColorMixerRecipe;
 import net.thejadeproject.asiandecor.recipe.ModRecipes;
 import net.thejadeproject.asiandecor.screen.custom.ColorMixerMenu;
@@ -80,6 +79,16 @@ public class ColorMixerBlockEntity extends BlockEntity implements MenuProvider {
     public void tick(Level level, BlockPos pos, BlockState state) {
         if (level.isClientSide) return;
 
+        // Check if result slot is full - if so, stop/pause crafting
+        if (isResultSlotFull()) {
+            // Reset progress if we were processing but result became full
+            if (isProcessing || progress > 0) {
+                progress = 0;
+                isProcessing = false;
+                setChanged();
+            }
+            return; // Stop here - can't craft until result is taken out
+        }
 
         Optional<ColorMixerRecipe> recipeOpt = getCurrentRecipe();
 
@@ -89,6 +98,16 @@ public class ColorMixerBlockEntity extends BlockEntity implements MenuProvider {
             DyeColor secondary = getSecondaryDyeColor();
 
             if (recipe.canCraft(itemHandler.getStackInSlot(SLOT_BASE), primary, secondary)) {
+                // Double-check result slot has space before starting/processing
+                if (!canFitResult(recipe, primary, secondary)) {
+                    if (isProcessing || progress > 0) {
+                        progress = 0;
+                        isProcessing = false;
+                        setChanged();
+                    }
+                    return;
+                }
+
                 if (!isProcessing) {
                     isProcessing = true;
                     totalProgress = recipe.getProcessingTime();
@@ -121,13 +140,43 @@ public class ColorMixerBlockEntity extends BlockEntity implements MenuProvider {
         }
     }
 
+    /**
+     * Check if result slot is completely full (at max stack size)
+     */
+    private boolean isResultSlotFull() {
+        ItemStack resultStack = itemHandler.getStackInSlot(SLOT_RESULT);
+        if (resultStack.isEmpty()) {
+            return false; // Empty slot, not full
+        }
+        return resultStack.getCount() >= resultStack.getMaxStackSize();
+    }
+
+    /**
+     * Check if the recipe result can fit in the result slot
+     */
+    private boolean canFitResult(ColorMixerRecipe recipe, DyeColor primary, DyeColor secondary) {
+        ItemStack result = recipe.assembleWithDyes(primary, secondary);
+        ItemStack currentResult = itemHandler.getStackInSlot(SLOT_RESULT);
+
+        if (currentResult.isEmpty()) {
+            return true; // Empty slot, can always fit
+        }
+
+        // Check if same item and has space
+        if (ItemStack.isSameItemSameComponents(currentResult, result)) {
+            int newCount = currentResult.getCount() + result.getCount();
+            return newCount <= currentResult.getMaxStackSize();
+        }
+
+        return false; // Different item, can't fit
+    }
+
     private Optional<ColorMixerRecipe> getCurrentRecipe() {
         if (level == null) return Optional.empty();
 
         ItemStack baseStack = itemHandler.getStackInSlot(SLOT_BASE);
         DyeColor primary = getPrimaryDyeColor();
         DyeColor secondary = getSecondaryDyeColor();
-
 
         if (baseStack.isEmpty()) {
             return Optional.empty();

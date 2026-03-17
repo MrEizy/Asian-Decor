@@ -8,54 +8,58 @@ import net.minecraft.world.entity.player.Inventory;
 import net.thejadeproject.asiandecor.AsianDecor;
 
 public class ColorMixerScreen extends AbstractContainerScreen<ColorMixerMenu> {
-    private static final ResourceLocation BG_LOCATION =
+    private static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(AsianDecor.MOD_ID, "textures/gui/container/color_mixer.png");
 
     // Progress sprite location (points to assets/asiandecor/textures/gui/sprites/color_mixer/mixer_progress.png)
     private static final ResourceLocation PROGRESS_SPRITE =
             ResourceLocation.fromNamespaceAndPath(AsianDecor.MOD_ID, "textures/gui/sprites/color_mixer/mixer_progress.png");
 
-    // Arrow position in GUI (where the empty arrow background is)
-    private static final int ARROW_X = 93;
-    private static final int ARROW_Y = 33;
-    private static final int ARROW_WIDTH = 22;
-    private static final int ARROW_HEIGHT = 16;
+    private static final int ARROW_X = 92;      // Screen X position of arrow
+    private static final int ARROW_Y = 33;      // Screen Y position of arrow
+    private static final int ARROW_WIDTH = 24;  // Arrow width
+    private static final int ARROW_HEIGHT = 17; // Arrow height
+
+    private static final int ARROW_TEXTURE_X = 190;   // X in PNG where arrow starts
+    private static final int ARROW_TEXTURE_Y = 11;     // Y in PNG where arrow starts
 
     public ColorMixerScreen(ColorMixerMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        --this.titleLabelY;
+        this.imageWidth = 176;
+        this.imageHeight = 166;
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        int i = this.leftPos;
-        int j = this.topPos;
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        // Render background
+        graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
-        // Background texture (contains the empty arrow at 93, 33)
-        guiGraphics.blit(BG_LOCATION, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        // Render progress arrow
+        int progress = this.menu.getProgress(); // 0-100 or whatever scale
+        int arrowWidth = (int) ((progress / 100.0) * ARROW_WIDTH);
 
-        // Render progress arrow fill using sprite
-        float progress = this.menu.getProgressPercent();
-        if (progress > 0) {
-            int fillWidth = (int) (ARROW_WIDTH * progress);
-            if (fillWidth > 0) {
-                // Draw partial sprite - only the filled portion
-                // Parameters: sprite, spriteWidth, spriteHeight, spriteX, spriteY, screenX, screenY, width, height
-                guiGraphics.blitSprite(
-                        PROGRESS_SPRITE,
-                        ARROW_WIDTH, ARROW_HEIGHT,  // sprite texture size
-                        0, 0,                        // sprite x, y (start at top-left of sprite)
-                        i + ARROW_X, j + ARROW_Y,    // screen position
-                        fillWidth, ARROW_HEIGHT      // width to render (clipped by progress), full height
-                );
-            }
+        if (arrowWidth > 0) {
+            // Draw the filled portion of the arrow
+            graphics.blit(TEXTURE,
+                    this.leftPos + ARROW_X,           // Screen X
+                    this.topPos + ARROW_Y,            // Screen Y
+                    ARROW_TEXTURE_X,                   // Texture X (filled arrow)
+                    ARROW_TEXTURE_Y,                   // Texture Y
+                    arrowWidth,                        // Width to draw (progress-based)
+                    ARROW_HEIGHT,                      // Full height
+                    256, 256);                         // Texture file size
         }
+
+        // Optionally draw empty arrow background first if your texture has one
+        graphics.blit(TEXTURE, this.leftPos + ARROW_X, this.topPos + ARROW_Y,
+             ARROW_TEXTURE_X + ARROW_WIDTH, ARROW_TEXTURE_Y, ARROW_WIDTH, ARROW_HEIGHT, 256, 256);
     }
 
     @Override

@@ -10,8 +10,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
 import net.thejadeproject.asiandecor.blocks.ModBlocks;
-import net.thejadeproject.asiandecor.component.DyedBrickData;
-import net.thejadeproject.asiandecor.component.ModDataComponents;
+import net.thejadeproject.asiandecor.blocks.custom.DyedBrickType;
 import net.thejadeproject.asiandecor.items.ModItems;
 
 import java.util.function.Supplier;
@@ -38,7 +37,12 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.CARPENTER);
                         output.accept(ModBlocks.SHAPE_MAKER);
                         output.accept(ModBlocks.WINGED_TABLE);
-                        output.accept(ModBlocks.DYED_BRICK);
+
+
+
+                        for (DyedBrickType type : DyedBrickType.values()) {
+                            output.accept(ModBlocks.DYED_BRICKS.get(type));
+                        }
                     }).build());
 
 

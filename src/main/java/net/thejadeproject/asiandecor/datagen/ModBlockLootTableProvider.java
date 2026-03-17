@@ -23,7 +23,13 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.COLOR_MIXER.get());
 
         dropSelf(ModBlocks.WINGED_TABLE.get());
-        dropSelf(ModBlocks.DYED_BRICK.get());
+
+
+
+
+        ModBlocks.DYED_BRICKS.values().forEach(blockDeferred ->
+                dropSelf(blockDeferred.get())
+        );
 
 
     }

@@ -18,8 +18,8 @@ import net.thejadeproject.asiandecor.recipe.CarpenterRecipes;
 
 public class CarpenterRecipeCategory implements IRecipeCategory<CarpenterRecipes> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(AsianDecor.MOD_ID,
-            "textures/gui/container/carpenter.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
+            AsianDecor.MOD_ID, "textures/gui/container/carpenter.png");
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -35,21 +35,19 @@ public class CarpenterRecipeCategory implements IRecipeCategory<CarpenterRecipes
 
     @Override
     public RecipeType<CarpenterRecipes> getRecipeType() {
-        return CarpenterJEIPlugin.RECIPE_TYPE;
+        return JEIPlugin.CARPENTER_RECIPE_TYPE;
     }
 
     @Override
     public Component getTitle() {
-        return Component.translatable("container.asiandecor.carpenter");
+        return Component.translatable("jei.category.asiandecor.carpenter");
     }
-
 
     @Override
     public IDrawable getIcon() {
         return icon;
     }
 
-    // MUST OVERRIDE THESE METHODS
     @Override
     public int getWidth() {
         return this.width;

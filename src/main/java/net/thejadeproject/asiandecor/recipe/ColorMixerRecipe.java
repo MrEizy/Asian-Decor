@@ -16,23 +16,19 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
-import net.thejadeproject.asiandecor.component.DyedBrickData;
-import net.thejadeproject.asiandecor.component.ModDataComponents;
 
 public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
     private final String group;
     private final NonNullList<Ingredient> ingredients;
     private final ItemStack result;
     private final int processingTime;
-    private final DyedBrickData componentData;
 
     public ColorMixerRecipe(String group, NonNullList<Ingredient> ingredients, ItemStack result,
-                            int processingTime, DyedBrickData componentData) {
+                            int processingTime) {
         this.group = group;
         this.ingredients = ingredients;
         this.result = result;
         this.processingTime = processingTime;
-        this.componentData = componentData;
     }
 
     @Override
@@ -71,7 +67,7 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
         return ingredient.test(dyeStack);
     }
 
-    private static net.minecraft.world.item.Item getDyeItem(DyeColor color) {
+    public static net.minecraft.world.item.Item getDyeItem(DyeColor color) {
         return switch (color) {
             case WHITE -> Items.WHITE_DYE;
             case ORANGE -> Items.ORANGE_DYE;
@@ -101,24 +97,14 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
         return this.result.copy();
     }
 
+    /**
+     * Assemble the result - now just returns the pre-configured result ItemStack.
+     * The specific brick type is encoded in the result ItemStack's item ID.
+     */
     public ItemStack assembleWithDyes(DyeColor primaryDye, DyeColor secondaryDye) {
-        ItemStack result = this.result.copy();
-
-        DyeColor brickColor;
-        DyeColor mortarColor;
-
-        if (componentData != null) {
-            brickColor = componentData.brickColor();
-            mortarColor = componentData.mortarColor();
-        } else {
-            brickColor = primaryDye != null ? primaryDye : DyeColor.WHITE;
-            mortarColor = secondaryDye != null ? secondaryDye : brickColor;
-        }
-
-        DyedBrickData data = new DyedBrickData(brickColor, mortarColor);
-        result.set(ModDataComponents.BRICK_DATA.get(), data);
-
-        return result;
+        // The result already contains the correct block item (e.g., dyed_brick_red_blue)
+        // No data components needed anymore!
+        return this.result.copy();
     }
 
     @Override
@@ -148,17 +134,16 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
 
     public String getGroup() { return group; }
     public int getProcessingTime() { return processingTime; }
-    public DyedBrickData getComponentData() { return componentData; }
 
     public static class Serializer implements RecipeSerializer<ColorMixerRecipe> {
+        // Updated codec without DyedBrickData component
         public static final MapCodec<ColorMixerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Codec.STRING.optionalFieldOf("group", "").forGetter(ColorMixerRecipe::getGroup),
                 Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").forGetter(r -> java.util.List.copyOf(r.ingredients)),
                 ItemStack.CODEC.fieldOf("result").forGetter(r -> r.result),
-                Codec.INT.optionalFieldOf("processing_time", 100).forGetter(ColorMixerRecipe::getProcessingTime),
-                DyedBrickData.CODEC.optionalFieldOf("component", (DyedBrickData)null).forGetter(r -> r.componentData)
-        ).apply(instance, (group, ingredients, result, processingTime, componentData) ->
-                new ColorMixerRecipe(group, NonNullList.copyOf(ingredients), result, processingTime, componentData)));
+                Codec.INT.optionalFieldOf("processing_time", 100).forGetter(ColorMixerRecipe::getProcessingTime)
+        ).apply(instance, (group, ingredients, result, processingTime) ->
+                new ColorMixerRecipe(group, NonNullList.copyOf(ingredients), result, processingTime)));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ColorMixerRecipe> STREAM_CODEC = StreamCodec.of(
                 Serializer::toNetwork, Serializer::fromNetwork
@@ -182,10 +167,6 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
             }
             ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
             buffer.writeInt(recipe.processingTime);
-            buffer.writeBoolean(recipe.componentData != null);
-            if (recipe.componentData != null) {
-                DyedBrickData.STREAM_CODEC.encode(buffer, recipe.componentData);
-            }
         }
 
         private static ColorMixerRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
@@ -197,11 +178,7 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
             }
             ItemStack result = ItemStack.STREAM_CODEC.decode(buffer);
             int processingTime = buffer.readInt();
-            DyedBrickData componentData = null;
-            if (buffer.readBoolean()) {
-                componentData = DyedBrickData.STREAM_CODEC.decode(buffer);
-            }
-            return new ColorMixerRecipe(group, ingredients, result, processingTime, componentData);
+            return new ColorMixerRecipe(group, ingredients, result, processingTime);
         }
     }
 }

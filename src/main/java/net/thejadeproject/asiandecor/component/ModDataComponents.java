@@ -43,14 +43,6 @@ public class ModDataComponents {
                             .build()
             );
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DyedBrickData>> BRICK_DATA =
-            REGISTRAR.register("brick_data", () ->
-                    DataComponentType.<DyedBrickData>builder()
-                            .persistent(DyedBrickData.CODEC)
-                            .networkSynchronized(DyedBrickData.STREAM_CODEC)
-                            .build()
-            );
-
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ColorMixerData>> COLOR_MIXER_DATA =
             REGISTRAR.register("color_mixer_data", () ->
                     DataComponentType.<ColorMixerData>builder()

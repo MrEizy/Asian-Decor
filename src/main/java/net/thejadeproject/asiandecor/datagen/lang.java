@@ -3,6 +3,7 @@ package net.thejadeproject.asiandecor.datagen;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.thejadeproject.asiandecor.AsianDecor;
+import net.thejadeproject.asiandecor.blocks.custom.DyedBrickType;
 
 public class lang extends LanguageProvider {
     public lang(PackOutput output, String locale) {
@@ -26,7 +27,13 @@ public class lang extends LanguageProvider {
         add("block.asiandecor.brick_mixer", "Brick Mixer");
         add("block.asiandecor.preview_block", "Preview Block");
         add("block.asiandecor.shape_maker", "Shape Builder");
-        add("block.asiandecor.dyed_brick", "Dyed Bricks");
+
+
+        // All Dyed Bricks - same name for all, tooltips show the difference
+        for (DyedBrickType type : DyedBrickType.values()) {
+            String blockId = "block.asiandecor.dyed_brick_" + type.getSerializedName();
+            add(blockId, "Dyed Bricks");
+        }
 
 
         add("block.asiandecor.oak_winged_table", "Oak Winged Table");
@@ -127,6 +134,9 @@ public class lang extends LanguageProvider {
         add("emi.category.asiandecor.carpenter", "Carpenter's Table");
         add("jei.category.asiandecor.carpenter", "Carpenter's Table");
         add("rei.category.asiandecor.carpenter", "Carpenter's Table");
+
+        add("jei.category.asiandecor.color_mixer", "Color Mixer");
+        add("rei.category.asiandecor.color_mixer", "Color Mixer");
 
     }
 }

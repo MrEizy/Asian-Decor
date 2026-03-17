@@ -1,3 +1,4 @@
+// CarpenterCategory.java
 package net.thejadeproject.asiandecor.compat.rei;
 
 import me.shedaniel.math.Point;
@@ -14,16 +15,16 @@ import net.thejadeproject.asiandecor.blocks.ModBlocks;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CarpenterCategory implements DisplayCategory<CarpenterREIPlugin.CarpenterDisplay> {
+public class CarpenterCategory implements DisplayCategory<REIPlugin.CarpenterDisplay> {
 
     @Override
-    public CategoryIdentifier<CarpenterREIPlugin.CarpenterDisplay> getCategoryIdentifier() {
-        return CarpenterREIPlugin.CARPENTER;
+    public CategoryIdentifier<REIPlugin.CarpenterDisplay> getCategoryIdentifier() {
+        return REIPlugin.CARPENTER;
     }
 
     @Override
     public Component getTitle() {
-        return Component.translatable("container.asiandecor.carpenter");
+        return Component.translatable("rei.category.asiandecor.carpenter");
     }
 
     @Override
@@ -32,7 +33,7 @@ public class CarpenterCategory implements DisplayCategory<CarpenterREIPlugin.Car
     }
 
     @Override
-    public List<Widget> setupDisplay(CarpenterREIPlugin.CarpenterDisplay display, Rectangle bounds) {
+    public List<Widget> setupDisplay(REIPlugin.CarpenterDisplay display, Rectangle bounds) {
         Point startPoint = new Point(bounds.getCenterX() - 50, bounds.getCenterY() - 27);
         List<Widget> widgets = new ArrayList<>();
 

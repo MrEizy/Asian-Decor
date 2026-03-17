@@ -5,12 +5,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.thejadeproject.asiandecor.blocks.ModBlocks;
 import net.thejadeproject.asiandecor.blocks.entity.ColorMixerBlockEntity;
-import net.thejadeproject.asiandecor.items.ModItems;
 import net.thejadeproject.asiandecor.screen.ModMenuTypes;
 
 public class ColorMixerMenu extends AbstractContainerMenu {
@@ -69,16 +67,23 @@ public class ColorMixerMenu extends AbstractContainerMenu {
             }
         });
 
-        // Result slot - cannot place items in
+        // Result slot - CANNOT place items in, but CAN ALWAYS pickup (even while processing)
         this.addSlot(new SlotItemHandler(entity.itemHandler, SLOT_RESULT, RESULT_SLOT_X, RESULT_SLOT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return false;
+                return false; // Cannot insert items
             }
 
             @Override
             public boolean mayPickup(Player player) {
-                return !isProcessing();
+                return true; // ALWAYS allow pickup, even while crafting
+            }
+
+            @Override
+            public void onTake(Player player, ItemStack stack) {
+                super.onTake(player, stack);
+                // Optional: Reset progress when output is taken
+                // blockEntity.resetProgress();
             }
         });
 
@@ -116,11 +121,21 @@ public class ColorMixerMenu extends AbstractContainerMenu {
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
 
-        if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
+        // Check if clicking the result slot (slot index 3 in TE inventory)
+        if (index == TE_INVENTORY_FIRST_SLOT_INDEX + SLOT_RESULT) {
+            // Move from result slot to player inventory (ALLOWED even while processing)
+            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, true)) {
+                return ItemStack.EMPTY;
+            }
+
+            sourceSlot.onQuickCraft(sourceStack, copyOfSourceStack);
+        } else if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
+            // Player inventory to TE
             if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false)) {
                 return ItemStack.EMPTY;
             }
         } else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
+            // TE to player inventory
             if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
                 return ItemStack.EMPTY;
             }

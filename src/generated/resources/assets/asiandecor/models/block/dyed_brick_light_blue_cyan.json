@@ -1,0 +1,8 @@
+{
+  "parent": "asiandecor:block/dyed_brick_template",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "brick_base": "asiandecor:block/brick_base",
+    "mortar_overlay": "asiandecor:block/mortar_overlay"
+  }
+}

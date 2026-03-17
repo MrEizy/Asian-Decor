@@ -7,9 +7,10 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.thejadeproject.asiandecor.AsianDecor;
-import net.thejadeproject.asiandecor.component.DyedBrickData;
-import net.thejadeproject.asiandecor.items.ModItems;
+import net.thejadeproject.asiandecor.blocks.ModBlocks;
+import net.thejadeproject.asiandecor.blocks.custom.DyedBrickType;
 import net.thejadeproject.asiandecor.recipe.ColorMixerRecipe;
 
 public class ColorMixerRecipeBuilder {
@@ -20,57 +21,62 @@ public class ColorMixerRecipeBuilder {
     }
 
     private static void generateVanillaBrickRecipes(RecipeOutput output) {
-        for (DyeColor brickColor : DyeColor.values()) {
-            for (DyeColor mortarColor : DyeColor.values()) {
-                // Create list with ALL 3 ingredients explicitly
-                NonNullList<Ingredient> ingredients = NonNullList.create();
-                ingredients.add(Ingredient.of(Items.BRICKS));                   // Slot 0: Base
-                ingredients.add(Ingredient.of(getDyeItem(brickColor)));         // Slot 1: Primary dye
-                ingredients.add(Ingredient.of(getDyeItem(mortarColor)));        // Slot 2: Secondary dye
+        for (DyedBrickType type : DyedBrickType.values()) {
+            DyeColor brickColor = type.getBrickColor();
+            DyeColor mortarColor = type.getMortarColor();
 
-                ItemStack result = new ItemStack(ModItems.DYED_BRICK.get(), 8);
-                DyedBrickData componentData = new DyedBrickData(brickColor, mortarColor);
+            // Create list with ALL 3 ingredients explicitly
+            NonNullList<Ingredient> ingredients = NonNullList.create();
+            ingredients.add(Ingredient.of(Items.BRICKS));                   // Slot 0: Base
+            ingredients.add(Ingredient.of(getDyeItem(brickColor)));         // Slot 1: Primary dye (brick color)
+            ingredients.add(Ingredient.of(getDyeItem(mortarColor)));        // Slot 2: Secondary dye (mortar color)
+
+            Block resultBlock = ModBlocks.DYED_BRICKS.get(type).get();
+            ItemStack result = new ItemStack(resultBlock, 8);
+
+            ColorMixerRecipe recipe = new ColorMixerRecipe(
+                    "dyed_bricks",
+                    ingredients,
+                    result,
+                    100
+                    // Removed: null componentData parameter
+            );
+
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+                    AsianDecor.MOD_ID,
+                    "color_mixer/coloring/brick_" + type.getSerializedName()
+            );
+
+            output.accept(id, recipe, null);
+        }
+    }
+
+    private static void generateRecolorRecipes(RecipeOutput output) {
+        // For recoloring: any dyed brick + new dyes = new colored brick
+        for (DyedBrickType inputType : DyedBrickType.values()) {
+            for (DyedBrickType outputType : DyedBrickType.values()) {
+                // Skip same color recipes (no change)
+                if (inputType == outputType) continue;
+
+                NonNullList<Ingredient> ingredients = NonNullList.create();
+                ingredients.add(Ingredient.of(ModBlocks.DYED_BRICKS.get(inputType).get()));  // Slot 0: Input dyed brick
+                ingredients.add(Ingredient.of(getDyeItem(outputType.getBrickColor())));      // Slot 1: New brick color
+                ingredients.add(Ingredient.of(getDyeItem(outputType.getMortarColor())));     // Slot 2: New mortar color
+
+                Block resultBlock = ModBlocks.DYED_BRICKS.get(outputType).get();
+                ItemStack result = new ItemStack(resultBlock, 8);
 
                 ColorMixerRecipe recipe = new ColorMixerRecipe(
                         "dyed_bricks",
                         ingredients,
                         result,
-                        100,
-                        componentData
+                        100
+                        // Removed: null componentData parameter
                 );
 
                 ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
                         AsianDecor.MOD_ID,
-                        "color_mixer/coloring/brick_" + brickColor.getName() + "_" + mortarColor.getName()
-                );
-
-                output.accept(id, recipe, null);
-            }
-        }
-    }
-
-    private static void generateRecolorRecipes(RecipeOutput output) {
-        for (DyeColor brickColor : DyeColor.values()) {
-            for (DyeColor mortarColor : DyeColor.values()) {
-                NonNullList<Ingredient> ingredients = NonNullList.create();
-                ingredients.add(Ingredient.of(ModItems.DYED_BRICK.get()));      // Slot 0: Base (dyed brick)
-                ingredients.add(Ingredient.of(getDyeItem(brickColor)));         // Slot 1: Primary dye
-                ingredients.add(Ingredient.of(getDyeItem(mortarColor)));        // Slot 2: Secondary dye
-
-                ItemStack result = new ItemStack(ModItems.DYED_BRICK.get(), 8);
-                DyedBrickData componentData = new DyedBrickData(brickColor, mortarColor);
-
-                ColorMixerRecipe recipe = new ColorMixerRecipe(
-                        "dyed_bricks_recolor",
-                        ingredients,
-                        result,
-                        100,
-                        componentData
-                );
-
-                ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
-                        AsianDecor.MOD_ID,
-                        "color_mixer/recoloring/recolor_" + brickColor.getName() + "_" + mortarColor.getName()
+                        "color_mixer/recolor/" + inputType.getSerializedName() + "_to_" + outputType.getSerializedName()
                 );
 
                 output.accept(id, recipe, null);
