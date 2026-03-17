@@ -295,6 +295,7 @@
   "message.asiandecor.trowel.no_blocks": "§cNo blocks available!",
   "message.asiandecor.trowel.pouch_linked": "§aTrowel linked to Block Pouch!",
   "rei.category.asiandecor.carpenter": "Carpenter's Table",
+  "rei.category.asiandecor.color_mixer": "Color Mixer",
   "tooltip.asiandecor.block_pouch.count": "Count: %s",
   "tooltip.asiandecor.block_pouch.empty": "Empty",
   "tooltip.asiandecor.block_pouch.selected": "Selected: %s",
