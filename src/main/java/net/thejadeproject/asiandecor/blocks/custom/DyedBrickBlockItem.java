@@ -23,6 +23,13 @@ public class DyedBrickBlockItem extends BlockItem {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
+        // Brick color line with actual color
+        MutableComponent brickText = Component.literal("Brick: ")
+                .withStyle(ChatFormatting.GRAY);
+        MutableComponent brickColorName = Component.literal(formatColorName(type.getBrickColor()))
+                .withStyle(getColorFormatting(type.getBrickColor()));
+        tooltipComponents.add(brickText.append(brickColorName));
+
         // Mortar color line with actual color
         MutableComponent mortarText = Component.literal("Mortar: ")
                 .withStyle(ChatFormatting.GRAY);
@@ -30,12 +37,6 @@ public class DyedBrickBlockItem extends BlockItem {
                 .withStyle(getColorFormatting(type.getMortarColor()));
         tooltipComponents.add(mortarText.append(mortarColorName));
 
-        // Brick color line with actual color
-        MutableComponent brickText = Component.literal("Brick: ")
-                .withStyle(ChatFormatting.GRAY);
-        MutableComponent brickColorName = Component.literal(formatColorName(type.getBrickColor()))
-                .withStyle(getColorFormatting(type.getBrickColor()));
-        tooltipComponents.add(brickText.append(brickColorName));
     }
 
     private String formatColorName(net.minecraft.world.item.DyeColor color) {
