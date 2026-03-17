@@ -7,6 +7,8 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.thejadeproject.asiandecor.AsianDecor;
 import net.thejadeproject.asiandecor.blocks.ModBlocks;
+import net.thejadeproject.asiandecor.blocks.custom.DyedBrickType;
+import net.thejadeproject.asiandecor.util.ModTags;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
@@ -27,5 +29,9 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 pickaxeBuilder.add(blockDeferred.get())
         );
 
+        var dyedBrickBlocksBuilder = tag(ModTags.Blocks.DYED_BRICK_BLOCKS);
+        for (DyedBrickType type : DyedBrickType.values()) {
+            dyedBrickBlocksBuilder.add(ModBlocks.DYED_BRICKS.get(type).get());
+        }
     }
 }

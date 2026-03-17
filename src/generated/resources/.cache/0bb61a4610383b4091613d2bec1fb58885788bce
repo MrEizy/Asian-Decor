@@ -1,3 +1,4 @@
-// 1.21.1	2026-03-17T18:38:01.3620421	Tags for minecraft:block mod id asiandecor
+// 1.21.1	2026-03-17T21:25:37.6335282	Tags for minecraft:block mod id asiandecor
+4c5e3fd9352e1a886b93ab6324e8d66b2fdd421b data/asiandecor/tags/block/dyed_brick_blocks.json
 39f7c86402be9bc1f0862b6eec80445b6808a7dd data/minecraft/tags/block/mineable/axe.json
-abb5f3d8dada648bb3cf4488dcbf24f9b46ea175 data/minecraft/tags/block/mineable/pickaxe.json
+3677f50d0d488cb56b2bff4bcc5e01a1b1b16037 data/minecraft/tags/block/mineable/pickaxe.json

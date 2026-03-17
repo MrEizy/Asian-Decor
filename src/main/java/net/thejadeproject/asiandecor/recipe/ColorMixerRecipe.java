@@ -1,3 +1,4 @@
+// ColorMixerRecipe.java
 package net.thejadeproject.asiandecor.recipe;
 
 import com.mojang.serialization.Codec;
@@ -8,6 +9,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -16,6 +18,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
+import net.thejadeproject.asiandecor.AsianDecor;
+import net.thejadeproject.asiandecor.blocks.ModBlocks;
+import net.thejadeproject.asiandecor.blocks.custom.DyedBrickType;
 
 public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
     private final String group;
@@ -45,47 +50,25 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
             return false;
         }
 
+        // Check primary dye slot accepts the dye (for tag-based ingredients)
         if (ingredients.size() > 1) {
             if (primaryDye == null) return false;
-            if (!matchesDyeIngredient(ingredients.get(1), primaryDye)) {
+            ItemStack primaryDyeStack = new ItemStack(getDyeItem(primaryDye));
+            if (!ingredients.get(1).test(primaryDyeStack)) {
                 return false;
             }
         }
 
+        // Check secondary dye slot accepts the dye
         if (ingredients.size() > 2) {
             if (secondaryDye == null) return false;
-            if (!matchesDyeIngredient(ingredients.get(2), secondaryDye)) {
+            ItemStack secondaryDyeStack = new ItemStack(getDyeItem(secondaryDye));
+            if (!ingredients.get(2).test(secondaryDyeStack)) {
                 return false;
             }
         }
 
         return true;
-    }
-
-    private boolean matchesDyeIngredient(Ingredient ingredient, DyeColor dyeColor) {
-        ItemStack dyeStack = new ItemStack(getDyeItem(dyeColor));
-        return ingredient.test(dyeStack);
-    }
-
-    public static net.minecraft.world.item.Item getDyeItem(DyeColor color) {
-        return switch (color) {
-            case WHITE -> Items.WHITE_DYE;
-            case ORANGE -> Items.ORANGE_DYE;
-            case MAGENTA -> Items.MAGENTA_DYE;
-            case LIGHT_BLUE -> Items.LIGHT_BLUE_DYE;
-            case YELLOW -> Items.YELLOW_DYE;
-            case LIME -> Items.LIME_DYE;
-            case PINK -> Items.PINK_DYE;
-            case GRAY -> Items.GRAY_DYE;
-            case LIGHT_GRAY -> Items.LIGHT_GRAY_DYE;
-            case CYAN -> Items.CYAN_DYE;
-            case PURPLE -> Items.PURPLE_DYE;
-            case BLUE -> Items.BLUE_DYE;
-            case BROWN -> Items.BROWN_DYE;
-            case GREEN -> Items.GREEN_DYE;
-            case RED -> Items.RED_DYE;
-            case BLACK -> Items.BLACK_DYE;
-        };
     }
 
     public int getBaseCount() {
@@ -98,13 +81,29 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
     }
 
     /**
-     * Assemble the result - now just returns the pre-configured result ItemStack.
-     * The specific brick type is encoded in the result ItemStack's item ID.
+     * Assemble result dynamically based on dye colors
      */
     public ItemStack assembleWithDyes(DyeColor primaryDye, DyeColor secondaryDye) {
-        // The result already contains the correct block item (e.g., dyed_brick_red_blue)
-        // No data components needed anymore!
+        if (primaryDye != null && secondaryDye != null) {
+            DyedBrickType resultType = DyedBrickType.fromColors(primaryDye, secondaryDye);
+            return new ItemStack(ModBlocks.DYED_BRICKS.get(resultType).get(), 8);
+        }
+        // Fallback to placeholder
         return this.result.copy();
+    }
+
+    /**
+     * Check if this is the vanilla brick recipe
+     */
+    public boolean isVanillaRecipe() {
+        return "dyed_bricks_vanilla".equals(this.group);
+    }
+
+    /**
+     * Check if this is the recolor recipe
+     */
+    public boolean isRecolorRecipe() {
+        return "dyed_bricks_recolor".equals(this.group);
     }
 
     @Override
@@ -135,8 +134,28 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
     public String getGroup() { return group; }
     public int getProcessingTime() { return processingTime; }
 
+    public static net.minecraft.world.item.Item getDyeItem(DyeColor color) {
+        return switch (color) {
+            case WHITE -> Items.WHITE_DYE;
+            case ORANGE -> Items.ORANGE_DYE;
+            case MAGENTA -> Items.MAGENTA_DYE;
+            case LIGHT_BLUE -> Items.LIGHT_BLUE_DYE;
+            case YELLOW -> Items.YELLOW_DYE;
+            case LIME -> Items.LIME_DYE;
+            case PINK -> Items.PINK_DYE;
+            case GRAY -> Items.GRAY_DYE;
+            case LIGHT_GRAY -> Items.LIGHT_GRAY_DYE;
+            case CYAN -> Items.CYAN_DYE;
+            case PURPLE -> Items.PURPLE_DYE;
+            case BLUE -> Items.BLUE_DYE;
+            case BROWN -> Items.BROWN_DYE;
+            case GREEN -> Items.GREEN_DYE;
+            case RED -> Items.RED_DYE;
+            case BLACK -> Items.BLACK_DYE;
+        };
+    }
+
     public static class Serializer implements RecipeSerializer<ColorMixerRecipe> {
-        // Updated codec without DyedBrickData component
         public static final MapCodec<ColorMixerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Codec.STRING.optionalFieldOf("group", "").forGetter(ColorMixerRecipe::getGroup),
                 Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").forGetter(r -> java.util.List.copyOf(r.ingredients)),
