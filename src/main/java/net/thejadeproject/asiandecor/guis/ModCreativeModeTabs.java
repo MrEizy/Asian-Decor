@@ -28,6 +28,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BLUEPRINT);
                         output.accept(ModItems.TAPE_MEASURE);
                         output.accept(ModItems.TROWEL);
+                        output.accept(ModItems.HANDHELD_FILLER);
                     }).build());
 
     public static final Supplier<CreativeModeTab> ASIAN_DECOR_WOOD = CREATIVE_MODE_TAB.register("asiandecor_blocks",

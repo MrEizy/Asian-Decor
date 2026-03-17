@@ -80,29 +80,8 @@ public class ColorMixerBlockEntity extends BlockEntity implements MenuProvider {
     public void tick(Level level, BlockPos pos, BlockState state) {
         if (level.isClientSide) return;
 
-        // DEBUG: Print slot contents every 20 ticks (1 second)
-        if (level.getGameTime() % 20 == 0) {
-            System.out.println("=== ColorMixer Debug ===");
-            System.out.println("Base slot: " + itemHandler.getStackInSlot(SLOT_BASE));
-            System.out.println("Primary dye slot: " + itemHandler.getStackInSlot(SLOT_PRIMARY_DYE));
-            System.out.println("Secondary dye slot: " + itemHandler.getStackInSlot(SLOT_SECONDARY_DYE));
-            System.out.println("Primary color: " + getPrimaryDyeColor());
-            System.out.println("Secondary color: " + getSecondaryDyeColor());
-            System.out.println("Progress: " + progress + " Processing: " + isProcessing);
-        }
 
         Optional<ColorMixerRecipe> recipeOpt = getCurrentRecipe();
-
-        // DEBUG: Print recipe search result
-        if (level.getGameTime() % 20 == 0) {
-            System.out.println("Recipe found: " + recipeOpt.isPresent());
-            if (recipeOpt.isPresent()) {
-                ColorMixerRecipe recipe = recipeOpt.get();
-                System.out.println("Recipe ingredients: " + recipe.getIngredients().size());
-                System.out.println("Can craft: " + recipe.canCraft(itemHandler.getStackInSlot(SLOT_BASE), getPrimaryDyeColor(), getSecondaryDyeColor()));
-            }
-            System.out.println("========================");
-        }
 
         if (recipeOpt.isPresent()) {
             ColorMixerRecipe recipe = recipeOpt.get();
@@ -149,28 +128,22 @@ public class ColorMixerBlockEntity extends BlockEntity implements MenuProvider {
         DyeColor primary = getPrimaryDyeColor();
         DyeColor secondary = getSecondaryDyeColor();
 
-        System.out.println("Looking for recipe with base: " + baseStack + " primary: " + primary + " secondary: " + secondary);
 
         if (baseStack.isEmpty()) {
-            System.out.println("Base stack empty, returning empty");
             return Optional.empty();
         }
 
         var recipes = level.getRecipeManager().getAllRecipesFor(ModRecipes.COLOR_MIXER_TYPE.get());
-        System.out.println("Total color mixer recipes: " + recipes.size());
 
         for (var holder : recipes) {
             ColorMixerRecipe recipe = holder.value();
             boolean baseMatches = !recipe.getIngredients().isEmpty() && recipe.getIngredients().get(0).test(baseStack);
-            System.out.println("Checking recipe: baseMatches=" + baseMatches + " ingredients=" + recipe.getIngredients().size());
 
             if (baseMatches && recipe.canCraft(baseStack, primary, secondary)) {
-                System.out.println("Found matching recipe!");
                 return Optional.of(recipe);
             }
         }
 
-        System.out.println("No matching recipe found");
         return Optional.empty();
     }
 

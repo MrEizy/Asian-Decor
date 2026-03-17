@@ -6,11 +6,10 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.thejadeproject.asiandecor.AsianDecor;
 import net.thejadeproject.asiandecor.blocks.ModBlocks;
+import net.thejadeproject.asiandecor.component.HandheldFillerData;
+import net.thejadeproject.asiandecor.component.ModDataComponents;
 import net.thejadeproject.asiandecor.items.blockitem.DyedBrickBlockItem;
-import net.thejadeproject.asiandecor.items.buildersgadgets.BlockPouchItem;
-import net.thejadeproject.asiandecor.items.buildersgadgets.BlueprintItem;
-import net.thejadeproject.asiandecor.items.buildersgadgets.TapeMeasureItem;
-import net.thejadeproject.asiandecor.items.buildersgadgets.TrowelItem;
+import net.thejadeproject.asiandecor.items.buildersgadgets.*;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(AsianDecor.MOD_ID);
@@ -31,6 +30,12 @@ public class ModItems {
 
     public static final DeferredItem<Item> DYED_BRICK = ITEMS.register("dyed_brick",
             () -> new DyedBrickBlockItem(ModBlocks.DYED_BRICK.get(), new Item.Properties()));
+
+
+    public static final DeferredItem<Item> HANDHELD_FILLER = ITEMS.register("handheld_filler",
+            () -> new HandheldFillerItem(new Item.Properties()
+                    .stacksTo(1)
+                    .component(ModDataComponents.HANDHELD_FILLER_DATA.get(), new HandheldFillerData())));
 
 
 

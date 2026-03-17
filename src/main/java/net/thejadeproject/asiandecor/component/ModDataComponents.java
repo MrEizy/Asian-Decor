@@ -59,6 +59,14 @@ public class ModDataComponents {
                             .build()
             );
 
+    public static final Supplier<DataComponentType<HandheldFillerData>> HANDHELD_FILLER_DATA =
+            REGISTRAR.register("handheld_filler_data", () ->
+                    DataComponentType.<HandheldFillerData>builder()
+                            .persistent(HandheldFillerData.CODEC)
+                            .networkSynchronized(HandheldFillerData.STREAM_CODEC)
+                            .build()
+            );
+
 
     public static void register(IEventBus eventBus) {
         REGISTRAR.register(eventBus);

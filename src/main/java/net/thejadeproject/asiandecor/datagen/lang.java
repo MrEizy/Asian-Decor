@@ -17,6 +17,7 @@ public class lang extends LanguageProvider {
         add("item.asiandecor.blueprint", "Blueprint");
         add("item.asiandecor.tape_measure", "Tape Measure");
         add("item.asiandecor.trowel", "Builder's Trowel");
+        add("item.asiandecor.handheld_filler", "Handheld Filler");
 
 
 
