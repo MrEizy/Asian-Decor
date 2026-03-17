@@ -1,0 +1,19 @@
+{
+  "type": "asiandecor:color_mixer",
+  "group": "dyed_bricks_vanilla",
+  "ingredients": [
+    {
+      "item": "minecraft:bricks"
+    },
+    {
+      "tag": "c:dyes"
+    },
+    {
+      "tag": "c:dyes"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "asiandecor:dyed_brick_white_white"
+  }
+}

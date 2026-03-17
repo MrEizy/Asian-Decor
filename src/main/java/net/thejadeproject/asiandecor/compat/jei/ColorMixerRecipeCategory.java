@@ -158,11 +158,5 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
             guiGraphics.drawString(font, timeText, xPos + 1, yPos + 1, 0x000000, false);
             guiGraphics.drawString(font, timeText, xPos, yPos, 0xFFFFFF, false);
         }
-
-        // Show recipe type label
-        var font = net.minecraft.client.Minecraft.getInstance().font;
-        String label = recipe.isVanillaRecipe() ? "Vanilla Bricks + Dyes" : "Any Dyed Brick + Dyes";
-        int labelWidth = font.width(label);
-        guiGraphics.drawString(font, label, (this.width - labelWidth) / 2, 5, 0xAAAAAA, false);
     }
 }
