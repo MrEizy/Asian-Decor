@@ -1,0 +1,95 @@
+{
+  "parent": "minecraft:block/slab",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#brick_base",
+          "tintindex": 0
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#brick_base",
+          "tintindex": 0
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#brick_base",
+          "tintindex": 0
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#brick_base",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#brick_base",
+          "tintindex": 0
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#brick_base",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        8,
+        16
+      ]
+    },
+    {
+      "faces": {
+        "east": {
+          "cullface": "east",
+          "texture": "#mortar_overlay",
+          "tintindex": 1
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#mortar_overlay",
+          "tintindex": 1
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#mortar_overlay",
+          "tintindex": 1
+        },
+        "up": {
+          "texture": "#mortar_overlay",
+          "tintindex": 1
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#mortar_overlay",
+          "tintindex": 1
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        8,
+        16
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "asiandecor:block/brick_base",
+    "brick_base": "asiandecor:block/brick_base",
+    "mortar_overlay": "asiandecor:block/mortar_overlay",
+    "particle": "asiandecor:block/brick_base",
+    "side": "asiandecor:block/brick_base",
+    "top": "asiandecor:block/brick_base"
+  }
+}

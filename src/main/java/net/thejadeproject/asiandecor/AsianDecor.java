@@ -102,9 +102,44 @@ public class AsianDecor {
 
         @SubscribeEvent
         public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-            // Register color handlers for all dyed brick blocks
-            // tintIndex 0 = brick color, tintIndex 1 = mortar color
+            // Register color handlers for all dyed brick FULL BLOCKS
             ModBlocks.DYED_BRICKS.forEach((type, blockDeferred) -> {
+                event.register((state, level, pos, tintIndex) -> {
+                    DyeColor color = switch (tintIndex) {
+                        case 0 -> type.getBrickColor();
+                        case 1 -> type.getMortarColor();
+                        default -> DyeColor.WHITE;
+                    };
+                    return color.getTextureDiffuseColor();
+                }, blockDeferred.get());
+            });
+
+            // Register color handlers for all dyed brick SLABS
+            ModBlocks.DYED_BRICK_SLABS.forEach((type, blockDeferred) -> {
+                event.register((state, level, pos, tintIndex) -> {
+                    DyeColor color = switch (tintIndex) {
+                        case 0 -> type.getBrickColor();
+                        case 1 -> type.getMortarColor();
+                        default -> DyeColor.WHITE;
+                    };
+                    return color.getTextureDiffuseColor();
+                }, blockDeferred.get());
+            });
+
+            // Register color handlers for all dyed brick STAIRS
+            ModBlocks.DYED_BRICK_STAIRS.forEach((type, blockDeferred) -> {
+                event.register((state, level, pos, tintIndex) -> {
+                    DyeColor color = switch (tintIndex) {
+                        case 0 -> type.getBrickColor();
+                        case 1 -> type.getMortarColor();
+                        default -> DyeColor.WHITE;
+                    };
+                    return color.getTextureDiffuseColor();
+                }, blockDeferred.get());
+            });
+
+            // Register color handlers for all dyed brick WALLS
+            ModBlocks.DYED_BRICK_WALLS.forEach((type, blockDeferred) -> {
                 event.register((state, level, pos, tintIndex) -> {
                     DyeColor color = switch (tintIndex) {
                         case 0 -> type.getBrickColor();
@@ -118,8 +153,44 @@ public class AsianDecor {
 
         @SubscribeEvent
         public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
-            // Register color handlers for all dyed brick items
+            // Full blocks
             ModBlocks.DYED_BRICKS.forEach((type, blockDeferred) -> {
+                event.register((stack, tintIndex) -> {
+                    DyeColor color = switch (tintIndex) {
+                        case 0 -> type.getBrickColor();
+                        case 1 -> type.getMortarColor();
+                        default -> DyeColor.WHITE;
+                    };
+                    return color.getTextureDiffuseColor();
+                }, blockDeferred.get().asItem());
+            });
+
+            // Slabs
+            ModBlocks.DYED_BRICK_SLABS.forEach((type, blockDeferred) -> {
+                event.register((stack, tintIndex) -> {
+                    DyeColor color = switch (tintIndex) {
+                        case 0 -> type.getBrickColor();
+                        case 1 -> type.getMortarColor();
+                        default -> DyeColor.WHITE;
+                    };
+                    return color.getTextureDiffuseColor();
+                }, blockDeferred.get().asItem());
+            });
+
+            // Stairs
+            ModBlocks.DYED_BRICK_STAIRS.forEach((type, blockDeferred) -> {
+                event.register((stack, tintIndex) -> {
+                    DyeColor color = switch (tintIndex) {
+                        case 0 -> type.getBrickColor();
+                        case 1 -> type.getMortarColor();
+                        default -> DyeColor.WHITE;
+                    };
+                    return color.getTextureDiffuseColor();
+                }, blockDeferred.get().asItem());
+            });
+
+            // Walls
+            ModBlocks.DYED_BRICK_WALLS.forEach((type, blockDeferred) -> {
                 event.register((stack, tintIndex) -> {
                     DyeColor color = switch (tintIndex) {
                         case 0 -> type.getBrickColor();

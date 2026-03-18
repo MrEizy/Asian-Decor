@@ -22,15 +22,31 @@ public class ModItemTagProvider extends ItemTagsProvider {
     }
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-
-
-
-
+        // Dyed brick full blocks
         var dyedBricksBuilder = tag(ModTags.Items.DYED_BRICKS);
         for (DyedBrickType type : DyedBrickType.values()) {
             dyedBricksBuilder.add(ModBlocks.DYED_BRICKS.get(type).get().asItem());
         }
 
+        // Dyed brick slabs
+        var dyedBrickSlabsBuilder = tag(ModTags.Items.DYED_BRICK_SLABS);
+        for (DyedBrickType type : DyedBrickType.values()) {
+            dyedBrickSlabsBuilder.add(ModBlocks.DYED_BRICK_SLABS.get(type).get().asItem());
+        }
+
+        // Dyed brick stairs
+        var dyedBrickStairsBuilder = tag(ModTags.Items.DYED_BRICK_STAIRS);
+        for (DyedBrickType type : DyedBrickType.values()) {
+            dyedBrickStairsBuilder.add(ModBlocks.DYED_BRICK_STAIRS.get(type).get().asItem());
+        }
+
+        // Dyed brick walls
+        var dyedBrickWallsBuilder = tag(ModTags.Items.DYED_BRICK_WALLS);
+        for (DyedBrickType type : DyedBrickType.values()) {
+            dyedBrickWallsBuilder.add(ModBlocks.DYED_BRICK_WALLS.get(type).get().asItem());
+        }
+
+        // Dyes tag
         tag(ModTags.Items.DYES)
                 .add(Items.WHITE_DYE)
                 .add(Items.ORANGE_DYE)

@@ -6,7 +6,6 @@ import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.thejadeproject.asiandecor.blocks.ModBlocks;
-import net.thejadeproject.asiandecor.items.ModItems;
 
 import java.util.Set;
 
@@ -21,17 +20,21 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.CARPENTER.get());
         dropSelf(ModBlocks.SHAPE_MAKER.get());
         dropSelf(ModBlocks.COLOR_MIXER.get());
-
         dropSelf(ModBlocks.WINGED_TABLE.get());
-
-
 
 
         ModBlocks.DYED_BRICKS.values().forEach(blockDeferred ->
                 dropSelf(blockDeferred.get())
         );
-
-
+        ModBlocks.DYED_BRICK_SLABS.values().forEach(blockDeferred ->
+                dropSelf(blockDeferred.get())
+        );
+        ModBlocks.DYED_BRICK_STAIRS.values().forEach(blockDeferred ->
+                dropSelf(blockDeferred.get())
+        );
+        ModBlocks.DYED_BRICK_WALLS.values().forEach(blockDeferred ->
+                dropSelf(blockDeferred.get())
+        );
     }
 
     @Override

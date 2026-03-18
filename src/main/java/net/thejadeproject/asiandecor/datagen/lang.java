@@ -33,6 +33,18 @@ public class lang extends LanguageProvider {
         for (DyedBrickType type : DyedBrickType.values()) {
             String blockId = "block.asiandecor.dyed_brick_" + type.getSerializedName();
             add(blockId, "Dyed Bricks");
+
+            // Stairs
+            String stairsId = "block.asiandecor.dyed_brick_stairs_" + type.getSerializedName();
+            add(stairsId, "Dyed Brick Stairs");
+
+            // Slabs
+            String slabId = "block.asiandecor.dyed_brick_slab_" + type.getSerializedName();
+            add(slabId, "Dyed Brick Slab");
+
+            // Walls
+            String wallId = "block.asiandecor.dyed_brick_wall_" + type.getSerializedName();
+            add(wallId, "Dyed Brick Wall");
         }
 
 

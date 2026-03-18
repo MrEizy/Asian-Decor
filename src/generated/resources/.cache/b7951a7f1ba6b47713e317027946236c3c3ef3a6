@@ -1,3 +1,6 @@
-// 1.21.1	2026-03-17T21:25:37.6279584	Tags for minecraft:item mod id asiandecor
+// 1.21.1	2026-03-18T15:38:18.7785754	Tags for minecraft:item mod id asiandecor
 4c5e3fd9352e1a886b93ab6324e8d66b2fdd421b data/asiandecor/tags/item/dyed_bricks.json
+487f0bf252396d5a9097102d2352ae1844dd326d data/asiandecor/tags/item/dyed_brick_slabs.json
+933c8af57c33e04fa70af6e7a08fb1dda42cd90b data/asiandecor/tags/item/dyed_brick_stairs.json
+17bfe63f858a72bc26123e7bdfdceabd2c72fc4c data/asiandecor/tags/item/dyed_brick_walls.json
 4ce44c6fc029a87b377f0223f8309a779826ad87 data/c/tags/item/dyes.json

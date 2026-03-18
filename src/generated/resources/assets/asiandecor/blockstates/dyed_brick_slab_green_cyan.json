@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "asiandecor:block/dyed_brick_slab_green_cyan"
+    },
+    "type=double": {
+      "model": "asiandecor:block/dyed_brick_green_cyan"
+    },
+    "type=top": {
+      "model": "asiandecor:block/dyed_brick_slab_green_cyan_top"
+    }
+  }
+}
