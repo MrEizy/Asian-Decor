@@ -1,0 +1,19 @@
+{
+  "type": "builders_zenith:color_mixer",
+  "group": "dyed_brick_stairs_vanilla",
+  "ingredients": [
+    {
+      "item": "minecraft:brick_stairs"
+    },
+    {
+      "tag": "c:dyes"
+    },
+    {
+      "tag": "c:dyes"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "builders_zenith:dyed_brick_stairs_white_white"
+  }
+}

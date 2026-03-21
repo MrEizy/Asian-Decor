@@ -1,0 +1,19 @@
+{
+  "type": "builders_zenith:color_mixer",
+  "group": "dyed_brick_slabs_recolor",
+  "ingredients": [
+    {
+      "tag": "builders_zenith:dyed_brick_slabs"
+    },
+    {
+      "tag": "c:dyes"
+    },
+    {
+      "tag": "c:dyes"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "builders_zenith:dyed_brick_slab_white_white"
+  }
+}
