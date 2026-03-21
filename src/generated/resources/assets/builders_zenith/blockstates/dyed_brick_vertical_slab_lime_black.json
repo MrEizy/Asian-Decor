@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "double=false,facing=east,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_lime_black_east"
+    },
+    "double=false,facing=east,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_lime_black_east"
+    },
+    "double=false,facing=north,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_lime_black"
+    },
+    "double=false,facing=north,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_lime_black"
+    },
+    "double=false,facing=south,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_lime_black_south"
+    },
+    "double=false,facing=south,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_lime_black_south"
+    },
+    "double=false,facing=west,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_lime_black_west"
+    },
+    "double=false,facing=west,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_lime_black_west"
+    },
+    "double=true,facing=east,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_lime_black"
+    },
+    "double=true,facing=east,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_lime_black"
+    },
+    "double=true,facing=north,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_lime_black"
+    },
+    "double=true,facing=north,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_lime_black"
+    },
+    "double=true,facing=south,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_lime_black"
+    },
+    "double=true,facing=south,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_lime_black"
+    },
+    "double=true,facing=west,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_lime_black"
+    },
+    "double=true,facing=west,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_lime_black"
+    }
+  }
+}

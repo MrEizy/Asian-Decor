@@ -43,6 +43,7 @@ public class ModCreativeModeTabs {
                         for (DyedBrickType type : DyedBrickType.values()) {
                             output.accept(ModBlocks.DYED_BRICKS.get(type));
                             output.accept(ModBlocks.DYED_BRICK_STAIRS.get(type));
+                            output.accept(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type));
                             output.accept(ModBlocks.DYED_BRICK_SLABS.get(type));
                             output.accept(ModBlocks.DYED_BRICK_WALLS.get(type));
                         }

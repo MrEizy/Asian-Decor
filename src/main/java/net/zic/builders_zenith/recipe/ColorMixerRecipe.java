@@ -91,6 +91,8 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
                 return new ItemStack(ModBlocks.DYED_BRICK_STAIRS.get(resultType).get(), 4);
             } else if (group.contains("wall")) {
                 return new ItemStack(ModBlocks.DYED_BRICK_WALLS.get(resultType).get(), 6);
+            } else if (group.contains("vertical_slab")) {
+                return new ItemStack(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(resultType).get(), 8);
             } else {
                 // Default to full bricks
                 return new ItemStack(ModBlocks.DYED_BRICKS.get(resultType).get(), 8);

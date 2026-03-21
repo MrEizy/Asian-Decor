@@ -19,6 +19,7 @@ public class ModTags {
 
         public static final TagKey<Item> DYED_BRICKS = createTag("dyed_bricks");
         public static final TagKey<Item> DYED_BRICK_SLABS = createTag("dyed_brick_slabs");
+        public static final TagKey<Item> DYED_BRICK_VERTICAL_SLABS = createTag("dyed_brick_vertical_slabs");
         public static final TagKey<Item> DYED_BRICK_STAIRS = createTag("dyed_brick_stairs");
         public static final TagKey<Item> DYED_BRICK_WALLS = createTag("dyed_brick_walls");
 
@@ -41,6 +42,7 @@ public class ModTags {
 
         public static final TagKey<Block> DYED_BRICK_BLOCKS = createTag("dyed_brick_blocks");
         public static final TagKey<Block> DYED_BRICK_SLABS = createTag("dyed_brick_slabs");
+        public static final TagKey<Block> DYED_BRICK_VERTICAL_SLABS = createTag("dyed_brick_vertical_slabs");
         public static final TagKey<Block> DYED_BRICK_STAIRS = createTag("dyed_brick_stairs");
         public static final TagKey<Block> DYED_BRICK_WALLS = createTag("dyed_brick_walls");
 

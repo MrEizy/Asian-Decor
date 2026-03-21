@@ -46,6 +46,12 @@ public class ModItemTagProvider extends ItemTagsProvider {
             dyedBrickWallsBuilder.add(ModBlocks.DYED_BRICK_WALLS.get(type).get().asItem());
         }
 
+        // Dyed brick Vertical slabs
+        var dyedBrickVerticalSlabsBuilder = tag(ModTags.Items.DYED_BRICK_VERTICAL_SLABS);
+        for (DyedBrickType type : DyedBrickType.values()) {
+            dyedBrickVerticalSlabsBuilder.add(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type).get().asItem());
+        }
+
         // Dyes tag
         tag(ModTags.Items.DYES)
                 .add(Items.WHITE_DYE)

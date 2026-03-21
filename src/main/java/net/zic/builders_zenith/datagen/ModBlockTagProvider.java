@@ -41,11 +41,22 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 pickaxeBuilder.add(blockDeferred.get())
         );
 
+        ModBlocks.DYED_BRICK_VERTICAL_SLABS.values().forEach(blockDeferred ->
+                pickaxeBuilder.add(blockDeferred.get())
+        );
+
         // Dyed brick blocks tag (full blocks only)
         var dyedBrickBlocksBuilder = tag(ModTags.Blocks.DYED_BRICK_BLOCKS);
         for (DyedBrickType type : DyedBrickType.values()) {
             dyedBrickBlocksBuilder.add(ModBlocks.DYED_BRICKS.get(type).get());
         }
+
+        // Dyed brick vertical slabs tag
+        var dyedBrickVerticalSlabsBuilder = tag(ModTags.Blocks.DYED_BRICK_VERTICAL_SLABS);
+        for (DyedBrickType type : DyedBrickType.values()) {
+            dyedBrickVerticalSlabsBuilder.add(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type).get());
+        }
+
 
         // Dyed brick slabs tag
         var dyedBrickSlabsBuilder = tag(ModTags.Blocks.DYED_BRICK_SLABS);

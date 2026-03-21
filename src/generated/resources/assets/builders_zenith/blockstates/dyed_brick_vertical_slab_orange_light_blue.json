@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "double=false,facing=east,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_orange_light_blue_east"
+    },
+    "double=false,facing=east,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_orange_light_blue_east"
+    },
+    "double=false,facing=north,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_orange_light_blue"
+    },
+    "double=false,facing=north,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_orange_light_blue"
+    },
+    "double=false,facing=south,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_orange_light_blue_south"
+    },
+    "double=false,facing=south,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_orange_light_blue_south"
+    },
+    "double=false,facing=west,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_orange_light_blue_west"
+    },
+    "double=false,facing=west,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_vertical_slab_orange_light_blue_west"
+    },
+    "double=true,facing=east,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_orange_light_blue"
+    },
+    "double=true,facing=east,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_orange_light_blue"
+    },
+    "double=true,facing=north,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_orange_light_blue"
+    },
+    "double=true,facing=north,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_orange_light_blue"
+    },
+    "double=true,facing=south,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_orange_light_blue"
+    },
+    "double=true,facing=south,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_orange_light_blue"
+    },
+    "double=true,facing=west,waterlogged=false": {
+      "model": "builders_zenith:block/dyed_brick_orange_light_blue"
+    },
+    "double=true,facing=west,waterlogged=true": {
+      "model": "builders_zenith:block/dyed_brick_orange_light_blue"
+    }
+  }
+}

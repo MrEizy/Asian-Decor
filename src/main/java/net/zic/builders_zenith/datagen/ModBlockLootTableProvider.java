@@ -35,6 +35,9 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         ModBlocks.DYED_BRICK_WALLS.values().forEach(blockDeferred ->
                 dropSelf(blockDeferred.get())
         );
+        ModBlocks.DYED_BRICK_VERTICAL_SLABS.values().forEach(blockDeferred ->
+                dropSelf(blockDeferred.get())
+        );
     }
 
     @Override

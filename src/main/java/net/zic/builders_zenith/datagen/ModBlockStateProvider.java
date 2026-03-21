@@ -3,12 +3,14 @@ package net.zic.builders_zenith.datagen;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.blocks.ModBlocks;
 import net.zic.builders_zenith.blocks.custom.DyedBrickType;
+import net.zic.builders_zenith.blocks.custom.blockz.VerticalSlabBlock;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -24,11 +26,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
         for (DyedBrickType type : DyedBrickType.values()) {
             DeferredBlock<?> block = ModBlocks.DYED_BRICKS.get(type);
             DeferredBlock<?> slab = ModBlocks.DYED_BRICK_SLABS.get(type);
+            DeferredBlock<?> verticalSlab = ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type);
             DeferredBlock<?> stairs = ModBlocks.DYED_BRICK_STAIRS.get(type);
             DeferredBlock<?> wall = ModBlocks.DYED_BRICK_WALLS.get(type);
 
             registerDyedBrickBlock(block, type);
             registerDyedBrickSlab(slab, block);
+            registerDyedBrickVerticalSlab(verticalSlab, block);
             registerDyedBrickStairs(stairs, block);
             registerDyedBrickWall(wall, block);
         }
@@ -421,6 +425,130 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .end();
 
         itemModels().withExistingParent(name, modLoc("block/" + name + "_inventory"));
+    }
+
+    // NEW: Vertical Slab registration
+    private void registerDyedBrickVerticalSlab(DeferredBlock<?> verticalSlabBlock, DeferredBlock<?> baseBlock) {
+        String name = verticalSlabBlock.getId().getPath();
+        String baseName = baseBlock.getId().getPath();
+
+        // Single slab models (unchanged from before)
+        var northModel = models().getBuilder(name)
+                .parent(models().getExistingFile(mcLoc("block/block")))
+                .renderType("cutout")
+                .texture("particle", modLoc("block/brick_base"))
+                .texture("brick_base", modLoc("block/brick_base"))
+                .texture("mortar_overlay", modLoc("block/mortar_overlay"))
+                .element().from(0, 0, 0).to(16, 16, 8)
+                .face(Direction.DOWN).texture("#brick_base").tintindex(0).cullface(Direction.DOWN).uvs(0, 0, 16, 8).end()
+                .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).uvs(0, 0, 16, 8).end()
+                .face(Direction.NORTH).texture("#brick_base").tintindex(0).cullface(Direction.NORTH).end()
+                .face(Direction.SOUTH).texture("#brick_base").tintindex(0).end()
+                .face(Direction.WEST).texture("#brick_base").tintindex(0).cullface(Direction.WEST).uvs(0, 0, 8, 16).end()
+                .face(Direction.EAST).texture("#brick_base").tintindex(0).cullface(Direction.EAST).uvs(0, 0, 8, 16).end()
+                .end()
+                .element().from(0, 0, 0).to(16, 16, 8)
+                .face(Direction.DOWN).texture("#mortar_overlay").tintindex(1).cullface(Direction.DOWN).uvs(0, 0, 16, 8).end()
+                .face(Direction.UP).texture("#mortar_overlay").tintindex(1).cullface(Direction.UP).uvs(0, 0, 16, 8).end()
+                .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.NORTH).end()
+                .face(Direction.SOUTH).texture("#mortar_overlay").tintindex(1).end()
+                .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(0, 0, 8, 16).end()
+                .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(0, 0, 8, 16).end()
+                .end();
+
+        var southModel = models().getBuilder(name + "_south")
+                .parent(models().getExistingFile(mcLoc("block/block")))
+                .renderType("cutout")
+                .texture("particle", modLoc("block/brick_base"))
+                .texture("brick_base", modLoc("block/brick_base"))
+                .texture("mortar_overlay", modLoc("block/mortar_overlay"))
+                .element().from(0, 0, 8).to(16, 16, 16)
+                .face(Direction.DOWN).texture("#brick_base").tintindex(0).cullface(Direction.DOWN).uvs(0, 8, 16, 16).end()
+                .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).uvs(0, 8, 16, 16).end()
+                .face(Direction.NORTH).texture("#brick_base").tintindex(0).end()
+                .face(Direction.SOUTH).texture("#brick_base").tintindex(0).cullface(Direction.SOUTH).end()
+                .face(Direction.WEST).texture("#brick_base").tintindex(0).cullface(Direction.WEST).uvs(8, 0, 16, 16).end()
+                .face(Direction.EAST).texture("#brick_base").tintindex(0).cullface(Direction.EAST).uvs(8, 0, 16, 16).end()
+                .end()
+                .element().from(0, 0, 8).to(16, 16, 16)
+                .face(Direction.DOWN).texture("#mortar_overlay").tintindex(1).cullface(Direction.DOWN).uvs(0, 8, 16, 16).end()
+                .face(Direction.UP).texture("#mortar_overlay").tintindex(1).cullface(Direction.UP).uvs(0, 8, 16, 16).end()
+                .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).end()
+                .face(Direction.SOUTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.SOUTH).end()
+                .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(8, 0, 16, 16).end()
+                .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(8, 0, 16, 16).end()
+                .end();
+
+        var westModel = models().getBuilder(name + "_west")
+                .parent(models().getExistingFile(mcLoc("block/block")))
+                .renderType("cutout")
+                .texture("particle", modLoc("block/brick_base"))
+                .texture("brick_base", modLoc("block/brick_base"))
+                .texture("mortar_overlay", modLoc("block/mortar_overlay"))
+                .element().from(0, 0, 0).to(8, 16, 16)
+                .face(Direction.DOWN).texture("#brick_base").tintindex(0).cullface(Direction.DOWN).uvs(0, 0, 8, 16).end()
+                .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).uvs(0, 0, 8, 16).end()
+                .face(Direction.NORTH).texture("#brick_base").tintindex(0).cullface(Direction.NORTH).uvs(0, 0, 8, 16).end()
+                .face(Direction.SOUTH).texture("#brick_base").tintindex(0).cullface(Direction.SOUTH).uvs(0, 0, 8, 16).end()
+                .face(Direction.WEST).texture("#brick_base").tintindex(0).cullface(Direction.WEST).end()
+                .face(Direction.EAST).texture("#brick_base").tintindex(0).end()
+                .end()
+                .element().from(0, 0, 0).to(8, 16, 16)
+                .face(Direction.DOWN).texture("#mortar_overlay").tintindex(1).cullface(Direction.DOWN).uvs(0, 0, 8, 16).end()
+                .face(Direction.UP).texture("#mortar_overlay").tintindex(1).cullface(Direction.UP).uvs(0, 0, 8, 16).end()
+                .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.NORTH).uvs(0, 0, 8, 16).end()
+                .face(Direction.SOUTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.SOUTH).uvs(0, 0, 8, 16).end()
+                .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).end()
+                .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).end()
+                .end();
+
+        var eastModel = models().getBuilder(name + "_east")
+                .parent(models().getExistingFile(mcLoc("block/block")))
+                .renderType("cutout")
+                .texture("particle", modLoc("block/brick_base"))
+                .texture("brick_base", modLoc("block/brick_base"))
+                .texture("mortar_overlay", modLoc("block/mortar_overlay"))
+                .element().from(8, 0, 0).to(16, 16, 16)
+                .face(Direction.DOWN).texture("#brick_base").tintindex(0).cullface(Direction.DOWN).uvs(8, 0, 16, 16).end()
+                .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).uvs(8, 0, 16, 16).end()
+                .face(Direction.NORTH).texture("#brick_base").tintindex(0).cullface(Direction.NORTH).uvs(8, 0, 16, 16).end()
+                .face(Direction.SOUTH).texture("#brick_base").tintindex(0).cullface(Direction.SOUTH).uvs(8, 0, 16, 16).end()
+                .face(Direction.WEST).texture("#brick_base").tintindex(0).end()
+                .face(Direction.EAST).texture("#brick_base").tintindex(0).cullface(Direction.EAST).end()
+                .end()
+                .element().from(8, 0, 0).to(16, 16, 16)
+                .face(Direction.DOWN).texture("#mortar_overlay").tintindex(1).cullface(Direction.DOWN).uvs(8, 0, 16, 16).end()
+                .face(Direction.UP).texture("#mortar_overlay").tintindex(1).cullface(Direction.UP).uvs(8, 0, 16, 16).end()
+                .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.NORTH).uvs(8, 0, 16, 16).end()
+                .face(Direction.SOUTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.SOUTH).uvs(8, 0, 16, 16).end()
+                .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).end()
+                .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).end()
+                .end();
+
+        // Reference to full block model for double slabs
+        ModelFile doubleModel = models().getExistingFile(modLoc("block/" + baseName));
+
+        // Register blockstate with handling for DOUBLE property
+        getVariantBuilder(verticalSlabBlock.get())
+                .forAllStates(state -> {
+                    // If double, use full block model
+                    if (state.getValue(VerticalSlabBlock.DOUBLE)) {
+                        return ConfiguredModel.builder().modelFile(doubleModel).build();
+                    }
+
+                    // Otherwise use directional model
+                    Direction facing = state.getValue(VerticalSlabBlock.FACING);
+                    ModelFile model = switch (facing) {
+                        case SOUTH -> southModel;
+                        case WEST -> westModel;
+                        case EAST -> eastModel;
+                        default -> northModel;
+                    };
+                    return ConfiguredModel.builder().modelFile(model).build();
+                });
+
+        // Item model uses north facing single slab
+        itemModels().withExistingParent(name, modLoc("block/" + name));
     }
 
     private void simpleBlockWithItem(DeferredBlock<?> deferredBlock, String renderType) {

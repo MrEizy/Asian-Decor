@@ -126,6 +126,18 @@ public class BuildersZenith {
                 }, blockDeferred.get());
             });
 
+            // Register color handlers for all dyed brick VERTICAL SLABS
+            ModBlocks.DYED_BRICK_VERTICAL_SLABS.forEach((type, blockDeferred) -> {
+                event.register((state, level, pos, tintIndex) -> {
+                    DyeColor color = switch (tintIndex) {
+                        case 0 -> type.getBrickColor();
+                        case 1 -> type.getMortarColor();
+                        default -> DyeColor.WHITE;
+                    };
+                    return color.getTextureDiffuseColor();
+                }, blockDeferred.get());
+            });
+
             // Register color handlers for all dyed brick STAIRS
             ModBlocks.DYED_BRICK_STAIRS.forEach((type, blockDeferred) -> {
                 event.register((state, level, pos, tintIndex) -> {
@@ -167,6 +179,18 @@ public class BuildersZenith {
 
             // Slabs
             ModBlocks.DYED_BRICK_SLABS.forEach((type, blockDeferred) -> {
+                event.register((stack, tintIndex) -> {
+                    DyeColor color = switch (tintIndex) {
+                        case 0 -> type.getBrickColor();
+                        case 1 -> type.getMortarColor();
+                        default -> DyeColor.WHITE;
+                    };
+                    return color.getTextureDiffuseColor();
+                }, blockDeferred.get().asItem());
+            });
+
+            // Vertical Slabs
+            ModBlocks.DYED_BRICK_VERTICAL_SLABS.forEach((type, blockDeferred) -> {
                 event.register((stack, tintIndex) -> {
                     DyeColor color = switch (tintIndex) {
                         case 0 -> type.getBrickColor();

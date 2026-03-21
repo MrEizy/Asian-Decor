@@ -23,6 +23,10 @@ public class ColorMixerRecipeBuilder {
         generateVanillaSlabRecipe(output);
         generateRecolorSlabRecipe(output);
 
+        // Vertical Slab recipes
+        generateVanillaVerticalSlabRecipe(output);
+        generateRecolorVerticalSlabRecipe(output);
+
         // Stairs recipes
         generateVanillaStairsRecipe(output);
         generateRecolorStairsRecipe(output);
@@ -85,6 +89,54 @@ public class ColorMixerRecipeBuilder {
     }
 
     // ========== SLAB RECIPES ==========
+
+    private static void generateVanillaVerticalSlabRecipe(RecipeOutput output) {
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        ingredients.add(Ingredient.of(Items.BRICK_SLAB)); // Or a new vertical slab item
+        ingredients.add(Ingredient.of(ModTags.Items.DYES));
+        ingredients.add(Ingredient.of(ModTags.Items.DYES));
+
+        ItemStack placeholderResult = new ItemStack(
+                ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(DyedBrickType.WHITE_WHITE).get(), 8);
+
+        ColorMixerRecipe recipe = new ColorMixerRecipe(
+                "dyed_brick_vertical_slabs_vanilla",
+                ingredients,
+                placeholderResult,
+                100
+        );
+
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+                BuildersZenith.MOD_ID,
+                "color_mixer/vanilla_vertical_slabs_to_dyed"
+        );
+
+        output.accept(id, recipe, null);
+    }
+
+    private static void generateRecolorVerticalSlabRecipe(RecipeOutput output) {
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        ingredients.add(Ingredient.of(ModTags.Items.DYED_BRICK_VERTICAL_SLABS));
+        ingredients.add(Ingredient.of(ModTags.Items.DYES));
+        ingredients.add(Ingredient.of(ModTags.Items.DYES));
+
+        ItemStack placeholderResult = new ItemStack(
+                ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(DyedBrickType.WHITE_WHITE).get(), 8);
+
+        ColorMixerRecipe recipe = new ColorMixerRecipe(
+                "dyed_brick_vertical_slabs_recolor",
+                ingredients,
+                placeholderResult,
+                100
+        );
+
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+                BuildersZenith.MOD_ID,
+                "color_mixer/recolor_vertical_slab_any"
+        );
+
+        output.accept(id, recipe, null);
+    }
 
     private static void generateVanillaSlabRecipe(RecipeOutput output) {
         // Recipe: Vanilla Brick Slab + Any Dye + Any Dye = Dynamic Dyed Brick Slab

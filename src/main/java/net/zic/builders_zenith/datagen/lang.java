@@ -43,6 +43,10 @@ public class lang extends LanguageProvider {
             String slabId = "block.builders_zenith.dyed_brick_slab_" + type.getSerializedName();
             add(slabId, "Dyed Brick Slab");
 
+            // Slabs
+            String slabVertId = "block.builders_zenith.dyed_brick_vertical_slab_" + type.getSerializedName();
+            add(slabVertId, "Dyed Brick Vertical Slab");
+
             // Walls
             String wallId = "block.builders_zenith.dyed_brick_wall_" + type.getSerializedName();
             add(wallId, "Dyed Brick Wall");

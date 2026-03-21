@@ -16,6 +16,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.blocks.custom.*;
+import net.zic.builders_zenith.blocks.custom.blockz.VerticalSlabBlock;
 import net.zic.builders_zenith.blocks.custom.furniture.tables.WingedTableBlock;
 import net.zic.builders_zenith.items.ModItems;
 
@@ -30,6 +31,7 @@ public class ModBlocks {
     // Maps for all dyed brick variants
     public static final Map<DyedBrickType, DeferredBlock<Block>> DYED_BRICKS = new HashMap<>();
     public static final Map<DyedBrickType, DeferredBlock<SlabBlock>> DYED_BRICK_SLABS = new HashMap<>();
+    public static final Map<DyedBrickType, DeferredBlock<VerticalSlabBlock>> DYED_BRICK_VERTICAL_SLABS = new HashMap<>();
     public static final Map<DyedBrickType, DeferredBlock<StairBlock>> DYED_BRICK_STAIRS = new HashMap<>();
     public static final Map<DyedBrickType, DeferredBlock<WallBlock>> DYED_BRICK_WALLS = new HashMap<>();
 
@@ -57,6 +59,11 @@ public class ModBlocks {
             String wallName = "dyed_brick_wall_" + baseName;
             DeferredBlock<WallBlock> wall = registerDyedBrickWall(wallName, type);
             DYED_BRICK_WALLS.put(type, wall);
+
+            // Add vertical slabs
+            String verticalSlabName = "dyed_brick_vertical_slab_" + baseName;
+            DeferredBlock<VerticalSlabBlock> verticalSlab = registerDyedBrickVerticalSlab(verticalSlabName, type);
+            DYED_BRICK_VERTICAL_SLABS.put(type, verticalSlab);
         }
     }
 
@@ -112,6 +119,24 @@ public class ModBlocks {
                         .sound(SoundType.STONE)));
 
         // Register custom BlockItem with type for tooltips
+        ModItems.ITEMS.register(name, () -> new DyedBrickBlockItem(
+                deferredBlock.get(),
+                new Item.Properties(),
+                type
+        ));
+
+        return deferredBlock;
+    }
+
+    private static DeferredBlock<VerticalSlabBlock> registerDyedBrickVerticalSlab(String name, DyedBrickType type) {
+        DeferredBlock<VerticalSlabBlock> deferredBlock = BLOCK.register(name,
+                () -> new VerticalSlabBlock(BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.STONE)
+                        .requiresCorrectToolForDrops()
+                        .strength(2.0F, 6.0F)
+                        .sound(SoundType.STONE)));
+
+        // Register custom BlockItem
         ModItems.ITEMS.register(name, () -> new DyedBrickBlockItem(
                 deferredBlock.get(),
                 new Item.Properties(),
