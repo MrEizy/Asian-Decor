@@ -52,7 +52,7 @@ public record PouchRadialSelectPacket(boolean mainHand, int slotIndex) implement
                 if (!selected.isEmpty()) {
                     player.displayClientMessage(
                             net.minecraft.network.chat.Component.translatable(
-                                    "message.asiandecor.block_pouch.selected",
+                                    "message.builders_zenith.block_pouch.selected",
                                     selected.getHoverName()
                             ),
                             true

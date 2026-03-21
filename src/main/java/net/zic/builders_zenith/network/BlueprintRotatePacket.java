@@ -61,7 +61,7 @@ public record BlueprintRotatePacket(boolean mainHand, int directionY, int direct
                     // Show rotation in action bar
                     player.displayClientMessage(
                             net.minecraft.network.chat.Component.translatable(
-                                    "message.asiandecor.blueprint.rotated",
+                                    "message.builders_zenith.blueprint.rotated",
                                     rotated.getRotationName(),
                                     rotated.getFacingName()
                             ),

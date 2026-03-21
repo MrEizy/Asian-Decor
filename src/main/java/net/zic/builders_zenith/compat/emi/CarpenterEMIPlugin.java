@@ -91,7 +91,7 @@ public class CarpenterEMIPlugin implements EmiPlugin {
             widgets.addSlot(getOutputs().get(0), 76, 18).recipeContext(this);
 
             widgets.addText(
-                    net.minecraft.network.chat.Component.translatable("tooltip.asiandecor.ingredient_cost",
+                    net.minecraft.network.chat.Component.translatable("tooltip.builders_zenith.ingredient_cost",
                             recipe.getIngredientCount()),
                     4, 40, 0x808080, false
             );

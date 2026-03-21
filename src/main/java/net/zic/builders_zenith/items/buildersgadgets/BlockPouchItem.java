@@ -26,7 +26,7 @@ import net.zic.builders_zenith.screen.custom.PouchMenu;
 import java.util.List;
 
 public class BlockPouchItem extends Item {
-    public static final Component CONTAINER_TITLE = Component.translatable("container.asiandecor.block_pouch");
+    public static final Component CONTAINER_TITLE = Component.translatable("container.builders_zenith.block_pouch");
 
     public BlockPouchItem(Properties properties) {
         super(properties.component(ModDataComponents.POUCH_CONTENTS.get(), PouchContents.EMPTY).stacksTo(1));
@@ -138,17 +138,17 @@ public class BlockPouchItem extends Item {
         ItemStack selected = contents.getSelectedStack();
 
         if (!selected.isEmpty()) {
-            tooltipComponents.add(Component.translatable("tooltip.asiandecor.block_pouch.selected",
+            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.block_pouch.selected",
                     selected.getHoverName()).withStyle(net.minecraft.ChatFormatting.GRAY));
-            tooltipComponents.add(Component.translatable("tooltip.asiandecor.block_pouch.count",
+            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.block_pouch.count",
                     selected.getCount()).withStyle(net.minecraft.ChatFormatting.GRAY));
         } else {
-            tooltipComponents.add(Component.translatable("tooltip.asiandecor.block_pouch.empty")
+            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.block_pouch.empty")
                     .withStyle(net.minecraft.ChatFormatting.GRAY));
         }
 
         int filled = contents.getNonEmptySlotCount();
-        tooltipComponents.add(Component.translatable("tooltip.asiandecor.block_pouch.slots",
+        tooltipComponents.add(Component.translatable("tooltip.builders_zenith.block_pouch.slots",
                 filled, PouchContents.MAX_SLOTS).withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
     }
 

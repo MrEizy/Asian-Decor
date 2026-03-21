@@ -17,9 +17,9 @@ public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BuildersZenith.MOD_ID);
 
-    public static final Supplier<CreativeModeTab> ASIAN_DECOR_ITEMS = CREATIVE_MODE_TAB.register("asiandecor_items",
+    public static final Supplier<CreativeModeTab> ASIAN_DECOR_ITEMS = CREATIVE_MODE_TAB.register("builders_zenith_items",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.WHITE_BLOCK_POUCH.get()))
-                    .title(Component.translatable("creativetab.asiandecor.items"))
+                    .title(Component.translatable("creativetab.builders_zenith.items"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.WHITE_BLOCK_POUCH);
                         output.accept(ModItems.BLUEPRINT);
@@ -28,13 +28,15 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.HANDHELD_FILLER);
                     }).build());
 
-    public static final Supplier<CreativeModeTab> ASIAN_DECOR_WOOD = CREATIVE_MODE_TAB.register("asiandecor_blocks",
+    public static final Supplier<CreativeModeTab> ASIAN_DECOR_WOOD = CREATIVE_MODE_TAB.register("builders_zenith_blocks",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.CARPENTER.get()))
-                    .title(Component.translatable("creativetab.asiandecor.blocks"))
+                    .title(Component.translatable("creativetab.builders_zenith.blocks"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModBlocks.CARPENTER);
+                        output.accept(ModBlocks.COLOR_MIXER);
                         output.accept(ModBlocks.SHAPE_MAKER);
                         output.accept(ModBlocks.WINGED_TABLE);
+
 
 
 

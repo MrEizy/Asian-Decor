@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 
 public class ColorMixerBlock extends BaseEntityBlock {
     public static final MapCodec<ColorMixerBlock> CODEC = simpleCodec(ColorMixerBlock::new);
-    private static final Component CONTAINER_TITLE = Component.translatable("container.asiandecor.color_mixer");
+    private static final Component CONTAINER_TITLE = Component.translatable("container.builders_zenith.color_mixer");
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     protected static final VoxelShape SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0);
 

@@ -40,8 +40,8 @@ public record TrowelTogglePacket(boolean mainHand) implements CustomPacketPayloa
 
                 // Send message to player
                 player.displayClientMessage(Component.translatable(
-                        "message.asiandecor.trowel.mode_changed",
-                        Component.translatable("tooltip.asiandecor.trowel.mode." + newMode.getName())
+                        "message.builders_zenith.trowel.mode_changed",
+                        Component.translatable("tooltip.builders_zenith.trowel.mode." + newMode.getName())
                 ), true);
             }
         });

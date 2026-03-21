@@ -157,28 +157,37 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(0, 8, 16, 16).end()
                     .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(0, 8, 16, 16).end()
                     .end()
-                    // Top step - BACK half (0, 8, 8 to 16, 16, 16) - PROPER UVs based on your template
+// Top step - RIGHT side (x: 8-16, z: 0-16) - 8x16 on top/bottom, 16x8 on sides
                     .element().from(8, 8, 0).to(16, 16, 16)
-                    // UP face - full width, top half of texture (like your uv: [8, 12, 0, 8] but normalized to 16x16)
-                    .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).uvs(0, 0, 16, 8).end()
-                    // DOWN face (inner, facing down) - full width, bottom half
-                    .face(Direction.DOWN).texture("#brick_base").tintindex(0).uvs(0, 8, 16, 16).end()
-                    // NORTH face (inner vertical) - full width, half height (bottom half of texture)
-                    .face(Direction.NORTH).texture("#brick_base").tintindex(0).uvs(0, 8, 16, 16).end()
-                    // SOUTH face (outer vertical) - full width, half height (top half of texture)
-                    .face(Direction.SOUTH).texture("#brick_base").tintindex(0).cullface(Direction.SOUTH).uvs(0, 0, 16, 8).end()
-                    // WEST face - half depth, full height mapped to half width of texture
-                    .face(Direction.WEST).texture("#brick_base").tintindex(0).cullface(Direction.WEST).uvs(0, 0, 8, 8).end()
-                    // EAST face - half depth, full height mapped to half width of texture
-                    .face(Direction.EAST).texture("#brick_base").tintindex(0).cullface(Direction.EAST).uvs(8, 0, 16, 8).end()
+                    // UP face: 8x16 geometry -> 8x16 UV (right half of texture)
+                    .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).uvs(8, 0, 16, 16).end()
+                    // DOWN face: 8x16 geometry -> 8x16 UV
+                    .face(Direction.DOWN).texture("#brick_base").tintindex(0).uvs(8, 0, 16, 16).end()
+                    // NORTH face: 8x8 geometry (width x height) -> 8x8 UV (top-right corner)
+                    .face(Direction.NORTH).texture("#brick_base").tintindex(0).uvs(8, 0, 16, 8).end()
+                    // SOUTH face: 8x8 geometry -> 8x8 UV
+                    .face(Direction.SOUTH).texture("#brick_base").tintindex(0).cullface(Direction.SOUTH).uvs(8, 0, 16, 8).end()
+                    // WEST face: 16x8 geometry (depth x height) -> 16x8 UV (full width, top half)
+                    .face(Direction.WEST).texture("#brick_base").tintindex(0).uvs(0, 0, 16, 8).end()
+                    // EAST face: 16x8 geometry -> 16x8 UV
+                    .face(Direction.EAST).texture("#brick_base").tintindex(0).cullface(Direction.EAST).uvs(0, 0, 16, 8).end()
                     .end()
-                    // Top step mortar - matching UVs
+                    // Bottom step mortar
+                    .element().from(0, 0, 0).to(16, 8, 16)
+                    .face(Direction.UP).texture("#mortar_overlay").tintindex(1).uvs(0, 0, 16, 16).end()
+                    .face(Direction.DOWN).texture("#mortar_overlay").tintindex(1).cullface(Direction.DOWN).end()  // ADD THIS
+                    .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.NORTH).uvs(0, 8, 16, 16).end()
+                    .face(Direction.SOUTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.SOUTH).uvs(0, 8, 16, 16).end()
+                    .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(0, 8, 16, 16).end()
+                    .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(0, 8, 16, 16).end()
+                    .end()
+// Mortar layer - same UVs
                     .element().from(8, 8, 0).to(16, 16, 16)
-                    .face(Direction.UP).texture("#mortar_overlay").tintindex(1).cullface(Direction.UP).uvs(0, 0, 16, 8).end()
-                    .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).uvs(0, 8, 16, 16).end()
-                    .face(Direction.SOUTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.SOUTH).uvs(0, 0, 16, 8).end()
-                    .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(0, 0, 8, 8).end()
-                    .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(8, 0, 16, 8).end()
+                    .face(Direction.UP).texture("#mortar_overlay").tintindex(1).cullface(Direction.UP).uvs(8, 0, 16, 16).end()
+                    .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).uvs(8, 0, 16, 8).end()
+                    .face(Direction.SOUTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.SOUTH).uvs(8, 0, 16, 8).end()
+                    .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).uvs(0, 0, 16, 8).end()
+                    .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(0, 0, 16, 8).end()
                     .end();
 
         // INNER STAIRS

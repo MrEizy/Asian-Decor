@@ -34,7 +34,7 @@ public class ColorMixerCategory implements DisplayCategory<REIPlugin.ColorMixerD
 
     @Override
     public Component getTitle() {
-        return Component.translatable("rei.category.asiandecor.color_mixer");
+        return Component.translatable("rei.category.builders_zenith.color_mixer");
     }
 
     @Override

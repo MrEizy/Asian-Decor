@@ -45,7 +45,7 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.category.asiandecor.color_mixer");
+        return Component.translatable("jei.category.builders_zenith.color_mixer");
     }
 
     @Override

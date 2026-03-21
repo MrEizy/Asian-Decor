@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 
 public class CarpenterBlock extends Block {
     public static final MapCodec<CarpenterBlock> CODEC = simpleCodec(CarpenterBlock::new);
-    private static final Component CONTAINER_TITLE = Component.translatable("container.asiandecor.carpenter");
+    private static final Component CONTAINER_TITLE = Component.translatable("container.builders_zenith.carpenter");
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     protected static final VoxelShape SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 9.0, 16.0);
 

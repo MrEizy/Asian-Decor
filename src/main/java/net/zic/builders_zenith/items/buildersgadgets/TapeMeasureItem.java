@@ -33,18 +33,18 @@ public class TapeMeasureItem extends Item {
         TapeMeasureDataComponent data = stack.get(ModDataComponents.TAPE_MEASURE_DATA.get());
 
         if (data == null || !data.hasSelection()) {
-            tooltipComponents.add(Component.translatable("tooltip.asiandecor.tape_measure.no_selection"));
+            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.no_selection"));
         } else {
             BlockPos pos1 = data.pos1().orElse(null);
             BlockPos pos2 = data.pos2().orElse(null);
 
             if (pos1 != null) {
-                tooltipComponents.add(Component.translatable("tooltip.asiandecor.tape_measure.pos1_set",
+                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.pos1_set",
                         pos1.getX(), pos1.getY(), pos1.getZ()));
             }
 
             if (pos2 != null) {
-                tooltipComponents.add(Component.translatable("tooltip.asiandecor.tape_measure.pos2_set",
+                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.pos2_set",
                         pos2.getX(), pos2.getY(), pos2.getZ()));
 
                 // Show dimensions if finalized
@@ -54,15 +54,15 @@ public class TapeMeasureItem extends Item {
                     int width = Math.abs(pos2.getZ() - pos1.getZ()) + 1;
 
                     tooltipComponents.add(Component.empty());
-                    tooltipComponents.add(Component.translatable("tooltip.asiandecor.tape_measure.dimensions",
+                    tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.dimensions",
                             length, width, height));
                 }
             } else {
-                tooltipComponents.add(Component.translatable("tooltip.asiandecor.tape_measure.select_pos2"));
+                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.select_pos2"));
             }
 
             tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("tooltip.asiandecor.tape_measure.clear"));
+            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.clear"));
         }
     }
 
@@ -79,7 +79,7 @@ public class TapeMeasureItem extends Item {
         if (player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 clearSelection(stack);
-                player.displayClientMessage(Component.translatable("message.asiandecor.tape_measure.cleared"), true);
+                player.displayClientMessage(Component.translatable("message.builders_zenith.tape_measure.cleared"), true);
                 level.playSound(null, player.blockPosition(), SoundEvents.ITEM_FRAME_REMOVE_ITEM,
                         SoundSource.PLAYERS, 1.0F, 1.0F);
             }
@@ -94,7 +94,7 @@ public class TapeMeasureItem extends Item {
             if (!data.hasSelection()) {
                 // Set Pos1
                 setPos1(stack, clickedPos);
-                player.displayClientMessage(Component.translatable("message.asiandecor.tape_measure.pos1_set",
+                player.displayClientMessage(Component.translatable("message.builders_zenith.tape_measure.pos1_set",
                         clickedPos.getX(), clickedPos.getY(), clickedPos.getZ()), true);
                 level.playSound(null, clickedPos, SoundEvents.STONE_BUTTON_CLICK_ON,
                         SoundSource.BLOCKS, 1.0F, 2.0F);
@@ -161,7 +161,7 @@ public class TapeMeasureItem extends Item {
         int totalBlocks = (int) (bounds.getXsize() * bounds.getYsize() * bounds.getZsize());
 
         // Send translatable action bar message
-        Component message = Component.translatable("message.asiandecor.tape_measure.measured",
+        Component message = Component.translatable("message.builders_zenith.tape_measure.measured",
                 length, width, height, totalBlocks);
 
         player.displayClientMessage(message, true);

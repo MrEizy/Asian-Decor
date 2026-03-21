@@ -27,7 +27,7 @@ public class PouchLinkHandler {
 
             Player player = event.getPlayer();
             player.displayClientMessage(Component.translatable(
-                    "message.asiandecor.trowel.pouch_linked"), true);
+                    "message.builders_zenith.trowel.pouch_linked"), true);
 
             event.setCanceled(true);
         }

@@ -66,7 +66,7 @@ public class BlueprintInputHandler {
                 // Show message
                 player.displayClientMessage(
                         net.minecraft.network.chat.Component.translatable(
-                                "message.asiandecor.blueprint.rotated",
+                                "message.builders_zenith.blueprint.rotated",
                                 rotated.getRotationName(),
                                 rotated.getFacingName()
                         ),

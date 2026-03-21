@@ -24,7 +24,7 @@ public class CarpenterCategory implements DisplayCategory<REIPlugin.CarpenterDis
 
     @Override
     public Component getTitle() {
-        return Component.translatable("rei.category.asiandecor.carpenter");
+        return Component.translatable("rei.category.builders_zenith.carpenter");
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CarpenterCategory implements DisplayCategory<REIPlugin.CarpenterDis
 
         // Ingredient count label
         widgets.add(Widgets.createLabel(new Point(startPoint.x + 4, startPoint.y + 40),
-                        Component.translatable("tooltip.asiandecor.ingredient_cost", display.getIngredientCount()))
+                        Component.translatable("tooltip.builders_zenith.ingredient_cost", display.getIngredientCount()))
                 .color(0xFF808080, 0xFF808080)
                 .noShadow());
 

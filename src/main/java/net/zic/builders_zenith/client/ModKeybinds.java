@@ -13,18 +13,18 @@ import org.lwjgl.glfw.GLFW;
 public class ModKeybinds {
 
     public static final KeyMapping MODE_TOGGLE = new KeyMapping(
-            "key.asiandecor.mode_toggle",
+            "key.builders_zenith.mode_toggle",
             GLFW.GLFW_KEY_V,
-            "key.categories.asiandecor"
+            "key.categories.builders_zenith"
     );
 
 
     public static final KeyMapping RADIAL_MENU_KEY = new KeyMapping(
-            "key.asiandecor.radial_menu",
+            "key.builders_zenith.radial_menu",
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             InputConstants.KEY_G,
-            "key.categories.asiandecor"
+            "key.categories.builders_zenith"
     );
 
     @SubscribeEvent

@@ -105,7 +105,7 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
                     ItemStack result = recipe.getResultItem(this.minecraft.level.registryAccess());
 
                     // Build tooltip with ingredient cost
-                    Component costText = Component.translatable("tooltip.asiandecor.ingredient_cost",
+                    Component costText = Component.translatable("tooltip.builders_zenith.ingredient_cost",
                             recipe.getIngredientCount());
 
                     List<net.minecraft.util.FormattedCharSequence> formattedLines =

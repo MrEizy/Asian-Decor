@@ -40,7 +40,7 @@ public class CarpenterRecipeCategory implements IRecipeCategory<CarpenterRecipes
 
     @Override
     public Component getTitle() {
-        return Component.translatable("jei.category.asiandecor.carpenter");
+        return Component.translatable("jei.category.builders_zenith.carpenter");
     }
 
     @Override
@@ -73,7 +73,7 @@ public class CarpenterRecipeCategory implements IRecipeCategory<CarpenterRecipes
         IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
 
         // Draw ingredient count requirement
-        Component costText = Component.translatable("tooltip.asiandecor.ingredient_cost",
+        Component costText = Component.translatable("tooltip.builders_zenith.ingredient_cost",
                 recipe.getIngredientCount());
         guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font,
                 costText, 4, 40, 0xFF808080, false);

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "builders_zenith:block/carpenterblock",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "builders_zenith:block/carpenterblock"
+    },
+    "facing=south": {
+      "model": "builders_zenith:block/carpenterblock",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "builders_zenith:block/carpenterblock",
+      "y": 270
+    }
+  }
+}

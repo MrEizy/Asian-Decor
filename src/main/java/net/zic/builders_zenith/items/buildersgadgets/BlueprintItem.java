@@ -56,7 +56,7 @@ public class BlueprintItem extends Item {
             if (!data.pos1().isPresent()) {
                 stack.set(ModDataComponents.BLUEPRINT_DATA.get(), data.withPos1(clickedPos));
                 player.displayClientMessage(
-                        Component.translatable("message.asiandecor.blueprint.pos1_set",
+                        Component.translatable("message.builders_zenith.blueprint.pos1_set",
                                 clickedPos.getX(), clickedPos.getY(), clickedPos.getZ()),
                         true
                 );
@@ -68,7 +68,7 @@ public class BlueprintItem extends Item {
                 if (!withPos2.isValidSize()) {
                     BlockPos dims = withPos2.getDimensions();
                     player.displayClientMessage(
-                            Component.translatable("message.asiandecor.blueprint.too_large",
+                            Component.translatable("message.builders_zenith.blueprint.too_large",
                                     dims.getX(), dims.getY(), dims.getZ(), BlueprintData.MAX_SIZE),
                             true
                     );
@@ -78,7 +78,7 @@ public class BlueprintItem extends Item {
                 stack.set(ModDataComponents.BLUEPRINT_DATA.get(), withPos2);
                 BlockPos dims = withPos2.getDimensions();
                 player.displayClientMessage(
-                        Component.translatable("message.asiandecor.blueprint.pos2_set",
+                        Component.translatable("message.builders_zenith.blueprint.pos2_set",
                                 clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(),
                                 dims.getX(), dims.getY(), dims.getZ()),
                         true
@@ -120,7 +120,7 @@ public class BlueprintItem extends Item {
         stack.set(ModDataComponents.BLUEPRINT_DATA.get(), saved);
 
         player.displayClientMessage(
-                Component.translatable("message.asiandecor.blueprint.cut",
+                Component.translatable("message.builders_zenith.blueprint.cut",
                         dims.getX(), dims.getY(), dims.getZ(), blocks.size()),
                 true
         );
@@ -132,12 +132,12 @@ public class BlueprintItem extends Item {
         if (!data.hasData()) {
             if (data.hasBothPositions()) {
                 player.displayClientMessage(
-                        Component.translatable("message.asiandecor.blueprint.ready_to_cut"),
+                        Component.translatable("message.builders_zenith.blueprint.ready_to_cut"),
                         true
                 );
             } else {
                 player.displayClientMessage(
-                        Component.translatable("message.asiandecor.blueprint.empty"),
+                        Component.translatable("message.builders_zenith.blueprint.empty"),
                         true
                 );
             }
@@ -162,7 +162,7 @@ public class BlueprintItem extends Item {
             // Show/update preview
             BlueprintSetPreviewPacket.sendToPlayer(serverPlayer, anchor, data);
             player.displayClientMessage(
-                    Component.translatable("message.asiandecor.blueprint.preview",
+                    Component.translatable("message.builders_zenith.blueprint.preview",
                             data.sizeX(), data.sizeY(), data.sizeZ(),
                             data.getRotationName()),
                     true
@@ -195,7 +195,7 @@ public class BlueprintItem extends Item {
         }
 
         player.displayClientMessage(
-                Component.translatable("message.asiandecor.blueprint.placed_cleared", placed, failed),
+                Component.translatable("message.builders_zenith.blueprint.placed_cleared", placed, failed),
                 true
         );
         level.playSound(null, origin, SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 1.0f, 0.8f);
@@ -211,48 +211,48 @@ public class BlueprintItem extends Item {
         BlueprintData data = stack.getOrDefault(ModDataComponents.BLUEPRINT_DATA.get(), BlueprintData.EMPTY);
 
         if (data.hasData()) {
-            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.saved_size",
+            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.saved_size",
                     data.sizeX(), data.sizeY(), data.sizeZ()).withStyle(net.minecraft.ChatFormatting.GREEN));
-            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.block_count",
+            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.block_count",
                     data.blocks().size()).withStyle(net.minecraft.ChatFormatting.GRAY));
-            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.rotation",
+            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.rotation",
                     data.getRotationName()).withStyle(net.minecraft.ChatFormatting.AQUA));
-            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.facing",
+            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.facing",
                     data.getFacingName()).withStyle(net.minecraft.ChatFormatting.YELLOW));
             if (data.cutMode()) {
-                tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.cut_mode")
+                tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.cut_mode")
                         .withStyle(net.minecraft.ChatFormatting.RED));
             }
 
         } else if (data.hasBothPositions()) {
             BlockPos dims = data.getDimensions();
-            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.area_selected",
+            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.area_selected",
                     dims.getX(), dims.getY(), dims.getZ()).withStyle(net.minecraft.ChatFormatting.YELLOW));
-            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.shift_to_cut")
+            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.shift_to_cut")
                     .withStyle(net.minecraft.ChatFormatting.GREEN));
 
         } else if (data.pos1().isPresent()) {
             BlockPos p1 = data.pos1().get();
-            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.pos1",
+            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.pos1",
                     p1.getX(), p1.getY(), p1.getZ()).withStyle(net.minecraft.ChatFormatting.GRAY));
-            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.set_pos2")
+            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.set_pos2")
                     .withStyle(net.minecraft.ChatFormatting.YELLOW));
 
         } else {
-            tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.no_area")
+            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.no_area")
                     .withStyle(net.minecraft.ChatFormatting.GRAY));
         }
 
         tooltip.add(Component.empty());
-        tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.usage.select")
+        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.select")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.usage.cut")
+        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.cut")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.usage.preview")
+        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.preview")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.usage.rotate")
+        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.rotate")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("tooltip.asiandecor.blueprint.usage.rotate_vertical")
+        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.rotate_vertical")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
     }
 }

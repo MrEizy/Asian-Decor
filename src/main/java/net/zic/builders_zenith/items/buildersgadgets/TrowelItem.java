@@ -70,29 +70,29 @@ public class TrowelItem extends Item {
         Mode mode = data.getMode();
         boolean hasPouchLink = data.hasLinkedPouch();
 
-        tooltipComponents.add(Component.translatable("tooltip.asiandecor.trowel.mode",
-                Component.translatable("tooltip.asiandecor.trowel.mode." + mode.getName())));
+        tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.mode",
+                Component.translatable("tooltip.builders_zenith.trowel.mode." + mode.getName())));
 
         if (mode == Mode.POUCH && hasPouchLink) {
             ItemStack pouch = data.getLinkedPouch();
             if (!pouch.isEmpty()) {
-                tooltipComponents.add(Component.translatable("tooltip.asiandecor.trowel.linked_pouch"));
+                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.linked_pouch"));
                 PouchContents contents = pouch.getOrDefault(ModDataComponents.POUCH_CONTENTS.get(), PouchContents.EMPTY);
                 int filled = contents.getNonEmptySlotCount();
-                tooltipComponents.add(Component.translatable("tooltip.asiandecor.trowel.pouch_slots",
+                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.pouch_slots",
                         filled, PouchContents.MAX_SLOTS));
             }
         } else if (mode == Mode.POUCH && !hasPouchLink) {
-            tooltipComponents.add(Component.translatable("tooltip.asiandecor.trowel.no_pouch_link"));
+            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.no_pouch_link"));
         }
 
         tooltipComponents.add(Component.empty());
-        tooltipComponents.add(Component.translatable("tooltip.asiandecor.trowel.usage"));
-        tooltipComponents.add(Component.translatable("tooltip.asiandecor.trowel.toggle_key", "V"));
+        tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.usage"));
+        tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.toggle_key", "V"));
 
         if (!hasPouchLink) {
             tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("tooltip.asiandecor.trowel.link_instruction"));
+            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.link_instruction"));
         }
     }
 
@@ -111,7 +111,7 @@ public class TrowelItem extends Item {
         List<ItemStack> availableBlocks = getAvailableBlocks(player, data, mode);
 
         if (availableBlocks.isEmpty()) {
-            player.displayClientMessage(Component.translatable("message.asiandecor.trowel.no_blocks"), true);
+            player.displayClientMessage(Component.translatable("message.builders_zenith.trowel.no_blocks"), true);
             return InteractionResult.FAIL;
         }
 

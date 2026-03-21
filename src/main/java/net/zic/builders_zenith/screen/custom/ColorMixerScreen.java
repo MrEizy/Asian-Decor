@@ -11,7 +11,7 @@ public class ColorMixerScreen extends AbstractContainerScreen<ColorMixerMenu> {
     private static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, "textures/gui/container/color_mixer.png");
 
-    // Progress sprite location (points to assets/asiandecor/textures/gui/sprites/color_mixer/mixer_progress.png)
+    // Progress sprite location (points to assets/builders_zenith/textures/gui/sprites/color_mixer/mixer_progress.png)
     private static final ResourceLocation PROGRESS_SPRITE =
             ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, "textures/gui/sprites/color_mixer/mixer_progress.png");
 

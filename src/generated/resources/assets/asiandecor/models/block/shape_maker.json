@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "render_type": "minecraft:full",
-  "textures": {
-    "all": "asiandecor:block/shape_maker"
-  }
-}

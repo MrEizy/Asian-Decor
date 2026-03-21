@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "builders_zenith:dyed_brick_stairs_red_light_gray"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "builders_zenith:blocks/dyed_brick_stairs_red_light_gray"
+}

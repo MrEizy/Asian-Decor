@@ -223,7 +223,7 @@ public class ColorMixerBlockEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("container.asiandecor.color_mixer");
+        return Component.translatable("container.builders_zenith.color_mixer");
     }
 
     @Override
