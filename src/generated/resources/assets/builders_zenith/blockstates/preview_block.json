@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "builders_zenith:block/preview_block"
+    }
+  }
+}

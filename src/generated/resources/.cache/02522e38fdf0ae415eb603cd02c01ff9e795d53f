@@ -1,0 +1,11 @@
+// 1.21.1	2026-03-21T21:16:26.7072333	Tags for minecraft:block mod id builders_zenith
+3cd725de2f0d91f6780aa3e5ed238cd9f5246dc9 data/builders_zenith/tags/block/dyed_brick_blocks.json
+ac8a9ae23a6e58668cd8e2651ee228aebbfe6095 data/builders_zenith/tags/block/dyed_brick_slabs.json
+c315e490aa00cb4e6285eb6e2b70ffd72aaad94b data/builders_zenith/tags/block/dyed_brick_stairs.json
+1cb76b7870d00cfa2fb0bdf6bfb265efa7ad0b97 data/builders_zenith/tags/block/dyed_brick_walls.json
+d47c42a9d55141bd6bb92c80da5dd4226f2b8265 data/minecraft/tags/block/mineable/axe.json
+67ec15b95a112fc77c7237aed3e95fd0358b0c6b data/minecraft/tags/block/mineable/pickaxe.json
+ac8a9ae23a6e58668cd8e2651ee228aebbfe6095 data/minecraft/tags/block/slabs.json
+c315e490aa00cb4e6285eb6e2b70ffd72aaad94b data/minecraft/tags/block/stairs.json
+1cb76b7870d00cfa2fb0bdf6bfb265efa7ad0b97 data/minecraft/tags/block/walls.json
+1cb76b7870d00cfa2fb0bdf6bfb265efa7ad0b97 data/minecraft/tags/block/wall_post_override.json

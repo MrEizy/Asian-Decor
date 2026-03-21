@@ -1,4 +1,4 @@
-// 1.21.1	2026-03-21T18:55:50.0616269	Recipes
+// 1.21.1	2026-03-21T20:39:13.4554567	Recipes
 746c5d2de0b7a1ac64e71d039180fadce7e3926b data/builders_zenith/recipe/carpenter/acacia_button.json
 f96c5620049f4e85de91d26aba8e002eee79c2b6 data/builders_zenith/recipe/carpenter/acacia_door.json
 ccd0f634cddaa659c36598f09cf2a01f20922de4 data/builders_zenith/recipe/carpenter/acacia_fence.json
@@ -172,4 +172,10 @@ b1d8cc7855bb4efdd335428daa36d6109335e05b data/builders_zenith/recipe/carpenter/w
 e11f954a91e8d9afc26e7863561f51e07de794f1 data/builders_zenith/recipe/carpenter/warped_stem_to_planks.json
 93dd6ae44220577edae85108d2a3ad0807beb19d data/builders_zenith/recipe/carpenter/warped_trapdoor.json
 db30e5f31c0312ca5e186f5fa1fa9d4c9962e5ac data/builders_zenith/recipe/color_mixer/recolor_any.json
+8dc7ac111ecafa7f62d6c822da71473fc24e6877 data/builders_zenith/recipe/color_mixer/recolor_slab_any.json
+f9a5b6909df543f08a2c538aa7d18a1264790463 data/builders_zenith/recipe/color_mixer/recolor_stairs_any.json
+b4629ae79aaf82b7f9af507f61d927da2e65375d data/builders_zenith/recipe/color_mixer/recolor_wall_any.json
 098c27f2bd73469d68c5a87c1151dfc40401f23b data/builders_zenith/recipe/color_mixer/vanilla_bricks_to_dyed.json
+977e872b927967b32370f62274d967315b664398 data/builders_zenith/recipe/color_mixer/vanilla_slabs_to_dyed.json
+54cf43cd684798c73bda52f0f385f6ca3563bc1a data/builders_zenith/recipe/color_mixer/vanilla_stairs_to_dyed.json
+244bf2b37c3e02471a6f076e0525379f778f5279 data/builders_zenith/recipe/color_mixer/vanilla_walls_to_dyed.json

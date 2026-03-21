@@ -22,6 +22,7 @@ import net.zic.builders_zenith.recipe.ColorMixerRecipe;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecipe> {
 
@@ -65,44 +66,42 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ColorMixerRecipe recipe, IFocusGroup focuses) {
-        if (recipe.isVanillaRecipe()) {
-            setupVanillaRecipe(builder);
+        String group = recipe.getGroup();
+        boolean isSlab = group.contains("slab");
+        boolean isStairs = group.contains("stair");
+        boolean isWall = group.contains("wall");
+
+        // Get the correct block map based on recipe type
+        Function<DyedBrickType, ItemStack> stackMapper;
+        ItemStack vanillaInput;
+
+        if (isSlab) {
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_SLABS.get(type).get());
+            vanillaInput = new ItemStack(Items.BRICK_SLAB);
+        } else if (isStairs) {
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_STAIRS.get(type).get());
+            vanillaInput = new ItemStack(Items.BRICK_STAIRS);
+        } else if (isWall) {
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_WALLS.get(type).get());
+            vanillaInput = new ItemStack(Items.BRICK_WALL);
         } else {
-            setupRecolorRecipe(builder);
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get());
+            vanillaInput = new ItemStack(Items.BRICKS);
         }
-    }
 
-    private void setupVanillaRecipe(IRecipeLayoutBuilder builder) {
-        // Base slot - Vanilla Bricks
-        builder.addSlot(RecipeIngredientRole.INPUT, 8, 13)
-                .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, new ItemStack(Items.BRICKS));
-
-        // Primary dye slot - All dyes (JEI will expand this)
-        List<ItemStack> allDyes = Arrays.stream(DyeColor.values())
-                .map(color -> new ItemStack(getDyeItem(color)))
+        List<ItemStack> allDyedVariants = Arrays.stream(DyedBrickType.values())
+                .map(stackMapper)
                 .toList();
-        builder.addSlot(RecipeIngredientRole.INPUT, 28, 13)
-                .addItemStacks(allDyes);
 
-        // Secondary dye slot - All dyes
-        builder.addSlot(RecipeIngredientRole.INPUT, 18, 32)
-                .addItemStacks(allDyes);
-
-        // Output slot - All possible dyed bricks (JEI will match combinations)
-        List<ItemStack> allDyedBricks = Arrays.stream(DyedBrickType.values())
-                .map(type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get()))
-                .toList();
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 20)
-                .addItemStacks(allDyedBricks);
-    }
-
-    private void setupRecolorRecipe(IRecipeLayoutBuilder builder) {
-        // Base slot - All dyed bricks
-        List<ItemStack> allDyedBricks = Arrays.stream(DyedBrickType.values())
-                .map(type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get()))
-                .toList();
-        builder.addSlot(RecipeIngredientRole.INPUT, 8, 13)
-                .addItemStacks(allDyedBricks);
+        if (recipe.isVanillaRecipe()) {
+            // Vanilla recipe: Vanilla block + Dye + Dye
+            builder.addSlot(RecipeIngredientRole.INPUT, 8, 13)
+                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, vanillaInput);
+        } else {
+            // Recolor recipe: Any dyed variant + Dye + Dye
+            builder.addSlot(RecipeIngredientRole.INPUT, 8, 13)
+                    .addItemStacks(allDyedVariants);
+        }
 
         // Primary dye slot - All dyes
         List<ItemStack> allDyes = Arrays.stream(DyeColor.values())
@@ -115,9 +114,9 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
         builder.addSlot(RecipeIngredientRole.INPUT, 18, 32)
                 .addItemStacks(allDyes);
 
-        // Output slot - All possible dyed bricks
+        // Output slot - All possible dyed variants
         builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 20)
-                .addItemStacks(allDyedBricks);
+                .addItemStacks(allDyedVariants);
     }
 
     private static net.minecraft.world.item.Item getDyeItem(DyeColor color) {

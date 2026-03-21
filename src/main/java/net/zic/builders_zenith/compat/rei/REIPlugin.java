@@ -6,18 +6,22 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.forge.REIPluginClient;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.blocks.ModBlocks;
+import net.zic.builders_zenith.blocks.custom.DyedBrickType;
 import net.zic.builders_zenith.recipe.CarpenterRecipes;
 import net.zic.builders_zenith.recipe.ColorMixerRecipe;
 import net.zic.builders_zenith.recipe.ModRecipes;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,20 +87,50 @@ public class REIPlugin implements REIClientPlugin {
 
     public static class ColorMixerDisplay extends BasicDisplay {
         private final boolean isVanillaRecipe;
+        private final String group;
 
         public ColorMixerDisplay(ColorMixerRecipe recipe) {
             super(
-                    // Convert ingredients to EntryIngredient list
                     recipe.getIngredients().stream()
                             .map(EntryIngredients::ofIngredient)
                             .toList(),
-                    Collections.singletonList(EntryIngredients.of(recipe.getResultItem(null)))
+                    getOutputs(recipe)
             );
             this.isVanillaRecipe = recipe.isVanillaRecipe();
+            this.group = recipe.getGroup();
+        }
+
+        private static List<EntryIngredient> getOutputs(ColorMixerRecipe recipe) {
+            String group = recipe.getGroup();
+            boolean isSlab = group.contains("slab");
+            boolean isStairs = group.contains("stair");
+            boolean isWall = group.contains("wall");
+
+            java.util.function.Function<DyedBrickType, ItemStack> mapper;
+
+            if (isSlab) {
+                mapper = type -> new ItemStack(ModBlocks.DYED_BRICK_SLABS.get(type).get());
+            } else if (isStairs) {
+                mapper = type -> new ItemStack(ModBlocks.DYED_BRICK_STAIRS.get(type).get());
+            } else if (isWall) {
+                mapper = type -> new ItemStack(ModBlocks.DYED_BRICK_WALLS.get(type).get());
+            } else {
+                mapper = type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get());
+            }
+
+            List<ItemStack> outputs = Arrays.stream(DyedBrickType.values())
+                    .map(mapper)
+                    .toList();
+
+            return Collections.singletonList(EntryIngredients.ofItemStacks(outputs));
         }
 
         public boolean isVanillaRecipe() {
             return isVanillaRecipe;
+        }
+
+        public String getGroup() {
+            return group;
         }
 
         @Override

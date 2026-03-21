@@ -1,4 +1,3 @@
-// ColorMixerRecipe.java
 package net.zic.builders_zenith.recipe;
 
 import com.mojang.serialization.Codec;
@@ -79,12 +78,23 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
     }
 
     /**
-     * Assemble result dynamically based on dye colors
+     * Assemble result dynamically based on dye colors and recipe type
      */
     public ItemStack assembleWithDyes(DyeColor primaryDye, DyeColor secondaryDye) {
         if (primaryDye != null && secondaryDye != null) {
             DyedBrickType resultType = DyedBrickType.fromColors(primaryDye, secondaryDye);
-            return new ItemStack(ModBlocks.DYED_BRICKS.get(resultType).get(), 8);
+
+            // Determine which block type to return based on recipe group
+            if (group.contains("slab")) {
+                return new ItemStack(ModBlocks.DYED_BRICK_SLABS.get(resultType).get(), 8);
+            } else if (group.contains("stairs")) {
+                return new ItemStack(ModBlocks.DYED_BRICK_STAIRS.get(resultType).get(), 4);
+            } else if (group.contains("wall")) {
+                return new ItemStack(ModBlocks.DYED_BRICK_WALLS.get(resultType).get(), 6);
+            } else {
+                // Default to full bricks
+                return new ItemStack(ModBlocks.DYED_BRICKS.get(resultType).get(), 8);
+            }
         }
         // Fallback to placeholder
         return this.result.copy();
@@ -94,14 +104,14 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
      * Check if this is the vanilla brick recipe
      */
     public boolean isVanillaRecipe() {
-        return "dyed_bricks_vanilla".equals(this.group);
+        return group != null && group.contains("vanilla");
     }
 
     /**
      * Check if this is the recolor recipe
      */
     public boolean isRecolorRecipe() {
-        return "dyed_bricks_recolor".equals(this.group);
+        return group != null && group.contains("recolor");
     }
 
     @Override

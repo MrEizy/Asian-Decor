@@ -54,27 +54,56 @@ public class ColorMixerCategory implements DisplayCategory<REIPlugin.ColorMixerD
                 .map(color -> new ItemStack(getDyeItem(color)))
                 .toList();
 
+        // Determine block type from group
+        String group = display.getGroup();
+        boolean isSlab = group.contains("slab");
+        boolean isStairs = group.contains("stair");
+        boolean isWall = group.contains("wall");
+
+        java.util.function.Function<DyedBrickType, ItemStack> stackMapper;
+        ItemStack vanillaInput;
+
+        if (isSlab) {
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_SLABS.get(type).get());
+            vanillaInput = new ItemStack(Items.BRICK_SLAB);
+        } else if (isStairs) {
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_STAIRS.get(type).get());
+            vanillaInput = new ItemStack(Items.BRICK_STAIRS);
+        } else if (isWall) {
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_WALLS.get(type).get());
+            vanillaInput = new ItemStack(Items.BRICK_WALL);
+        } else {
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get());
+            vanillaInput = new ItemStack(Items.BRICKS);
+        }
+
         if (display.isVanillaRecipe()) {
-            // Vanilla recipe: Bricks + Dye + Dye
             widgets.add(Widgets.createSlot(new Point(startPoint.x + 8, startPoint.y + 13))
-                    .entry(EntryStacks.of(Items.BRICKS))
+                    .entry(EntryStacks.of(vanillaInput))
                     .markInput());
 
+            String label = isSlab ? "Vanilla Slabs + Dyes" :
+                    isStairs ? "Vanilla Stairs + Dyes" :
+                            isWall ? "Vanilla Walls + Dyes" :
+                                    "Vanilla Bricks + Dyes";
             widgets.add(Widgets.createLabel(new Point(startPoint.x + 60, startPoint.y + 5),
-                            Component.literal("Vanilla Bricks + Dyes"))
+                            Component.literal(label))
                     .color(0xFFAAAAAA, 0xFFAAAAAA)
                     .noShadow());
         } else {
-            // Recolor recipe: Any Dyed Brick + Dye + Dye
-            List<ItemStack> allDyedBricks = Arrays.stream(DyedBrickType.values())
-                    .map(type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get()))
+            List<ItemStack> allDyed = Arrays.stream(DyedBrickType.values())
+                    .map(stackMapper)
                     .toList();
             widgets.add(Widgets.createSlot(new Point(startPoint.x + 8, startPoint.y + 13))
-                    .entries(allDyedBricks.stream().map(EntryStacks::of).toList())
+                    .entries(allDyed.stream().map(EntryStacks::of).toList())
                     .markInput());
 
+            String label = isSlab ? "Dyed Slabs + Dyes" :
+                    isStairs ? "Dyed Stairs + Dyes" :
+                            isWall ? "Dyed Walls + Dyes" :
+                                    "Any Dyed Brick + Dyes";
             widgets.add(Widgets.createLabel(new Point(startPoint.x + 60, startPoint.y + 5),
-                            Component.literal("Any Dyed Brick + Dyes"))
+                            Component.literal(label))
                     .color(0xFFAAAAAA, 0xFFAAAAAA)
                     .noShadow());
         }
@@ -89,12 +118,12 @@ public class ColorMixerCategory implements DisplayCategory<REIPlugin.ColorMixerD
                 .entries(allDyes.stream().map(EntryStacks::of).toList())
                 .markInput());
 
-        // Output - all possible dyed bricks
-        List<ItemStack> allDyedBricks = Arrays.stream(DyedBrickType.values())
-                .map(type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get()))
+        // Output - correct variant type
+        List<ItemStack> allDyedOutputs = Arrays.stream(DyedBrickType.values())
+                .map(stackMapper)
                 .toList();
         widgets.add(Widgets.createSlot(new Point(startPoint.x + 103, startPoint.y + 20))
-                .entries(allDyedBricks.stream().map(EntryStacks::of).toList())
+                .entries(allDyedOutputs.stream().map(EntryStacks::of).toList())
                 .markOutput());
 
         return widgets;

@@ -82,14 +82,14 @@ public class ModBlocks {
                     .sound(SoundType.STONE)
                     .noOcclusion()));
 
-    public static final DeferredBlock<Block> WINGED_TABLE = registerBlock("winged_table",
+    /*public static final DeferredBlock<Block> WINGED_TABLE = registerBlock("winged_table",
             () -> new WingedTableBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .requiresCorrectToolForDrops()
                     .strength(2.5F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()
-            ));
+            ));*/
 
     public static final DeferredBlock<Block> PREVIEW_BLOCK = registerBlock("preview_block",
             () -> new Block(BlockBehaviour.Properties.of()

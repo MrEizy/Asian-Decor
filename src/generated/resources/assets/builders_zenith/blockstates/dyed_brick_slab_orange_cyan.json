@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "builders_zenith:block/dyed_brick_slab_orange_cyan"
+    },
+    "type=double": {
+      "model": "builders_zenith:block/dyed_brick_orange_cyan"
+    },
+    "type=top": {
+      "model": "builders_zenith:block/dyed_brick_slab_orange_cyan_top"
+    }
+  }
+}

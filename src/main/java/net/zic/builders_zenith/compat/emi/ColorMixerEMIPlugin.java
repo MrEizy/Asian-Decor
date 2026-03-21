@@ -84,7 +84,28 @@ public class ColorMixerEMIPlugin implements EmiPlugin {
 
         @Override
         public List<EmiStack> getOutputs() {
-            return List.of(EmiStack.of(recipe.getResultItem(null)));
+            String group = recipe.getGroup();
+            boolean isSlab = group.contains("slab");
+            boolean isStairs = group.contains("stair");
+            boolean isWall = group.contains("wall");
+
+            java.util.function.Function<DyedBrickType, EmiStack> mapper;
+
+            if (isSlab) {
+                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_SLABS.get(type).get());
+            } else if (isStairs) {
+                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_STAIRS.get(type).get());
+            } else if (isWall) {
+                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_WALLS.get(type).get());
+            } else {
+                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICKS.get(type).get());
+            }
+
+            List<EmiStack> outputs = Arrays.stream(DyedBrickType.values())
+                    .map(mapper)
+                    .toList();
+
+            return outputs;
         }
 
         @Override
@@ -99,43 +120,64 @@ public class ColorMixerEMIPlugin implements EmiPlugin {
 
         @Override
         public void addWidgets(WidgetHolder widgets) {
-            // Draw custom background
             widgets.addTexture(new dev.emi.emi.api.render.EmiTexture(
                     BACKGROUND_TEXTURE, 0, 0, 121, 57), 0, 0);
 
-            // All dyes for cycling
             List<EmiStack> allDyes = Arrays.stream(DyeColor.values())
                     .map(color -> EmiStack.of(getDyeItem(color)))
                     .toList();
 
-            if (recipe.isVanillaRecipe()) {
-                // Vanilla: Bricks + Dye + Dye
-                widgets.addSlot(EmiStack.of(Items.BRICKS), 8, 13);
+            String group = recipe.getGroup();
+            boolean isSlab = group.contains("slab");
+            boolean isStairs = group.contains("stair");
+            boolean isWall = group.contains("wall");
 
-                widgets.addText(Component.literal("Vanilla Bricks + Dyes"), 10, 5, 0xAAAAAA, false);
+            java.util.function.Function<DyedBrickType, EmiStack> stackMapper;
+            EmiStack vanillaInput;
+
+            if (isSlab) {
+                stackMapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_SLABS.get(type).get());
+                vanillaInput = EmiStack.of(Items.BRICK_SLAB);
+            } else if (isStairs) {
+                stackMapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_STAIRS.get(type).get());
+                vanillaInput = EmiStack.of(Items.BRICK_STAIRS);
+            } else if (isWall) {
+                stackMapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_WALLS.get(type).get());
+                vanillaInput = EmiStack.of(Items.BRICK_WALL);
             } else {
-                // Recolor: Any Dyed Brick + Dye + Dye
-                List<EmiStack> allDyedBricks = Arrays.stream(DyedBrickType.values())
-                        .map(type -> EmiStack.of(ModBlocks.DYED_BRICKS.get(type).get()))
-                        .toList();
-                widgets.addSlot(EmiIngredient.of(allDyedBricks), 8, 13);
-
-                widgets.addText(Component.literal("Any Dyed Brick + Dyes"), 10, 5, 0xAAAAAA, false);
+                stackMapper = type -> EmiStack.of(ModBlocks.DYED_BRICKS.get(type).get());
+                vanillaInput = EmiStack.of(Items.BRICKS);
             }
 
-            // Primary dye
-            widgets.addSlot(EmiIngredient.of(allDyes), 28, 13);
+            if (recipe.isVanillaRecipe()) {
+                widgets.addSlot(vanillaInput, 8, 13);
+                widgets.addText(Component.literal(
+                        isSlab ? "Vanilla Slabs + Dyes" :
+                                isStairs ? "Vanilla Stairs + Dyes" :
+                                        isWall ? "Vanilla Walls + Dyes" :
+                                                "Vanilla Bricks + Dyes"
+                ), 10, 5, 0xAAAAAA, false);
+            } else {
+                List<EmiStack> allDyed = Arrays.stream(DyedBrickType.values())
+                        .map(stackMapper)
+                        .toList();
+                widgets.addSlot(EmiIngredient.of(allDyed), 8, 13);
+                widgets.addText(Component.literal(
+                        isSlab ? "Dyed Slabs + Dyes" :
+                                isStairs ? "Dyed Stairs + Dyes" :
+                                        isWall ? "Dyed Walls + Dyes" :
+                                                "Any Dyed Brick + Dyes"
+                ), 10, 5, 0xAAAAAA, false);
+            }
 
-            // Secondary dye
+            widgets.addSlot(EmiIngredient.of(allDyes), 28, 13);
             widgets.addSlot(EmiIngredient.of(allDyes), 18, 32);
 
-            // Output - all possible results
-            List<EmiStack> allDyedBricks = Arrays.stream(DyedBrickType.values())
-                    .map(type -> EmiStack.of(ModBlocks.DYED_BRICKS.get(type).get()))
+            List<EmiStack> allOutputs = Arrays.stream(DyedBrickType.values())
+                    .map(stackMapper)
                     .toList();
-            widgets.addSlot(EmiIngredient.of(allDyedBricks), 103, 20).recipeContext(this);
+            widgets.addSlot(EmiIngredient.of(allOutputs), 103, 20).recipeContext(this);
 
-            // Processing time
             int processingTime = recipe.getProcessingTime();
             if (processingTime > 0) {
                 String timeText = (processingTime / 20) + "s";

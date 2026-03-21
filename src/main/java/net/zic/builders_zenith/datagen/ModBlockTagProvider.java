@@ -22,7 +22,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         tag(BlockTags.MINEABLE_WITH_AXE)
                 .add(ModBlocks.CARPENTER.get())
-                .add(ModBlocks.WINGED_TABLE.get());
+                //.add(ModBlocks.WINGED_TABLE.get())
+        ;
 
         // Pickaxe mineable for all dyed brick variants
         var pickaxeBuilder = tag(BlockTags.MINEABLE_WITH_PICKAXE);
