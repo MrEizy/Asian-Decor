@@ -100,9 +100,9 @@
           "tintindex": 0,
           "uv": [
             8.0,
-            8.0,
+            0.0,
             16.0,
-            16.0
+            8.0
           ]
         },
         "north": {
@@ -121,32 +121,38 @@
           "tintindex": 0,
           "uv": [
             0.0,
-            8.0,
+            0.0,
             16.0,
-            16.0
+            8.0
           ]
         },
         "up": {
           "cullface": "up",
           "texture": "#brick_base",
-          "tintindex": 0
+          "tintindex": 0,
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            8.0
+          ]
         },
         "west": {
           "cullface": "west",
           "texture": "#brick_base",
           "tintindex": 0,
           "uv": [
+            0.0,
+            0.0,
             8.0,
-            8.0,
-            16.0,
-            16.0
+            8.0
           ]
         }
       },
       "from": [
-        0,
         8,
-        8
+        8,
+        0
       ],
       "to": [
         16,
@@ -162,9 +168,9 @@
           "tintindex": 1,
           "uv": [
             8.0,
-            8.0,
+            0.0,
             16.0,
-            16.0
+            8.0
           ]
         },
         "north": {
@@ -183,32 +189,38 @@
           "tintindex": 1,
           "uv": [
             0.0,
-            8.0,
+            0.0,
             16.0,
-            16.0
+            8.0
           ]
         },
         "up": {
           "cullface": "up",
           "texture": "#mortar_overlay",
-          "tintindex": 1
+          "tintindex": 1,
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            8.0
+          ]
         },
         "west": {
           "cullface": "west",
           "texture": "#mortar_overlay",
           "tintindex": 1,
           "uv": [
+            0.0,
+            0.0,
             8.0,
-            8.0,
-            16.0,
-            16.0
+            8.0
           ]
         }
       },
       "from": [
-        0,
         8,
-        8
+        8,
+        0
       ],
       "to": [
         16,

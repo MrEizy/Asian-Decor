@@ -86,13 +86,7 @@
       "faces": {
         "down": {
           "texture": "#brick_base",
-          "tintindex": 0,
-          "uv": [
-            8.0,
-            8.0,
-            16.0,
-            16.0
-          ]
+          "tintindex": 0
         },
         "east": {
           "cullface": "east",
@@ -107,13 +101,7 @@
         },
         "north": {
           "texture": "#brick_base",
-          "tintindex": 0,
-          "uv": [
-            8.0,
-            0.0,
-            16.0,
-            8.0
-          ]
+          "tintindex": 0
         },
         "south": {
           "cullface": "south",
@@ -156,13 +144,7 @@
         },
         "north": {
           "texture": "#mortar_overlay",
-          "tintindex": 1,
-          "uv": [
-            8.0,
-            0.0,
-            16.0,
-            8.0
-          ]
+          "tintindex": 1
         },
         "south": {
           "cullface": "south",

@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/wall_inventory",
-  "textures": {
-    "wall": "asiandecor:block/brick_base"
-  }
+  "parent": "asiandecor:block/dyed_brick_wall_light_gray_black_inventory"
 }
