@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "E": {
+      "item": "minecraft:deepslate_tiles"
+    }
+  },
+  "pattern": [
+    "E  ",
+    "E  ",
+    "E  "
+  ],
+  "result": {
+    "count": 6,
+    "id": "builders_zenith:deepslate_tile_vertical_slab"
+  }
+}

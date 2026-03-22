@@ -30,6 +30,62 @@ public class lang extends LanguageProvider {
         add("block.builders_zenith.shape_maker", "Shape Builder");
 
 
+
+// Vertical slabs - Wood
+        add("block.builders_zenith.oak_vertical_slab", "Oak Vertical Slab");
+        add("block.builders_zenith.spruce_vertical_slab", "Spruce Vertical Slab");
+        add("block.builders_zenith.birch_vertical_slab", "Birch Vertical Slab");
+        add("block.builders_zenith.jungle_vertical_slab", "Jungle Vertical Slab");
+        add("block.builders_zenith.acacia_vertical_slab", "Acacia Vertical Slab");
+        add("block.builders_zenith.dark_oak_vertical_slab", "Dark Oak Vertical Slab");
+        add("block.builders_zenith.mangrove_vertical_slab", "Mangrove Vertical Slab");
+        add("block.builders_zenith.cherry_vertical_slab", "Cherry Vertical Slab");
+        add("block.builders_zenith.bamboo_vertical_slab", "Bamboo Vertical Slab");
+        add("block.builders_zenith.crimson_vertical_slab", "Crimson Vertical Slab");
+        add("block.builders_zenith.warped_vertical_slab", "Warped Vertical Slab");
+
+// Vertical slabs - Stone
+        add("block.builders_zenith.stone_vertical_slab", "Stone Vertical Slab");
+        add("block.builders_zenith.mud_brick_vertical_slab", "Mud Brick Vertical Slab");
+        add("block.builders_zenith.cobblestone_vertical_slab", "Cobblestone Vertical Slab");
+        add("block.builders_zenith.mossy_cobblestone_vertical_slab", "Mossy Cobblestone Vertical Slab");
+        add("block.builders_zenith.smooth_stone_vertical_slab", "Smooth Stone Vertical Slab");
+        add("block.builders_zenith.stone_brick_vertical_slab", "Stone Brick Vertical Slab");
+        add("block.builders_zenith.mossy_stone_brick_vertical_slab", "Mossy Stone Brick Vertical Slab");
+        add("block.builders_zenith.granite_vertical_slab", "Granite Vertical Slab");
+        add("block.builders_zenith.polished_granite_vertical_slab", "Polished Granite Vertical Slab");
+        add("block.builders_zenith.diorite_vertical_slab", "Diorite Vertical Slab");
+        add("block.builders_zenith.polished_diorite_vertical_slab", "Polished Diorite Vertical Slab");
+        add("block.builders_zenith.andesite_vertical_slab", "Andesite Vertical Slab");
+        add("block.builders_zenith.polished_andesite_vertical_slab", "Polished Andesite Vertical Slab");
+        add("block.builders_zenith.cobbled_deepslate_vertical_slab", "Cobbled Deepslate Vertical Slab");
+        add("block.builders_zenith.polished_deepslate_vertical_slab", "Polished Deepslate Vertical Slab");
+        add("block.builders_zenith.deepslate_brick_vertical_slab", "Deepslate Brick Vertical Slab");
+        add("block.builders_zenith.deepslate_tile_vertical_slab", "Deepslate Tile Vertical Slab");
+        add("block.builders_zenith.tuff_vertical_slab", "Tuff Vertical Slab");
+        add("block.builders_zenith.polished_tuff_vertical_slab", "Polished Tuff Vertical Slab");
+        add("block.builders_zenith.tuff_brick_vertical_slab", "Tuff Brick Vertical Slab");
+        add("block.builders_zenith.brick_vertical_slab", "Brick Vertical Slab");
+        add("block.builders_zenith.sandstone_vertical_slab", "Sandstone Vertical Slab");
+        add("block.builders_zenith.smooth_sandstone_vertical_slab", "Smooth Sandstone Vertical Slab");
+        add("block.builders_zenith.cut_sandstone_vertical_slab", "Cut Sandstone Vertical Slab");
+        add("block.builders_zenith.red_sandstone_vertical_slab", "Red Sandstone Vertical Slab");
+        add("block.builders_zenith.smooth_red_sandstone_vertical_slab", "Smooth Red Sandstone Vertical Slab");
+        add("block.builders_zenith.cut_red_sandstone_vertical_slab", "Cut Red Sandstone Vertical Slab");
+        add("block.builders_zenith.prismarine_vertical_slab", "Prismarine Vertical Slab");
+        add("block.builders_zenith.prismarine_brick_vertical_slab", "Prismarine Brick Vertical Slab");
+        add("block.builders_zenith.dark_prismarine_vertical_slab", "Dark Prismarine Vertical Slab");
+        add("block.builders_zenith.nether_brick_vertical_slab", "Nether Brick Vertical Slab");
+        add("block.builders_zenith.red_nether_brick_vertical_slab", "Red Nether Brick Vertical Slab");
+        add("block.builders_zenith.blackstone_vertical_slab", "Blackstone Vertical Slab");
+        add("block.builders_zenith.polished_blackstone_vertical_slab", "Polished Blackstone Vertical Slab");
+        add("block.builders_zenith.polished_blackstone_brick_vertical_slab", "Polished Blackstone Brick Vertical Slab");
+        add("block.builders_zenith.end_stone_brick_vertical_slab", "End Stone Brick Vertical Slab");
+        add("block.builders_zenith.purpur_vertical_slab", "Purpur Vertical Slab");
+        add("block.builders_zenith.quartz_vertical_slab", "Quartz Vertical Slab");
+        add("block.builders_zenith.smooth_quartz_vertical_slab", "Smooth Quartz Vertical Slab");
+
+
         // All Dyed Bricks - same name for all, tooltips show the difference
         for (DyedBrickType type : DyedBrickType.values()) {
             String blockId = "block.builders_zenith.dyed_brick_" + type.getSerializedName();

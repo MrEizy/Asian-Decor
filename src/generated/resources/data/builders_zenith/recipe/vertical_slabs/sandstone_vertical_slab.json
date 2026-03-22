@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "E": {
+      "item": "minecraft:sandstone"
+    }
+  },
+  "pattern": [
+    "E  ",
+    "E  ",
+    "E  "
+  ],
+  "result": {
+    "count": 6,
+    "id": "builders_zenith:sandstone_vertical_slab"
+  }
+}

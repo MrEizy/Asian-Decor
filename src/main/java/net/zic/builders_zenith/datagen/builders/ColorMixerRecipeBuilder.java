@@ -92,7 +92,7 @@ public class ColorMixerRecipeBuilder {
 
     private static void generateVanillaVerticalSlabRecipe(RecipeOutput output) {
         NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(Ingredient.of(Items.BRICK_SLAB)); // Or a new vertical slab item
+        ingredients.add(Ingredient.of(ModBlocks.BRICK_VERTICAL_SLAB)); // Or a new vertical slab item
         ingredients.add(Ingredient.of(ModTags.Items.DYES));
         ingredients.add(Ingredient.of(ModTags.Items.DYES));
 

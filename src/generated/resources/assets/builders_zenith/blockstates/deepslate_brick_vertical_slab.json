@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "double=false,facing=east,waterlogged=false": {
+      "model": "builders_zenith:block/deepslate_brick_vertical_slab_east"
+    },
+    "double=false,facing=east,waterlogged=true": {
+      "model": "builders_zenith:block/deepslate_brick_vertical_slab_east"
+    },
+    "double=false,facing=north,waterlogged=false": {
+      "model": "builders_zenith:block/deepslate_brick_vertical_slab"
+    },
+    "double=false,facing=north,waterlogged=true": {
+      "model": "builders_zenith:block/deepslate_brick_vertical_slab"
+    },
+    "double=false,facing=south,waterlogged=false": {
+      "model": "builders_zenith:block/deepslate_brick_vertical_slab_south"
+    },
+    "double=false,facing=south,waterlogged=true": {
+      "model": "builders_zenith:block/deepslate_brick_vertical_slab_south"
+    },
+    "double=false,facing=west,waterlogged=false": {
+      "model": "builders_zenith:block/deepslate_brick_vertical_slab_west"
+    },
+    "double=false,facing=west,waterlogged=true": {
+      "model": "builders_zenith:block/deepslate_brick_vertical_slab_west"
+    },
+    "double=true,facing=east,waterlogged=false": {
+      "model": "minecraft:block/deepslate_bricks"
+    },
+    "double=true,facing=east,waterlogged=true": {
+      "model": "minecraft:block/deepslate_bricks"
+    },
+    "double=true,facing=north,waterlogged=false": {
+      "model": "minecraft:block/deepslate_bricks"
+    },
+    "double=true,facing=north,waterlogged=true": {
+      "model": "minecraft:block/deepslate_bricks"
+    },
+    "double=true,facing=south,waterlogged=false": {
+      "model": "minecraft:block/deepslate_bricks"
+    },
+    "double=true,facing=south,waterlogged=true": {
+      "model": "minecraft:block/deepslate_bricks"
+    },
+    "double=true,facing=west,waterlogged=false": {
+      "model": "minecraft:block/deepslate_bricks"
+    },
+    "double=true,facing=west,waterlogged=true": {
+      "model": "minecraft:block/deepslate_bricks"
+    }
+  }
+}

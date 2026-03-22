@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "E": {
+      "item": "minecraft:dark_oak_planks"
+    }
+  },
+  "pattern": [
+    "E  ",
+    "E  ",
+    "E  "
+  ],
+  "result": {
+    "count": 6,
+    "id": "builders_zenith:dark_oak_vertical_slab"
+  }
+}

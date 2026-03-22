@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "E": {
+      "item": "minecraft:dark_prismarine"
+    }
+  },
+  "pattern": [
+    "E  ",
+    "E  ",
+    "E  "
+  ],
+  "result": {
+    "count": 6,
+    "id": "builders_zenith:dark_prismarine_vertical_slab"
+  }
+}

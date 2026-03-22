@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "E": {
+      "item": "minecraft:blackstone"
+    }
+  },
+  "pattern": [
+    "E  ",
+    "E  ",
+    "E  "
+  ],
+  "result": {
+    "count": 6,
+    "id": "builders_zenith:blackstone_vertical_slab"
+  }
+}

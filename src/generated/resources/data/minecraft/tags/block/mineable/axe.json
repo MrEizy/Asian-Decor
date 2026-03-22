@@ -1,5 +1,16 @@
 {
   "values": [
-    "builders_zenith:carpenterblock"
+    "builders_zenith:carpenterblock",
+    "builders_zenith:oak_vertical_slab",
+    "builders_zenith:spruce_vertical_slab",
+    "builders_zenith:birch_vertical_slab",
+    "builders_zenith:jungle_vertical_slab",
+    "builders_zenith:acacia_vertical_slab",
+    "builders_zenith:dark_oak_vertical_slab",
+    "builders_zenith:mangrove_vertical_slab",
+    "builders_zenith:cherry_vertical_slab",
+    "builders_zenith:bamboo_vertical_slab",
+    "builders_zenith:crimson_vertical_slab",
+    "builders_zenith:warped_vertical_slab"
   ]
 }

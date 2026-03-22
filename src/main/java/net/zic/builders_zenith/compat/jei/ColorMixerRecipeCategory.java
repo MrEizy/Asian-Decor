@@ -67,7 +67,8 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ColorMixerRecipe recipe, IFocusGroup focuses) {
         String group = recipe.getGroup();
-        boolean isSlab = group.contains("slab");
+        boolean isVerticalSlab = group.contains("vertical_slab");
+        boolean isSlab = !isVerticalSlab && group.contains("slab");
         boolean isStairs = group.contains("stair");
         boolean isWall = group.contains("wall");
 
@@ -84,6 +85,9 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
         } else if (isWall) {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_WALLS.get(type).get());
             vanillaInput = new ItemStack(Items.BRICK_WALL);
+        } else if (isVerticalSlab) {
+                stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type).get());
+                vanillaInput = new ItemStack(ModBlocks.BRICK_VERTICAL_SLAB);
         } else {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get());
             vanillaInput = new ItemStack(Items.BRICKS);
