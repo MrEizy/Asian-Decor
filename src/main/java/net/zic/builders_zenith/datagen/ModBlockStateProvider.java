@@ -161,19 +161,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(0, 8, 16, 16).end()
                     .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(0, 8, 16, 16).end()
                     .end()
-// Top step - RIGHT side (x: 8-16, z: 0-16) - 8x16 on top/bottom, 16x8 on sides
+                    // Top step - RIGHT side
                     .element().from(8, 8, 0).to(16, 16, 16)
-                    // UP face: 8x16 geometry -> 8x16 UV (right half of texture)
                     .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).uvs(8, 0, 16, 16).end()
-                    // DOWN face: 8x16 geometry -> 8x16 UV
                     .face(Direction.DOWN).texture("#brick_base").tintindex(0).uvs(8, 0, 16, 16).end()
-                    // NORTH face: 8x8 geometry (width x height) -> 8x8 UV (top-right corner)
                     .face(Direction.NORTH).texture("#brick_base").tintindex(0).uvs(8, 0, 16, 8).end()
-                    // SOUTH face: 8x8 geometry -> 8x8 UV
                     .face(Direction.SOUTH).texture("#brick_base").tintindex(0).cullface(Direction.SOUTH).uvs(8, 0, 16, 8).end()
-                    // WEST face: 16x8 geometry (depth x height) -> 16x8 UV (full width, top half)
                     .face(Direction.WEST).texture("#brick_base").tintindex(0).uvs(0, 0, 16, 8).end()
-                    // EAST face: 16x8 geometry -> 16x8 UV
                     .face(Direction.EAST).texture("#brick_base").tintindex(0).cullface(Direction.EAST).uvs(0, 0, 16, 8).end()
                     .end()
                     // Bottom step mortar
@@ -185,7 +179,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(0, 8, 16, 16).end()
                     .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(0, 8, 16, 16).end()
                     .end()
-// Mortar layer - same UVs
+                    // Mortar layer - same UVs
                     .element().from(8, 8, 0).to(16, 16, 16)
                     .face(Direction.UP).texture("#mortar_overlay").tintindex(1).cullface(Direction.UP).uvs(8, 0, 16, 16).end()
                     .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).uvs(8, 0, 16, 8).end()
@@ -221,7 +215,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(0, 8, 16, 16).end()
                 .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(0, 8, 16, 16).end()
                 .end()
-                // Top step 1 - RIGHT side (x: 8 to 16, z: 0-16) - full step, NO UVs on UP
+                // Top step 1
                 .element().from(8, 8, 0).to(16, 16, 16)
                 .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).end()
                 .face(Direction.DOWN).texture("#brick_base").tintindex(0).end()
@@ -238,7 +232,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).end()
                 .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(0, 0, 16, 8).end()
                 .end()
-                // Top step 2 - FRONT-LEFT (x: 0 to 8, z: 8 to 16) - corner step
+                // Top step 2
                 .element().from(0, 8, 8).to(8, 16, 16)
                 .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).end()
                 .face(Direction.DOWN).texture("#brick_base").tintindex(0).end()
@@ -283,7 +277,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(0, 8, 16, 16).end()
                 .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).uvs(0, 8, 16, 16).end()
                 .end()
-                // Top step - FRONT-RIGHT corner (x: 8 to 16, z: 8 to 16)
+                // Top step
                 .element().from(8, 8, 8).to(16, 16, 16)
                 .face(Direction.UP).texture("#brick_base").tintindex(0).cullface(Direction.UP).end()
                 .face(Direction.DOWN).texture("#brick_base").tintindex(0).end()
@@ -427,12 +421,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent(name, modLoc("block/" + name + "_inventory"));
     }
 
-    // NEW: Vertical Slab registration
+    // Vertical Slab registration
     private void registerDyedBrickVerticalSlab(DeferredBlock<?> verticalSlabBlock, DeferredBlock<?> baseBlock) {
         String name = verticalSlabBlock.getId().getPath();
         String baseName = baseBlock.getId().getPath();
 
-        // Single slab models (unchanged from before)
         var northModel = models().getBuilder(name)
                 .parent(models().getExistingFile(mcLoc("block/block")))
                 .renderType("cutout")
@@ -525,18 +518,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .face(Direction.EAST).texture("#mortar_overlay").tintindex(1).cullface(Direction.EAST).end()
                 .end();
 
-        // Reference to full block model for double slabs
         ModelFile doubleModel = models().getExistingFile(modLoc("block/" + baseName));
 
-        // Register blockstate with handling for DOUBLE property
         getVariantBuilder(verticalSlabBlock.get())
                 .forAllStates(state -> {
-                    // If double, use full block model
                     if (state.getValue(VerticalSlabBlock.DOUBLE)) {
                         return ConfiguredModel.builder().modelFile(doubleModel).build();
                     }
 
-                    // Otherwise use directional model
                     Direction facing = state.getValue(VerticalSlabBlock.FACING);
                     ModelFile model = switch (facing) {
                         case SOUTH -> southModel;
@@ -547,7 +536,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     return ConfiguredModel.builder().modelFile(model).build();
                 });
 
-        // Item model uses north facing single slab
         itemModels().withExistingParent(name, modLoc("block/" + name));
     }
 

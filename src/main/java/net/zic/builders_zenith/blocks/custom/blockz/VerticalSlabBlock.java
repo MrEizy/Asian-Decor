@@ -50,25 +50,20 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
         Direction clickedFace = context.getClickedFace();
         ItemStack heldItem = context.getItemInHand();
 
-        // Check if we're clicking on an existing vertical slab to combine
         if (existingState.getBlock() instanceof VerticalSlabBlock existingBlock
                 && !existingState.getValue(DOUBLE)) {
             Direction existingFacing = existingState.getValue(FACING);
 
-            // If clicking on the open face and same type, combine
             if (clickedFace == existingFacing.getOpposite() && isSameSlabType(heldItem, existingBlock)) {
                 return existingState.setValue(DOUBLE, true).setValue(WATERLOGGED, false);
             }
         }
 
-        // NORMAL PLACEMENT: Place against the clicked face
         Direction facing;
 
-        // If clicked on a horizontal face (top/bottom), use player facing
         if (clickedFace == Direction.UP || clickedFace == Direction.DOWN) {
-            facing = context.getHorizontalDirection().getOpposite();
+            facing = getFacingFromHitPosition(context);
         }
-        // If clicked on a vertical face (north/south/east/west), place against that face
         else {
             facing = clickedFace;
         }
@@ -81,9 +76,34 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
+
+    private Direction getFacingFromHitPosition(BlockPlaceContext context) {
+        Direction playerFacing = context.getHorizontalDirection();
+
+        double hitX = context.getClickLocation().x() - context.getClickedPos().getX();
+        double hitZ = context.getClickLocation().z() - context.getClickedPos().getZ();
+
+        if (playerFacing.getAxis() == Direction.Axis.Z) {
+            double relativePos = (playerFacing == Direction.SOUTH) ? hitZ : (1 - hitZ);
+
+            if (relativePos > 0.5) {
+                return playerFacing;
+            } else {
+                return playerFacing.getOpposite();
+            }
+        } else {
+            double relativePos = (playerFacing == Direction.EAST) ? hitX : (1 - hitX);
+
+            if (relativePos > 0.5) {
+                return playerFacing;
+            } else {
+                return playerFacing.getOpposite();
+            }
+        }
+    }
+
     @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
-        // If already double, can't replace
         if (state.getValue(DOUBLE)) {
             return false;
         }
@@ -93,9 +113,6 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
         Block existingBlock = state.getBlock();
         ItemStack heldItem = context.getItemInHand();
 
-        // Can only replace (combine) if:
-        // 1. Clicking on the open face (opposite of existing)
-        // 2. Holding the same type of slab
         return clickedFace == existingFacing.getOpposite()
                 && isSameSlabType(heldItem, existingBlock);
     }
