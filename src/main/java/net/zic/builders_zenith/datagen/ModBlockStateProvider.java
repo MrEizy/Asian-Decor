@@ -22,6 +22,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         simpleBlockWithItem(ModBlocks.PREVIEW_BLOCK, "translucent");
+
+
         simpleBlockWithItem(ModBlocks.SHAPE_MAKER, "full");
         simpleBlockWithItem(ModBlocks.COLOR_MIXER, "full");
 
@@ -139,6 +141,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .texture("bottom", modLoc("block/brick_base"))
                 .texture("top", modLoc("block/brick_base"))
                 .texture("side", modLoc("block/brick_base"))
+                // Brick base element
                 .element()
                 .from(0, 0, 0).to(16, 8, 16)
                 .face(Direction.DOWN).texture("#brick_base").tintindex(0).cullface(Direction.DOWN).end()
@@ -148,8 +151,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .face(Direction.WEST).texture("#brick_base").tintindex(0).cullface(Direction.WEST).uvs(0, 8, 16, 16).end()
                 .face(Direction.EAST).texture("#brick_base").tintindex(0).cullface(Direction.EAST).uvs(0, 8, 16, 16).end()
                 .end()
+                // Mortar overlay element - ADDED DOWN FACE
                 .element()
                 .from(0, 0, 0).to(16, 8, 16)
+                .face(Direction.DOWN).texture("#mortar_overlay").tintindex(1).cullface(Direction.DOWN).end()  // ADD THIS
                 .face(Direction.UP).texture("#mortar_overlay").tintindex(1).end()
                 .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.NORTH).uvs(0, 8, 16, 16).end()
                 .face(Direction.SOUTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.SOUTH).uvs(0, 8, 16, 16).end()
@@ -166,6 +171,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .texture("bottom", modLoc("block/brick_base"))
                 .texture("top", modLoc("block/brick_base"))
                 .texture("side", modLoc("block/brick_base"))
+                // Brick base element
                 .element()
                 .from(0, 8, 0).to(16, 16, 16)
                 .face(Direction.DOWN).texture("#brick_base").tintindex(0).end()
@@ -175,9 +181,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .face(Direction.WEST).texture("#brick_base").tintindex(0).cullface(Direction.WEST).uvs(0, 0, 16, 8).end()
                 .face(Direction.EAST).texture("#brick_base").tintindex(0).cullface(Direction.EAST).uvs(0, 0, 16, 8).end()
                 .end()
+                // Mortar overlay element - ADDED UP FACE
                 .element()
                 .from(0, 8, 0).to(16, 16, 16)
                 .face(Direction.DOWN).texture("#mortar_overlay").tintindex(1).end()
+                .face(Direction.UP).texture("#mortar_overlay").tintindex(1).cullface(Direction.UP).end()  // ADD THIS
                 .face(Direction.NORTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.NORTH).uvs(0, 0, 16, 8).end()
                 .face(Direction.SOUTH).texture("#mortar_overlay").tintindex(1).cullface(Direction.SOUTH).uvs(0, 0, 16, 8).end()
                 .face(Direction.WEST).texture("#mortar_overlay").tintindex(1).cullface(Direction.WEST).uvs(0, 0, 16, 8).end()

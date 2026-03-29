@@ -21,6 +21,7 @@ import net.zic.builders_zenith.blocks.custom.DyedBrickType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 public class ColorMixerCategory implements DisplayCategory<REIPlugin.ColorMixerDisplay> {
 
@@ -49,32 +50,39 @@ public class ColorMixerCategory implements DisplayCategory<REIPlugin.ColorMixerD
 
         widgets.add(Widgets.createTexturedWidget(BACKGROUND_TEXTURE, bounds, 0, 0, 121, 57, 121, 57));
 
-        // All possible dyes for cycling display
+        // All possible dyes for cycling display (2 each)
         List<ItemStack> allDyes = Arrays.stream(DyeColor.values())
-                .map(color -> new ItemStack(getDyeItem(color)))
+                .map(color -> new ItemStack(getDyeItem(color), 2))
                 .toList();
 
         // Determine block type from group
         String group = display.getGroup();
-        boolean isSlab = group.contains("slab");
+        boolean isVerticalSlab = group.contains("vertical_slab");
+        boolean isSlab = !isVerticalSlab && group.contains("slab");
         boolean isStairs = group.contains("stair");
         boolean isWall = group.contains("wall");
 
-        java.util.function.Function<DyedBrickType, ItemStack> stackMapper;
+        int baseCount = 8;
+        int outputCount = isStairs ? 4 : (isWall ? 6 : 8);
+
+        Function<DyedBrickType, ItemStack> stackMapper;
         ItemStack vanillaInput;
 
         if (isSlab) {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_SLABS.get(type).get());
-            vanillaInput = new ItemStack(Items.BRICK_SLAB);
+            vanillaInput = new ItemStack(Items.BRICK_SLAB, baseCount);
         } else if (isStairs) {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_STAIRS.get(type).get());
-            vanillaInput = new ItemStack(Items.BRICK_STAIRS);
+            vanillaInput = new ItemStack(Items.BRICK_STAIRS, baseCount);
         } else if (isWall) {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_WALLS.get(type).get());
-            vanillaInput = new ItemStack(Items.BRICK_WALL);
+            vanillaInput = new ItemStack(Items.BRICK_WALL, baseCount);
+        } else if (isVerticalSlab) {
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type).get());
+            vanillaInput = new ItemStack(ModBlocks.BRICK_VERTICAL_SLAB.get(), baseCount);
         } else {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get());
-            vanillaInput = new ItemStack(Items.BRICKS);
+            vanillaInput = new ItemStack(Items.BRICKS, baseCount);
         }
 
         if (display.isVanillaRecipe()) {
@@ -85,14 +93,19 @@ public class ColorMixerCategory implements DisplayCategory<REIPlugin.ColorMixerD
             String label = isSlab ? "Vanilla Slabs + Dyes" :
                     isStairs ? "Vanilla Stairs + Dyes" :
                             isWall ? "Vanilla Walls + Dyes" :
-                                    "Vanilla Bricks + Dyes";
+                                    isVerticalSlab ? "Vanilla Vertical Slabs + Dyes" :
+                                            "Vanilla Bricks + Dyes";
             widgets.add(Widgets.createLabel(new Point(startPoint.x + 60, startPoint.y + 5),
                             Component.literal(label))
                     .color(0xFFAAAAAA, 0xFFAAAAAA)
                     .noShadow());
         } else {
             List<ItemStack> allDyed = Arrays.stream(DyedBrickType.values())
-                    .map(stackMapper)
+                    .map(type -> {
+                        ItemStack stack = stackMapper.apply(type);
+                        stack.setCount(baseCount);
+                        return stack;
+                    })
                     .toList();
             widgets.add(Widgets.createSlot(new Point(startPoint.x + 8, startPoint.y + 13))
                     .entries(allDyed.stream().map(EntryStacks::of).toList())
@@ -101,7 +114,8 @@ public class ColorMixerCategory implements DisplayCategory<REIPlugin.ColorMixerD
             String label = isSlab ? "Dyed Slabs + Dyes" :
                     isStairs ? "Dyed Stairs + Dyes" :
                             isWall ? "Dyed Walls + Dyes" :
-                                    "Any Dyed Brick + Dyes";
+                                    isVerticalSlab ? "Dyed Vertical Slabs + Dyes" :
+                                            "Any Dyed Brick + Dyes";
             widgets.add(Widgets.createLabel(new Point(startPoint.x + 60, startPoint.y + 5),
                             Component.literal(label))
                     .color(0xFFAAAAAA, 0xFFAAAAAA)
@@ -118,9 +132,13 @@ public class ColorMixerCategory implements DisplayCategory<REIPlugin.ColorMixerD
                 .entries(allDyes.stream().map(EntryStacks::of).toList())
                 .markInput());
 
-        // Output - correct variant type
+        // Output - correct variant type with proper count
         List<ItemStack> allDyedOutputs = Arrays.stream(DyedBrickType.values())
-                .map(stackMapper)
+                .map(type -> {
+                    ItemStack stack = stackMapper.apply(type);
+                    stack.setCount(outputCount);
+                    return stack;
+                })
                 .toList();
         widgets.add(Widgets.createSlot(new Point(startPoint.x + 103, startPoint.y + 20))
                 .entries(allDyedOutputs.stream().map(EntryStacks::of).toList())

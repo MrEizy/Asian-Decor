@@ -46,6 +46,11 @@
     },
     {
       "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#mortar_overlay",
+          "tintindex": 1
+        },
         "east": {
           "cullface": "east",
           "texture": "#mortar_overlay",

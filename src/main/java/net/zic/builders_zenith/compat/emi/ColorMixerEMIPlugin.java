@@ -48,7 +48,6 @@ public class ColorMixerEMIPlugin implements EmiPlugin {
                 ModRecipes.COLOR_MIXER_TYPE.get()
         );
 
-        // Only 2 recipes!
         for (RecipeHolder<ColorMixerRecipe> holder : recipes) {
             registry.addRecipe(new ColorMixerEmiRecipe(holder));
         }
@@ -85,27 +84,30 @@ public class ColorMixerEMIPlugin implements EmiPlugin {
         @Override
         public List<EmiStack> getOutputs() {
             String group = recipe.getGroup();
-            boolean isSlab = group.contains("slab");
+            boolean isVerticalSlab = group.contains("vertical_slab");
+            boolean isSlab = !isVerticalSlab && group.contains("slab");
             boolean isStairs = group.contains("stair");
             boolean isWall = group.contains("wall");
+
+            int outputCount = isStairs ? 4 : (isWall ? 6 : 8);
 
             java.util.function.Function<DyedBrickType, EmiStack> mapper;
 
             if (isSlab) {
-                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_SLABS.get(type).get());
+                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_SLABS.get(type).get()).setAmount(outputCount);
             } else if (isStairs) {
-                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_STAIRS.get(type).get());
+                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_STAIRS.get(type).get()).setAmount(outputCount);
             } else if (isWall) {
-                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_WALLS.get(type).get());
+                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_WALLS.get(type).get()).setAmount(outputCount);
+            } else if (isVerticalSlab) {
+                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type).get()).setAmount(outputCount);
             } else {
-                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICKS.get(type).get());
+                mapper = type -> EmiStack.of(ModBlocks.DYED_BRICKS.get(type).get()).setAmount(outputCount);
             }
 
-            List<EmiStack> outputs = Arrays.stream(DyedBrickType.values())
+            return Arrays.stream(DyedBrickType.values())
                     .map(mapper)
                     .toList();
-
-            return outputs;
         }
 
         @Override
@@ -123,30 +125,37 @@ public class ColorMixerEMIPlugin implements EmiPlugin {
             widgets.addTexture(new dev.emi.emi.api.render.EmiTexture(
                     BACKGROUND_TEXTURE, 0, 0, 121, 57), 0, 0);
 
+            // Dyes with count of 2 each
             List<EmiStack> allDyes = Arrays.stream(DyeColor.values())
-                    .map(color -> EmiStack.of(getDyeItem(color)))
+                    .map(color -> EmiStack.of(getDyeItem(color)).setAmount(2))
                     .toList();
 
             String group = recipe.getGroup();
-            boolean isSlab = group.contains("slab");
+            boolean isVerticalSlab = group.contains("vertical_slab");
+            boolean isSlab = !isVerticalSlab && group.contains("slab");
             boolean isStairs = group.contains("stair");
             boolean isWall = group.contains("wall");
 
             java.util.function.Function<DyedBrickType, EmiStack> stackMapper;
             EmiStack vanillaInput;
+            int baseCount = 8;
+            int outputCount = isStairs ? 4 : (isWall ? 6 : 8);
 
             if (isSlab) {
                 stackMapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_SLABS.get(type).get());
-                vanillaInput = EmiStack.of(Items.BRICK_SLAB);
+                vanillaInput = EmiStack.of(Items.BRICK_SLAB).setAmount(baseCount);
             } else if (isStairs) {
                 stackMapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_STAIRS.get(type).get());
-                vanillaInput = EmiStack.of(Items.BRICK_STAIRS);
+                vanillaInput = EmiStack.of(Items.BRICK_STAIRS).setAmount(baseCount);
             } else if (isWall) {
                 stackMapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_WALLS.get(type).get());
-                vanillaInput = EmiStack.of(Items.BRICK_WALL);
+                vanillaInput = EmiStack.of(Items.BRICK_WALL).setAmount(baseCount);
+            } else if (isVerticalSlab) {
+                stackMapper = type -> EmiStack.of(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type).get());
+                vanillaInput = EmiStack.of(ModBlocks.BRICK_VERTICAL_SLAB.get()).setAmount(baseCount);
             } else {
                 stackMapper = type -> EmiStack.of(ModBlocks.DYED_BRICKS.get(type).get());
-                vanillaInput = EmiStack.of(Items.BRICKS);
+                vanillaInput = EmiStack.of(Items.BRICKS).setAmount(baseCount);
             }
 
             if (recipe.isVanillaRecipe()) {
@@ -155,18 +164,20 @@ public class ColorMixerEMIPlugin implements EmiPlugin {
                         isSlab ? "Vanilla Slabs + Dyes" :
                                 isStairs ? "Vanilla Stairs + Dyes" :
                                         isWall ? "Vanilla Walls + Dyes" :
-                                                "Vanilla Bricks + Dyes"
+                                                isVerticalSlab ? "Vanilla Vertical Slabs + Dyes" :
+                                                        "Vanilla Bricks + Dyes"
                 ), 10, 5, 0xAAAAAA, false);
             } else {
                 List<EmiStack> allDyed = Arrays.stream(DyedBrickType.values())
-                        .map(stackMapper)
+                        .map(type -> stackMapper.apply(type).setAmount(baseCount))
                         .toList();
                 widgets.addSlot(EmiIngredient.of(allDyed), 8, 13);
                 widgets.addText(Component.literal(
                         isSlab ? "Dyed Slabs + Dyes" :
                                 isStairs ? "Dyed Stairs + Dyes" :
                                         isWall ? "Dyed Walls + Dyes" :
-                                                "Any Dyed Brick + Dyes"
+                                                isVerticalSlab ? "Dyed Vertical Slabs + Dyes" :
+                                                        "Any Dyed Brick + Dyes"
                 ), 10, 5, 0xAAAAAA, false);
             }
 
@@ -174,7 +185,7 @@ public class ColorMixerEMIPlugin implements EmiPlugin {
             widgets.addSlot(EmiIngredient.of(allDyes), 18, 32);
 
             List<EmiStack> allOutputs = Arrays.stream(DyedBrickType.values())
-                    .map(stackMapper)
+                    .map(type -> stackMapper.apply(type).setAmount(outputCount))
                     .toList();
             widgets.addSlot(EmiIngredient.of(allOutputs), 103, 20).recipeContext(this);
 

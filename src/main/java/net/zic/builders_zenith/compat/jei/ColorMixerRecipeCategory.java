@@ -72,25 +72,24 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
         boolean isStairs = group.contains("stair");
         boolean isWall = group.contains("wall");
 
-        // Get the correct block map based on recipe type
         Function<DyedBrickType, ItemStack> stackMapper;
         ItemStack vanillaInput;
 
         if (isSlab) {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_SLABS.get(type).get());
-            vanillaInput = new ItemStack(Items.BRICK_SLAB);
+            vanillaInput = new ItemStack(Items.BRICK_SLAB, 8);  // ADD COUNT HERE
         } else if (isStairs) {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_STAIRS.get(type).get());
-            vanillaInput = new ItemStack(Items.BRICK_STAIRS);
+            vanillaInput = new ItemStack(Items.BRICK_STAIRS, 8);  // ADD COUNT HERE
         } else if (isWall) {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_WALLS.get(type).get());
-            vanillaInput = new ItemStack(Items.BRICK_WALL);
+            vanillaInput = new ItemStack(Items.BRICK_WALL, 8);  // ADD COUNT HERE (or 6 for walls)
         } else if (isVerticalSlab) {
-                stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type).get());
-                vanillaInput = new ItemStack(ModBlocks.BRICK_VERTICAL_SLAB);
+            stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(type).get());
+            vanillaInput = new ItemStack(ModBlocks.BRICK_VERTICAL_SLAB.get(), 8);  // ADD COUNT HERE
         } else {
             stackMapper = type -> new ItemStack(ModBlocks.DYED_BRICKS.get(type).get());
-            vanillaInput = new ItemStack(Items.BRICKS);
+            vanillaInput = new ItemStack(Items.BRICKS, 8);  // ADD COUNT HERE
         }
 
         List<ItemStack> allDyedVariants = Arrays.stream(DyedBrickType.values())
@@ -100,27 +99,44 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
         if (recipe.isVanillaRecipe()) {
             // Vanilla recipe: Vanilla block + Dye + Dye
             builder.addSlot(RecipeIngredientRole.INPUT, 8, 13)
-                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, vanillaInput);
+                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, vanillaInput)
+                    .setSlotName("base");  // Optional: name the slot
         } else {
             // Recolor recipe: Any dyed variant + Dye + Dye
+            // Create stacks with proper count
+            List<ItemStack> dyedWithCount = allDyedVariants.stream()
+                    .map(stack -> {
+                        ItemStack copy = stack.copy();
+                        copy.setCount(8);  // SET COUNT TO 8
+                        return copy;
+                    })
+                    .toList();
             builder.addSlot(RecipeIngredientRole.INPUT, 8, 13)
-                    .addItemStacks(allDyedVariants);
+                    .addItemStacks(dyedWithCount);
         }
 
-        // Primary dye slot - All dyes
+        // Primary dye slot - All dyes (count 1, but you might want 2)
         List<ItemStack> allDyes = Arrays.stream(DyeColor.values())
-                .map(color -> new ItemStack(getDyeItem(color)))
+                .map(color -> new ItemStack(getDyeItem(color), 1))  // 2 DYES NEEDED
                 .toList();
         builder.addSlot(RecipeIngredientRole.INPUT, 28, 13)
                 .addItemStacks(allDyes);
 
-        // Secondary dye slot - All dyes
+        // Secondary dye slot - All dyes (count 1, but you might want 2)
         builder.addSlot(RecipeIngredientRole.INPUT, 18, 32)
                 .addItemStacks(allDyes);
 
-        // Output slot - All possible dyed variants
+        // Output slot - All possible dyed variants with proper output counts
+        List<ItemStack> outputsWithCount = Arrays.stream(DyedBrickType.values())
+                .map(type -> {
+                    int count = isStairs ? 4 : (isWall ? 6 : 8);
+                    ItemStack stack = stackMapper.apply(type);
+                    stack.setCount(count);
+                    return stack;
+                })
+                .toList();
         builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 20)
-                .addItemStacks(allDyedVariants);
+                .addItemStacks(outputsWithCount);
     }
 
     private static net.minecraft.world.item.Item getDyeItem(DyeColor color) {

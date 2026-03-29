@@ -65,6 +65,11 @@
           "texture": "#mortar_overlay",
           "tintindex": 1
         },
+        "up": {
+          "cullface": "up",
+          "texture": "#mortar_overlay",
+          "tintindex": 1
+        },
         "west": {
           "cullface": "west",
           "texture": "#mortar_overlay",
