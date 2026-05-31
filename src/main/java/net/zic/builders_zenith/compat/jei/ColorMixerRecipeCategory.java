@@ -9,9 +9,9 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,7 +26,7 @@ import java.util.function.Function;
 
 public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecipe> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
             BuildersZenith.MOD_ID, "textures/gui/jemri/color_mixing.png");
 
     private final IDrawable icon;
@@ -99,7 +99,7 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
         if (recipe.isVanillaRecipe()) {
             // Vanilla recipe: Vanilla block + Dye + Dye
             builder.addSlot(RecipeIngredientRole.INPUT, 8, 13)
-                    .addIngredient(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, vanillaInput)
+                    .add(mezz.jei.api.constants.VanillaTypes.ITEM_STACK, vanillaInput)
                     .setSlotName("base");  // Optional: name the slot
         } else {
             // Recolor recipe: Any dyed variant + Dye + Dye
@@ -161,7 +161,7 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
     }
 
     @Override
-    public void draw(ColorMixerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics,
+    public void draw(ColorMixerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics,
                      double mouseX, double mouseY) {
         guiGraphics.blit(TEXTURE, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
@@ -173,8 +173,8 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
             int xPos = (this.width - textWidth) / 2;
             int yPos = 47;
 
-            guiGraphics.drawString(font, timeText, xPos + 1, yPos + 1, 0x000000, false);
-            guiGraphics.drawString(font, timeText, xPos, yPos, 0xFFFFFF, false);
+            guiGraphics.text(font, timeText, xPos + 1, yPos + 1, 0x000000, false);
+            guiGraphics.text(font, timeText, xPos, yPos, 0xFFFFFF, false);
         }
     }
 }

@@ -17,7 +17,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.blocks.custom.*;
 import net.zic.builders_zenith.blocks.custom.blockz.VerticalSlabBlock;
-import net.zic.builders_zenith.blocks.custom.furniture.tables.WingedTableBlock;
 import net.zic.builders_zenith.items.ModItems;
 
 import java.util.HashMap;
@@ -76,11 +75,6 @@ public class ModBlocks {
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
 
-    public static final DeferredBlock<Block> SHAPE_MAKER = registerBlock("shape_maker",
-            () -> new ShapeMakerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)
-                    .strength(3.0f)
-                    .requiresCorrectToolForDrops()));
-
     public static final DeferredBlock<Block> COLOR_MIXER = registerBlock("color_mixer",
             () -> new ColorMixerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
@@ -104,7 +98,6 @@ public class ModBlocks {
                     .strength(0.0F, 0.0F)
                     .sound(SoundType.AMETHYST)
                     .noLootTable()
-                    .noCollission()
                     .noOcclusion()
                     .instabreak()
                     .replaceable()

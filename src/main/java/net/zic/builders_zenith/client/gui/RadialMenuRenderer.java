@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -11,6 +12,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.zic.builders_zenith.BuildersZenith;
+import org.jetbrains.annotations.UnknownNullability;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
@@ -140,7 +142,7 @@ public class RadialMenuRenderer {
             return;
         }
 
-        GuiGraphics graphics = event.getGuiGraphics();
+        GuiGraphicsExtractor graphics = event.getGuiGraphics();
         int screenWidth = mc.getWindow().getGuiScaledWidth();
         int screenHeight = mc.getWindow().getGuiScaledHeight();
         float centerX = screenWidth / 2f;
@@ -216,12 +218,12 @@ public class RadialMenuRenderer {
         return angle;
     }
 
-    private static void renderBackgroundDim(GuiGraphics graphics, int width, int height) {
+    private static void renderBackgroundDim(@UnknownNullability GuiGraphicsExtractor graphics, int width, int height) {
         int alpha = (int) (100 * openProgress);
         graphics.fill(0, 0, width, height, (alpha << 24));
     }
 
-    private static void renderSection(GuiGraphics graphics, float centerX, float centerY,
+    private static void renderSection(@UnknownNullability GuiGraphicsExtractor graphics, float centerX, float centerY,
                                       int index, RadialSection section) {
         boolean hovered = index == hoveredIndex;
         float innerR = INNER_RADIUS * openProgress;
@@ -285,7 +287,7 @@ public class RadialMenuRenderer {
         }
     }
 
-    private static void renderDividers(GuiGraphics graphics, float centerX, float centerY) {
+    private static void renderDividers(GuiGraphicsExtractor graphics, float centerX, float centerY) {
         if (sections.size() <= 1) return;
 
         RenderSystem.enableBlend();
@@ -312,7 +314,7 @@ public class RadialMenuRenderer {
         BufferUploader.drawWithShader(builder.buildOrThrow());
     }
 
-    private static void renderCenter(GuiGraphics graphics, float centerX, float centerY) {
+    private static void renderCenter(@UnknownNullability GuiGraphicsExtractor graphics, float centerX, float centerY) {
         float radius = INNER_RADIUS * openProgress * 0.95f;
 
         RenderSystem.enableBlend();
@@ -342,7 +344,7 @@ public class RadialMenuRenderer {
         }
     }
 
-    private static void renderItemIcon(GuiGraphics graphics, float centerX, float centerY,
+    private static void renderItemIcon(@UnknownNullability GuiGraphicsExtractor graphics, float centerX, float centerY,
                                        int index, RadialSection section) {
         float midAngle = (section.startAngle + section.endAngle) / 2f;
         float midRad = (float) Math.toRadians(midAngle);
@@ -378,7 +380,7 @@ public class RadialMenuRenderer {
         }
     }
 
-    private static void renderSelector(GuiGraphics graphics, float centerX, float centerY) {
+    private static void renderSelector(GuiGraphicsExtractor graphics, float centerX, float centerY) {
         Minecraft mc = Minecraft.getInstance();
         double mouseX = mc.mouseHandler.xpos() * mc.getWindow().getGuiScaledWidth() / mc.getWindow().getScreenWidth();
         double mouseY = mc.mouseHandler.ypos() * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getScreenHeight();

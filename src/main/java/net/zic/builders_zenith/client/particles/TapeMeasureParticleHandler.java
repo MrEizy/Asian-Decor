@@ -1,5 +1,5 @@
 // Updated TapeMeasureParticleHandler.java
-package net.zic.builders_zenith.client;
+package net.zic.builders_zenith.client.particles;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;

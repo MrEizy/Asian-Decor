@@ -26,8 +26,8 @@ public class PouchLinkHandler {
             TrowelItem.setLinkedPouch(carriedItem, stackedOnItem.copy());
 
             Player player = event.getPlayer();
-            player.displayClientMessage(Component.translatable(
-                    "message.builders_zenith.trowel.pouch_linked"), true);
+            player.sendOverlayMessage(Component.translatable(
+                    "message.builders_zenith.trowel.pouch_linked"));
 
             event.setCanceled(true);
         }

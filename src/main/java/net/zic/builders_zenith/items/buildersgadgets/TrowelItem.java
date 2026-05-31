@@ -111,7 +111,7 @@ public class TrowelItem extends Item {
         List<ItemStack> availableBlocks = getAvailableBlocks(player, data, mode);
 
         if (availableBlocks.isEmpty()) {
-            player.displayClientMessage(Component.translatable("message.builders_zenith.trowel.no_blocks"), true);
+            player.sendOverlayMessage(Component.translatable("message.builders_zenith.trowel.no_blocks"));
             return InteractionResult.FAIL;
         }
 
@@ -285,7 +285,7 @@ public class TrowelItem extends Item {
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     public static Mode getMode(ItemStack stack) {

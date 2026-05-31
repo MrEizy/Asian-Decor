@@ -55,35 +55,29 @@ public class BlueprintItem extends Item {
 
             if (!data.pos1().isPresent()) {
                 stack.set(ModDataComponents.BLUEPRINT_DATA.get(), data.withPos1(clickedPos));
-                player.displayClientMessage(
+                player.sendOverlayMessage(
                         Component.translatable("message.builders_zenith.blueprint.pos1_set",
-                                clickedPos.getX(), clickedPos.getY(), clickedPos.getZ()),
-                        true
-                );
-                player.playNotifySound(SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.PLAYERS, 1.0f, 1.0f);
+                                clickedPos.getX(), clickedPos.getY(), clickedPos.getZ()));
+                player.playSound(SoundEvents.STONE_BUTTON_CLICK_ON, 1.0f, 1.0f);
 
             } else if (!data.pos2().isPresent()) {
                 BlueprintData withPos2 = data.withPos2(clickedPos);
 
                 if (!withPos2.isValidSize()) {
                     BlockPos dims = withPos2.getDimensions();
-                    player.displayClientMessage(
+                    player.sendOverlayMessage(
                             Component.translatable("message.builders_zenith.blueprint.too_large",
-                                    dims.getX(), dims.getY(), dims.getZ(), BlueprintData.MAX_SIZE),
-                            true
-                    );
+                                    dims.getX(), dims.getY(), dims.getZ(), BlueprintData.MAX_SIZE));
                     return InteractionResult.FAIL;
                 }
 
                 stack.set(ModDataComponents.BLUEPRINT_DATA.get(), withPos2);
                 BlockPos dims = withPos2.getDimensions();
-                player.displayClientMessage(
+                player.sendOverlayMessage(
                         Component.translatable("message.builders_zenith.blueprint.pos2_set",
                                 clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(),
-                                dims.getX(), dims.getY(), dims.getZ()),
-                        true
-                );
-                player.playNotifySound(SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.PLAYERS, 1.0f, 1.2f);
+                                dims.getX(), dims.getY(), dims.getZ()));
+                player.playSound(SoundEvents.STONE_BUTTON_CLICK_ON, 1.0f, 1.2f);
 
             } else {
                 cutBlueprint(serverPlayer, stack, data);
@@ -119,32 +113,26 @@ public class BlueprintItem extends Item {
         BlueprintData saved = data.withBlocks(blocks, dims.getX(), dims.getY(), dims.getZ(), true);
         stack.set(ModDataComponents.BLUEPRINT_DATA.get(), saved);
 
-        player.displayClientMessage(
+        player.sendOverlayMessage(
                 Component.translatable("message.builders_zenith.blueprint.cut",
-                        dims.getX(), dims.getY(), dims.getZ(), blocks.size()),
-                true
-        );
-        player.playNotifySound(SoundEvents.UI_STONECUTTER_TAKE_RESULT, SoundSource.PLAYERS, 1.0f, 1.0f);
+                        dims.getX(), dims.getY(), dims.getZ(), blocks.size()));
+        player.playSound(SoundEvents.UI_STONECUTTER_TAKE_RESULT, 1.0f, 1.0f);
     }
 
     private InteractionResult handleRightClick(Level level, Player player, ItemStack stack,
                                                BlueprintData data, BlockPos clickedPos) {
         if (!data.hasData()) {
             if (data.hasBothPositions()) {
-                player.displayClientMessage(
-                        Component.translatable("message.builders_zenith.blueprint.ready_to_cut"),
-                        true
-                );
+                player.sendOverlayMessage(
+                        Component.translatable("message.builders_zenith.blueprint.ready_to_cut"));
             } else {
-                player.displayClientMessage(
-                        Component.translatable("message.builders_zenith.blueprint.empty"),
-                        true
-                );
+                player.sendOverlayMessage(
+                        Component.translatable("message.builders_zenith.blueprint.empty"));
             }
             return InteractionResult.FAIL;
         }
 
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
 
         ServerPlayer serverPlayer = (ServerPlayer) player;
         BlockPos anchor = clickedPos.above();
@@ -161,12 +149,10 @@ public class BlueprintItem extends Item {
         } else {
             // Show/update preview
             BlueprintSetPreviewPacket.sendToPlayer(serverPlayer, anchor, data);
-            player.displayClientMessage(
+            player.sendOverlayMessage(
                     Component.translatable("message.builders_zenith.blueprint.preview",
                             data.sizeX(), data.sizeY(), data.sizeZ(),
-                            data.getRotationName()),
-                    true
-            );
+                            data.getRotationName()));
             return InteractionResult.sidedSuccess(false);
         }
     }
@@ -194,10 +180,8 @@ public class BlueprintItem extends Item {
             }
         }
 
-        player.displayClientMessage(
-                Component.translatable("message.builders_zenith.blueprint.placed_cleared", placed, failed),
-                true
-        );
+        player.sendOverlayMessage(
+                Component.translatable("message.builders_zenith.blueprint.placed_cleared", placed, failed));
         level.playSound(null, origin, SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 1.0f, 0.8f);
 
         if (!player.isCreative()) {

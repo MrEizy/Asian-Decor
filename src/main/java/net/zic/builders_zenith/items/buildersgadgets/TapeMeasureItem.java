@@ -77,9 +77,9 @@ public class TapeMeasureItem extends Item {
 
         // Shift + Right Click = Clear
         if (player.isShiftKeyDown()) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 clearSelection(stack);
-                player.displayClientMessage(Component.translatable("message.builders_zenith.tape_measure.cleared"), true);
+                player.sendOverlayMessage(Component.translatable("message.builders_zenith.tape_measure.cleared"));
                 level.playSound(null, player.blockPosition(), SoundEvents.ITEM_FRAME_REMOVE_ITEM,
                         SoundSource.PLAYERS, 1.0F, 1.0F);
             }
@@ -87,15 +87,15 @@ public class TapeMeasureItem extends Item {
         }
 
         // Normal Right Click
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             TapeMeasureDataComponent data = stack.getOrDefault(ModDataComponents.TAPE_MEASURE_DATA.get(),
                     TapeMeasureDataComponent.EMPTY);
 
             if (!data.hasSelection()) {
                 // Set Pos1
                 setPos1(stack, clickedPos);
-                player.displayClientMessage(Component.translatable("message.builders_zenith.tape_measure.pos1_set",
-                        clickedPos.getX(), clickedPos.getY(), clickedPos.getZ()), true);
+                player.sendOverlayMessage(Component.translatable("message.builders_zenith.tape_measure.pos1_set",
+                        clickedPos.getX(), clickedPos.getY(), clickedPos.getZ()));
                 level.playSound(null, clickedPos, SoundEvents.STONE_BUTTON_CLICK_ON,
                         SoundSource.BLOCKS, 1.0F, 2.0F);
             } else if (!data.finalized()) {
@@ -164,7 +164,7 @@ public class TapeMeasureItem extends Item {
         Component message = Component.translatable("message.builders_zenith.tape_measure.measured",
                 length, width, height, totalBlocks);
 
-        player.displayClientMessage(message, true);
+        player.sendOverlayMessage(message);
 
         level.playSound(null, pos2, SoundEvents.PLAYER_LEVELUP,
                 SoundSource.BLOCKS, 0.5F, 2.0F);

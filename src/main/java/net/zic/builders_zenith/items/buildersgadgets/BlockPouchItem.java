@@ -33,11 +33,11 @@ public class BlockPouchItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.isShiftKeyDown()) {
-            if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+            if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
                 openMenu(serverPlayer, stack, hand);
             }
             return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);

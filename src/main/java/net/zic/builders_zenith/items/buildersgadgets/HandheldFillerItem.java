@@ -9,10 +9,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -59,7 +56,7 @@ public class HandheldFillerItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         // Check for charging first
@@ -76,7 +73,7 @@ public class HandheldFillerItem extends Item {
 
                     otherHandStack.shrink(1);
                     level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.0F);
-                    player.displayClientMessage(Component.literal("Charged! Current: " + newCharge), true);
+                    player.sendOverlayMessage(Component.literal("Charged! Current: " + newCharge));
                 }
                 return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
             }
@@ -93,7 +90,7 @@ public class HandheldFillerItem extends Item {
                 if (!level.isClientSide()) {
                     HandheldFillerData data = stack.getOrDefault(ModDataComponents.HANDHELD_FILLER_DATA.get(), new HandheldFillerData());
                     stack.set(ModDataComponents.HANDHELD_FILLER_DATA.get(), data.withCopiedBlock(block));
-                    player.displayClientMessage(Component.literal("Copied: " + block.getName().getString()), true);
+                    player.sendOverlayMessage(Component.literal("Copied: " + block.getName().getString()));
                 }
 
                 level.playSound(player, pos, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -126,7 +123,7 @@ public class HandheldFillerItem extends Item {
 
                     otherHandStack.shrink(1);
                     level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.0F);
-                    player.displayClientMessage(Component.literal("Charged! Current: " + newCharge), true);
+                    player.sendOverlayMessage(Component.literal("Charged! Current: " + newCharge));
                 }
                 return InteractionResult.sidedSuccess(level.isClientSide());
             }
@@ -193,7 +190,7 @@ public class HandheldFillerItem extends Item {
             pendingPlacements.put(player.getUUID(), placements);
             placementTicks.put(player.getUUID(), 0);
 
-            player.displayClientMessage(Component.literal("Placing " + placements.size() + " blocks..."), true);
+            player.sendOverlayMessage(Component.literal("Placing " + placements.size() + " blocks...");
         }
     }
 
@@ -259,14 +256,14 @@ public class HandheldFillerItem extends Item {
             if (queue.isEmpty()) {
                 iterator.remove();
                 placementTicks.remove(playerId);
-                player.displayClientMessage(Component.literal("Done!"), true);
+                player.sendOverlayMessage(Component.literal("Done!"));
             }
         }
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     @Override
@@ -297,7 +294,7 @@ public class HandheldFillerItem extends Item {
 
     private boolean hasBlockInInventory(Player player, Block block) {
         ItemStack blockStack = new ItemStack(block);
-        for (ItemStack invStack : player.getInventory().items) {
+        for (ItemStack invStack : player.getInventory().getNonEquipmentItems()) {
             if (ItemStack.isSameItem(invStack, blockStack)) {
                 return true;
             }
@@ -307,12 +304,12 @@ public class HandheldFillerItem extends Item {
 
     private void consumeBlockFromInventory(Player player, Block block) {
         ItemStack blockStack = new ItemStack(block);
-        for (int i = 0; i < player.getInventory().items.size(); i++) {
-            ItemStack invStack = player.getInventory().items.get(i);
+        for (int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
+            ItemStack invStack = player.getInventory().getNonEquipmentItems().get(i);
             if (ItemStack.isSameItem(invStack, blockStack)) {
                 invStack.shrink(1);
                 if (invStack.isEmpty()) {
-                    player.getInventory().items.set(i, ItemStack.EMPTY);
+                    player.getInventory().getNonEquipmentItems().set(i, ItemStack.EMPTY);
                 }
                 return;
             }

@@ -77,7 +77,7 @@ public class ColorMixerBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public void tick(Level level, BlockPos pos, BlockState state) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         // Check if result slot is full - if so, stop/pause crafting
         if (isResultSlotFull()) {

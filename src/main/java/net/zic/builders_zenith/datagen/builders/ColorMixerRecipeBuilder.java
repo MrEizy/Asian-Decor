@@ -2,7 +2,7 @@ package net.zic.builders_zenith.datagen.builders;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -54,7 +54,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/vanilla_bricks_to_dyed"
         );
@@ -80,7 +80,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/recolor_any"
         );
@@ -106,7 +106,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/vanilla_vertical_slabs_to_dyed"
         );
@@ -130,7 +130,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/recolor_vertical_slab_any"
         );
@@ -156,7 +156,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/vanilla_slabs_to_dyed"
         );
@@ -182,7 +182,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/recolor_slab_any"
         );
@@ -210,7 +210,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/vanilla_stairs_to_dyed"
         );
@@ -236,7 +236,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/recolor_stairs_any"
         );
@@ -264,7 +264,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/vanilla_walls_to_dyed"
         );
@@ -290,7 +290,7 @@ public class ColorMixerRecipeBuilder {
                 100
         );
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+        Identifier id = Identifier.fromNamespaceAndPath(
                 BuildersZenith.MOD_ID,
                 "color_mixer/recolor_wall_any"
         );

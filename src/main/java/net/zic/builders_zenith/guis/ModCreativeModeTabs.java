@@ -38,7 +38,7 @@ public class ModCreativeModeTabs {
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModBlocks.CARPENTER);
                         output.accept(ModBlocks.COLOR_MIXER);
-                        output.accept(ModBlocks.SHAPE_MAKER);
+                        //output.accept(ModBlocks.SHAPE_MAKER);
                         //output.accept(ModBlocks.WINGED_TABLE);
 
 

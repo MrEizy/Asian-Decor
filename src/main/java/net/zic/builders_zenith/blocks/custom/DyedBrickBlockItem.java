@@ -4,11 +4,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class DyedBrickBlockItem extends BlockItem {
     private final DyedBrickType type;
@@ -19,23 +22,20 @@ public class DyedBrickBlockItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, displayComponent, textConsumer, tooltipFlag);
 
-        // Brick color line with actual color
         MutableComponent brickText = Component.literal("Brick: ")
                 .withStyle(ChatFormatting.GRAY);
         MutableComponent brickColorName = Component.literal(formatColorName(type.getBrickColor()))
                 .withStyle(getColorFormatting(type.getBrickColor()));
-        tooltipComponents.add(brickText.append(brickColorName));
+        textConsumer.accept(brickText.append(brickColorName));
 
-        // Mortar color line with actual color
         MutableComponent mortarText = Component.literal("Mortar: ")
                 .withStyle(ChatFormatting.GRAY);
         MutableComponent mortarColorName = Component.literal(formatColorName(type.getMortarColor()))
                 .withStyle(getColorFormatting(type.getMortarColor()));
-        tooltipComponents.add(mortarText.append(mortarColorName));
-
+        textConsumer.accept(mortarText.append(mortarColorName));
     }
 
     private String formatColorName(net.minecraft.world.item.DyeColor color) {

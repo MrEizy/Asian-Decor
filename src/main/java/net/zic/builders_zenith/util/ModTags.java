@@ -1,5 +1,6 @@
 package net.zic.builders_zenith.util;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -28,11 +29,11 @@ public class ModTags {
 
 
         private static TagKey<Item> createCommonTag(String path) {
-            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", path));
+            return ItemTags.create(Identifier.fromNamespaceAndPath("c", path));
         }
 
         private static TagKey<Item> createTag(String name) {
-            return ItemTags.create(ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, name));
+            return ItemTags.create(Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, name));
         }
     }
 
@@ -49,11 +50,11 @@ public class ModTags {
 
 
         private static TagKey<Block> createCommonTag(String path) {
-            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", path));
+            return BlockTags.create(Identifier.fromNamespaceAndPath("c", path));
         }
 
         private static TagKey<Block> createTag(String name) {
-            return BlockTags.create(ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, name));
+            return BlockTags.create(Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, name));
         }
     }
 }

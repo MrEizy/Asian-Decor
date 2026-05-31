@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 public class ColorMixerBlock extends BaseEntityBlock {
     public static final MapCodec<ColorMixerBlock> CODEC = simpleCodec(ColorMixerBlock::new);
     private static final Component CONTAINER_TITLE = Component.translatable("container.builders_zenith.color_mixer");
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     protected static final VoxelShape SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0);
 
     public MapCodec<ColorMixerBlock> codec() {
@@ -51,7 +51,7 @@ public class ColorMixerBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         } else {
             player.openMenu(state.getMenuProvider(level, pos), buf -> buf.writeBlockPos(pos));
@@ -85,17 +85,6 @@ public class ColorMixerBlock extends BaseEntityBlock {
         }
         return createTickerHelper(blockEntityType, ModBlockEntities.COLOR_MIXER.get(),
                 (level1, pos, state1, blockEntity) -> blockEntity.tick(level1, pos, state1));
-    }
-
-    @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof ColorMixerBlockEntity mixer) {
-                mixer.drops();
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override
