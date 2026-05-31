@@ -30,6 +30,8 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
+
+    maven { url 'https://jitpack.io/' }
 }
 
 base {
@@ -113,6 +115,9 @@ configurations {
 }
 
 dependencies {
+    implementation 'com.github.OliverHesse:EasyGui:d71b1e115c'
+
+
     // JEI
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
