@@ -13,7 +13,6 @@ import net.zic.builders_zenith.blocks.entity.ColorMixerBlockEntity;
 import net.zic.builders_zenith.screen.custom.ColorMixerMenu;
 import net.zic.builders_zenith.screen.custom.CarpenterMenu;
 import net.zic.builders_zenith.screen.custom.PouchMenu;
-import net.zic.builders_zenith.screen.custom.ShapeMakerMenu;
 
 import java.util.function.Supplier;
 
@@ -41,15 +40,6 @@ public class ModMenuTypes {
                 return null; // Return null if BE not found - menu won't open
             }));
 
-    public static final Supplier<MenuType<ShapeMakerMenu>> SHAPE_MAKER = MENUS.register("shape_maker",
-            () -> IMenuTypeExtension.create((windowId, inv, data) -> {
-                net.minecraft.core.BlockPos pos = data.readBlockPos();
-                net.minecraft.world.level.block.entity.BlockEntity be = inv.player.level().getBlockEntity(pos);
-                net.zic.builders_zenith.blocks.entity.ShapeMakerBlockEntity shapeMaker =
-                        be instanceof net.zic.builders_zenith.blocks.entity.ShapeMakerBlockEntity ?
-                                (net.zic.builders_zenith.blocks.entity.ShapeMakerBlockEntity) be : null;
-                return new ShapeMakerMenu(windowId, inv, shapeMaker);
-            }));
 
     public static final Supplier<MenuType<PouchMenu>> POUCH_MENU = MENUS.register("pouch_menu",
             () -> IMenuTypeExtension.create(PouchMenu::new));

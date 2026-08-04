@@ -1,12 +1,15 @@
 package net.zic.builders_zenith.datagen;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -52,7 +55,7 @@ public class ModRecipeProvider extends RecipeProvider {
         generateCarpenterRecipes(output);
         generateColorMixerRecipes(output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLUEPRINT.get())
+        shaped(RecipeCategory.MISC, ModItems.BLUEPRINT.get())
                 .pattern("PBP")
                 .pattern("BSB")
                 .pattern("PBP")
@@ -62,7 +65,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_blue_dye", has(Items.BLUE_DYE))
                 .save(output, "builders_zenith:shaped/blueprint");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TAPE_MEASURE.get())
+        shaped(RecipeCategory.MISC, ModItems.TAPE_MEASURE.get())
                 .pattern("   ")
                 .pattern("II ")
                 .pattern("IIW")
@@ -71,7 +74,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_wool_carpet", has(ItemTags.WOOL_CARPETS))
                 .save(output, "builders_zenith:shaped/tape_measure");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TROWEL.get())
+        shaped(RecipeCategory.MISC, ModItems.TROWEL.get())
                 .pattern(" II")
                 .pattern(" II")
                 .pattern("S  ")
@@ -80,7 +83,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_stick", has(Items.STICK))
                 .save(output, "builders_zenith:shaped/trowel");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.HANDHELD_FILLER.get())
+        shaped(RecipeCategory.MISC, ModItems.HANDHELD_FILLER.get())
                 .pattern("III")
                 .pattern(" II")
                 .pattern("S I")
@@ -89,7 +92,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_stick", has(Items.STICK))
                 .save(output, "builders_zenith:shaped/handheld_filler");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.WHITE_BLOCK_POUCH.get())
+        shaped(RecipeCategory.MISC, ModItems.WHITE_BLOCK_POUCH.get())
                 .pattern("WWW")
                 .pattern("WCW")
                 .pattern("WWW")
@@ -98,7 +101,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_chest", has(Items.CHEST))
                 .save(output, "builders_zenith:shaped/white_block_pouch");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CARPENTER.get())
+        shaped(RecipeCategory.MISC, ModBlocks.CARPENTER.get())
                 .pattern("SIS")
                 .pattern("EAE")
                 .pattern("EEE")
@@ -109,7 +112,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(output, "builders_zenith:shaped/carpenters_block");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.COLOR_MIXER.get())
+        shaped(RecipeCategory.MISC, ModBlocks.COLOR_MIXER.get())
                 .pattern("SIS")
                 .pattern("EAE")
                 .pattern("EEE")
@@ -176,7 +179,7 @@ public class ModRecipeProvider extends RecipeProvider {
         );
 
         for (VerticalSlabRecipeData data : verticalSlabs) {
-            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, data.verticalSlab().get(), 6)
+            shaped(RecipeCategory.BUILDING_BLOCKS, data.verticalSlab().get(), 6)
                     .pattern("E  ")
                     .pattern("E  ")
                     .pattern("E  ")
@@ -402,7 +405,7 @@ public class ModRecipeProvider extends RecipeProvider {
         Ingredient ingredient = Ingredient.of(input);
         ItemStack resultStack = new ItemStack(result.asItem(), resultCount);
         CarpenterRecipes recipe = new CarpenterRecipes("building", ingredient, resultStack, ingredientCount);
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, "carpenter/" + recipeName);
-        recipeOutput.accept(id, recipe, null);
+        Identifier id = Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, "carpenter/" + recipeName);
+        recipeOutput.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 }

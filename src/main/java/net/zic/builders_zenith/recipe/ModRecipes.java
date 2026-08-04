@@ -16,7 +16,8 @@ public class ModRecipes {
 
     // NEW: JSON Recipe System
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CarpenterRecipes>> CARPENTER_SERIALIZER =
-            SERIALIZERS.register("carpenter", CarpenterRecipes.Serializer::new);
+            SERIALIZERS.register("carpenter", () -> new RecipeSerializer<>(CarpenterRecipes.CODEC, CarpenterRecipes.STREAM_CODEC));
+
     public static final DeferredHolder<RecipeType<?>, RecipeType<CarpenterRecipes>> CARPENTER_TYPE =
             TYPES.register("carpenter", () -> new RecipeType<CarpenterRecipes>() {
                 @Override
@@ -26,7 +27,7 @@ public class ModRecipes {
             });
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ColorMixerRecipe>> COLOR_MIXER_SERIALIZER =
-            SERIALIZERS.register("color_mixer", ColorMixerRecipe.Serializer::new);
+            SERIALIZERS.register("color_mixer", () -> new RecipeSerializer<>(ColorMixerRecipe.CODEC, ColorMixerRecipe.STREAM_CODEC));
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<ColorMixerRecipe>> COLOR_MIXER_TYPE =
             TYPES.register("color_mixer", () -> new RecipeType<ColorMixerRecipe>() {

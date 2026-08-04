@@ -51,7 +51,6 @@ public class ModModelProvider extends ModelProvider {
 
         // ── Simple full-cube blocks ────────────────────────────────────────────
         blockModels.createTrivialCube(ModBlocks.PREVIEW_BLOCK.get());
-        blockModels.createTrivialCube(ModBlocks.SHAPE_MAKER.get());
         blockModels.createTrivialCube(ModBlocks.CARPENTER.get());
         blockModels.createTrivialCube(ModBlocks.COLOR_MIXER.get());
 

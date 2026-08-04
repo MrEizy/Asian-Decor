@@ -2,6 +2,7 @@ package net.zic.builders_zenith.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -12,10 +13,14 @@ import org.lwjgl.glfw.GLFW;
 @EventBusSubscriber(value = Dist.CLIENT)
 public class ModKeybinds {
 
+    public static final KeyMapping.Category BUILDERS_ZENITH_CATEGORY = KeyMapping.Category.register(
+            Identifier.parse("builders_zenith")
+    );
+
     public static final KeyMapping MODE_TOGGLE = new KeyMapping(
             "key.builders_zenith.mode_toggle",
             GLFW.GLFW_KEY_V,
-            "key.categories.builders_zenith"
+            BUILDERS_ZENITH_CATEGORY
     );
 
 
@@ -24,7 +29,7 @@ public class ModKeybinds {
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             InputConstants.KEY_G,
-            "key.categories.builders_zenith"
+            BUILDERS_ZENITH_CATEGORY
     );
 
     @SubscribeEvent
