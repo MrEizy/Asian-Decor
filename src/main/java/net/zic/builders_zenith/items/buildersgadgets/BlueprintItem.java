@@ -8,11 +8,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -24,6 +26,7 @@ import net.zic.builders_zenith.network.BlueprintSetPreviewPacket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class BlueprintItem extends Item {
 
@@ -50,7 +53,7 @@ public class BlueprintItem extends Item {
 
     private InteractionResult handleShiftClick(Level level, Player player, ItemStack stack,
                                                BlueprintData data, BlockPos clickedPos) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
 
             if (!data.pos1().isPresent()) {
@@ -84,13 +87,13 @@ public class BlueprintItem extends Item {
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
     }
 
     private void cutBlueprint(ServerPlayer player, ItemStack stack, BlueprintData data) {
         BlockPos min = data.getMinPos();
         BlockPos max = data.getMaxPos();
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
 
         List<BlueprintData.BlockEntry> blocks = new ArrayList<>();
 
@@ -145,7 +148,7 @@ public class BlueprintItem extends Item {
             placeBlueprint((ServerLevel) level, anchor, data, player, stack);
             BlueprintClearPreviewPacket.sendToPlayer(serverPlayer);
             stack.set(ModDataComponents.BLUEPRINT_DATA.get(), BlueprintData.EMPTY);
-            return InteractionResult.sidedSuccess(false);
+            return InteractionResult.SUCCESS_SERVER;
         } else {
             // Show/update preview
             BlueprintSetPreviewPacket.sendToPlayer(serverPlayer, anchor, data);
@@ -153,7 +156,7 @@ public class BlueprintItem extends Item {
                     Component.translatable("message.builders_zenith.blueprint.preview",
                             data.sizeX(), data.sizeY(), data.sizeZ(),
                             data.getRotationName()));
-            return InteractionResult.sidedSuccess(false);
+            return InteractionResult.SUCCESS_SERVER;
         }
     }
 
@@ -185,58 +188,60 @@ public class BlueprintItem extends Item {
         level.playSound(null, origin, SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 1.0f, 0.8f);
 
         if (!player.isCreative()) {
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+            stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
         }
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context,
-                                List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context,
+                                TooltipDisplay display,
+                                Consumer<Component> tooltip,
+                                TooltipFlag flag) {
         BlueprintData data = stack.getOrDefault(ModDataComponents.BLUEPRINT_DATA.get(), BlueprintData.EMPTY);
 
         if (data.hasData()) {
-            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.saved_size",
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.saved_size",
                     data.sizeX(), data.sizeY(), data.sizeZ()).withStyle(net.minecraft.ChatFormatting.GREEN));
-            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.block_count",
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.block_count",
                     data.blocks().size()).withStyle(net.minecraft.ChatFormatting.GRAY));
-            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.rotation",
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.rotation",
                     data.getRotationName()).withStyle(net.minecraft.ChatFormatting.AQUA));
-            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.facing",
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.facing",
                     data.getFacingName()).withStyle(net.minecraft.ChatFormatting.YELLOW));
             if (data.cutMode()) {
-                tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.cut_mode")
+                tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.cut_mode")
                         .withStyle(net.minecraft.ChatFormatting.RED));
             }
 
         } else if (data.hasBothPositions()) {
             BlockPos dims = data.getDimensions();
-            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.area_selected",
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.area_selected",
                     dims.getX(), dims.getY(), dims.getZ()).withStyle(net.minecraft.ChatFormatting.YELLOW));
-            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.shift_to_cut")
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.shift_to_cut")
                     .withStyle(net.minecraft.ChatFormatting.GREEN));
 
         } else if (data.pos1().isPresent()) {
             BlockPos p1 = data.pos1().get();
-            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.pos1",
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.pos1",
                     p1.getX(), p1.getY(), p1.getZ()).withStyle(net.minecraft.ChatFormatting.GRAY));
-            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.set_pos2")
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.set_pos2")
                     .withStyle(net.minecraft.ChatFormatting.YELLOW));
 
         } else {
-            tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.no_area")
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.no_area")
                     .withStyle(net.minecraft.ChatFormatting.GRAY));
         }
 
-        tooltip.add(Component.empty());
-        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.select")
+        tooltip.accept(Component.empty());
+        tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.usage.select")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.cut")
+        tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.usage.cut")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.preview")
+        tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.usage.preview")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.rotate")
+        tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.usage.rotate")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-        tooltip.add(Component.translatable("tooltip.builders_zenith.blueprint.usage.rotate_vertical")
+        tooltip.accept(Component.translatable("tooltip.builders_zenith.blueprint.usage.rotate_vertical")
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
     }
 }

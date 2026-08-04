@@ -1,6 +1,7 @@
 package net.zic.builders_zenith.client.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
@@ -9,6 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.component.BlueprintData;
@@ -42,7 +44,7 @@ public class BlueprintInputHandler {
                 int direction = scrollDelta > 0 ? 1 : -1;
 
                 // Check Ctrl using GLFW
-                long window = mc.getWindow().getWindow();
+                Window window = mc.getWindow();
                 boolean ctrlDown = InputConstants.isKeyDown(window, InputConstants.KEY_LCONTROL) ||
                         InputConstants.isKeyDown(window, InputConstants.KEY_RCONTROL);
 
@@ -50,7 +52,7 @@ public class BlueprintInputHandler {
                 int dirX = ctrlDown ? direction : 0;
 
                 // Send to server
-                PacketDistributor.sendToServer(new BlueprintRotatePacket(
+                ClientPacketDistributor.sendToServer(new BlueprintRotatePacket(
                         hand == InteractionHand.MAIN_HAND, dirY, dirX));
 
                 // Update client immediately for instant preview feedback
@@ -64,13 +66,12 @@ public class BlueprintInputHandler {
                 stack.set(ModDataComponents.BLUEPRINT_DATA.get(), rotated);
 
                 // Show message
-                player.displayClientMessage(
+                player.sendOverlayMessage(
                         net.minecraft.network.chat.Component.translatable(
                                 "message.builders_zenith.blueprint.rotated",
                                 rotated.getRotationName(),
                                 rotated.getFacingName()
-                        ),
-                        true
+                        )
                 );
 
                 break;

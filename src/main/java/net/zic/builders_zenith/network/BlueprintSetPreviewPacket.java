@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public record BlueprintSetPreviewPacket(BlockPos anchorPos, BlueprintData data) implements CustomPacketPayload {
     public static final Type<BlueprintSetPreviewPacket> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, "blueprint_preview_set"));
+            Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, "blueprint_preview_set"));
 
     public static final StreamCodec<ByteBuf, BlueprintSetPreviewPacket> STREAM_CODEC = new StreamCodec<>() {
         @Override

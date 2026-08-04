@@ -11,7 +11,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.ArrayList;
@@ -188,8 +187,8 @@ public record BlueprintData(
 
         // Handle directional properties (FACING)
         for (Property<?> prop : state.getProperties()) {
-            if (prop instanceof DirectionProperty dirProp) {
-                Direction current = state.getValue(dirProp);
+            if (prop instanceof Property dirProp) {
+                Direction current = (Direction) state.getValue(dirProp);
                 Direction rotated = rotateDirectionVertical(current);
                 if (dirProp.getPossibleValues().contains(rotated)) {
                     state = state.setValue(dirProp, rotated);

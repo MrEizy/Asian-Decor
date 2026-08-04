@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ import net.zic.builders_zenith.items.buildersgadgets.BlueprintItem;
 
 public record BlueprintRotatePacket(boolean mainHand, int directionY, int directionX) implements CustomPacketPayload {
     public static final Type<BlueprintRotatePacket> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, "blueprint_rotate"));
+            Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, "blueprint_rotate"));
 
     public static final StreamCodec<ByteBuf, BlueprintRotatePacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,
@@ -59,13 +59,12 @@ public record BlueprintRotatePacket(boolean mainHand, int directionY, int direct
                     stack.set(ModDataComponents.BLUEPRINT_DATA.get(), rotated);
 
                     // Show rotation in action bar
-                    player.displayClientMessage(
+                    player.sendOverlayMessage(
                             net.minecraft.network.chat.Component.translatable(
                                     "message.builders_zenith.blueprint.rotated",
                                     rotated.getRotationName(),
                                     rotated.getFacingName()
-                            ),
-                            true
+                            )
                     );
                 }
             }

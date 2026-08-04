@@ -1,16 +1,12 @@
 package net.zic.builders_zenith.client.renderer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -20,7 +16,6 @@ import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.component.BlueprintData;
 import net.zic.builders_zenith.component.ModDataComponents;
 import net.zic.builders_zenith.items.buildersgadgets.BlueprintItem;
-import org.joml.Matrix4f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +26,7 @@ public class BlueprintPreviewRenderer {
 
     public static class PreviewData {
         public final BlockPos anchorPos;
-        public BlueprintData data; // Not final - allows updating
+        public BlueprintData data;
         public final long timestamp;
 
         public PreviewData(BlockPos anchorPos, BlueprintData data) {
@@ -76,15 +71,13 @@ public class BlueprintPreviewRenderer {
     }
 
     @SubscribeEvent
-    public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
+    public static void onRenderLevel(RenderLevelStageEvent.AfterTranslucentBlocks event) {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
 
         UUID playerId = mc.player.getUUID();
 
-        // Check holding blueprint
         ItemStack mainHand = mc.player.getMainHandItem();
         ItemStack offHand = mc.player.getOffhandItem();
         boolean holdingBlueprint = mainHand.getItem() instanceof BlueprintItem ||
@@ -96,7 +89,6 @@ public class BlueprintPreviewRenderer {
             return;
         }
 
-        // Update preview data from held item (for rotation updates)
         BlueprintData heldData = getHeldBlueprintData(mc.player);
         if (heldData != null && heldData.hasData()) {
             updatePreviewData(playerId, heldData);
@@ -104,15 +96,17 @@ public class BlueprintPreviewRenderer {
         }
 
         PoseStack poseStack = event.getPoseStack();
-        Vec3 cameraPos = event.getCamera().getPosition();
+        Vec3 cameraPos = event.getLevelRenderState().cameraRenderState.pos;
 
         poseStack.pushPose();
         poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
 
+        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+
         // Render selection box (orange)
         BlueprintData selData = selectionData.get(playerId);
         if (selData != null && selData.hasBothPositions() && !selData.hasData()) {
-            renderBoundingBox(poseStack, selData.getMinPos(), selData.getMaxPos(), 1.0f, 0.6f, 0.0f, 1.0f);
+            renderBoundingBox(poseStack, bufferSource, selData.getMinPos(), selData.getMaxPos(), 1.0f, 0.6f, 0.0f, 1.0f);
         }
 
         // Render preview
@@ -122,11 +116,13 @@ public class BlueprintPreviewRenderer {
             BlockPos min = preview.anchorPos;
             BlockPos max = preview.anchorPos.offset(dims.getX() - 1, dims.getY() - 1, dims.getZ() - 1);
 
-            renderBoundingBox(poseStack, min, max, 0.0f, 1.0f, 1.0f, 1.0f);
-            renderGhostBlocks(poseStack, preview.anchorPos, preview.data);
+            renderBoundingBox(poseStack, bufferSource, min, max, 0.0f, 1.0f, 1.0f, 1.0f);
+            renderGhostBlocks(poseStack, bufferSource, preview.anchorPos, preview.data);
         }
 
         poseStack.popPose();
+
+        bufferSource.endBatch();
     }
 
     private static BlueprintData getHeldBlueprintData(net.minecraft.world.entity.player.Player player) {
@@ -141,16 +137,12 @@ public class BlueprintPreviewRenderer {
         return null;
     }
 
-    private static void renderBoundingBox(PoseStack poseStack, BlockPos min, BlockPos max,
+    /** Draws the 12 edges of a bounding box. */
+    private static void renderBoundingBox(PoseStack poseStack, MultiBufferSource bufferSource,
+                                          BlockPos min, BlockPos max,
                                           float r, float g, float b, float a) {
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableCull();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
-
-        Matrix4f matrix = poseStack.last().pose();
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.LINES);
+        PoseStack.Pose pose = poseStack.last();
 
         double minX = min.getX() - 0.005;
         double minY = min.getY() - 0.005;
@@ -160,81 +152,89 @@ public class BlueprintPreviewRenderer {
         double maxZ = max.getZ() + 1.005;
 
         // Bottom face
-        line(builder, matrix, minX, minY, minZ, maxX, minY, minZ, r, g, b, a);
-        line(builder, matrix, maxX, minY, minZ, maxX, minY, maxZ, r, g, b, a);
-        line(builder, matrix, maxX, minY, maxZ, minX, minY, maxZ, r, g, b, a);
-        line(builder, matrix, minX, minY, maxZ, minX, minY, minZ, r, g, b, a);
+        line(consumer, pose, minX, minY, minZ, maxX, minY, minZ, r, g, b, a);
+        line(consumer, pose, maxX, minY, minZ, maxX, minY, maxZ, r, g, b, a);
+        line(consumer, pose, maxX, minY, maxZ, minX, minY, maxZ, r, g, b, a);
+        line(consumer, pose, minX, minY, maxZ, minX, minY, minZ, r, g, b, a);
 
         // Top face
-        line(builder, matrix, minX, maxY, minZ, maxX, maxY, minZ, r, g, b, a);
-        line(builder, matrix, maxX, maxY, minZ, maxX, maxY, maxZ, r, g, b, a);
-        line(builder, matrix, maxX, maxY, maxZ, minX, maxY, maxZ, r, g, b, a);
-        line(builder, matrix, minX, maxY, maxZ, minX, maxY, minZ, r, g, b, a);
+        line(consumer, pose, minX, maxY, minZ, maxX, maxY, minZ, r, g, b, a);
+        line(consumer, pose, maxX, maxY, minZ, maxX, maxY, maxZ, r, g, b, a);
+        line(consumer, pose, maxX, maxY, maxZ, minX, maxY, maxZ, r, g, b, a);
+        line(consumer, pose, minX, maxY, maxZ, minX, maxY, minZ, r, g, b, a);
 
         // Vertical edges
-        line(builder, matrix, minX, minY, minZ, minX, maxY, minZ, r, g, b, a);
-        line(builder, matrix, maxX, minY, minZ, maxX, maxY, minZ, r, g, b, a);
-        line(builder, matrix, maxX, minY, maxZ, maxX, maxY, maxZ, r, g, b, a);
-        line(builder, matrix, minX, minY, maxZ, minX, maxY, maxZ, r, g, b, a);
-
-        BufferUploader.drawWithShader(builder.buildOrThrow());
-
-        RenderSystem.enableCull();
+        line(consumer, pose, minX, minY, minZ, minX, maxY, minZ, r, g, b, a);
+        line(consumer, pose, maxX, minY, minZ, maxX, maxY, minZ, r, g, b, a);
+        line(consumer, pose, maxX, minY, maxZ, maxX, maxY, maxZ, r, g, b, a);
+        line(consumer, pose, minX, minY, maxZ, minX, maxY, maxZ, r, g, b, a);
     }
 
-    private static void line(BufferBuilder builder, Matrix4f matrix,
+    /** Renders a wireframe box for every block in the blueprint. */
+    private static void renderGhostBlocks(PoseStack poseStack, MultiBufferSource bufferSource,
+                                          BlockPos anchor, BlueprintData data) {
+        for (BlueprintData.BlockEntry entry : data.blocks()) {
+            BlockPos rotatedPos = data.rotatePos(entry.x(), entry.y(), entry.z());
+            BlockPos pos = anchor.offset(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ());
+
+            // Slightly smaller box so individual block edges don't completely overlap
+            renderSmallBox(poseStack, bufferSource, pos, 0.0f, 0.8f, 1.0f, 0.5f);
+        }
+    }
+
+    /** Draws a wireframe slightly inset from the full block. */
+    private static void renderSmallBox(PoseStack poseStack, MultiBufferSource bufferSource,
+                                       BlockPos pos, float r, float g, float b, float a) {
+        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.LINES);
+        PoseStack.Pose pose = poseStack.last();
+
+        double minX = pos.getX() + 0.02;
+        double minY = pos.getY() + 0.02;
+        double minZ = pos.getZ() + 0.02;
+        double maxX = pos.getX() + 0.98;
+        double maxY = pos.getY() + 0.98;
+        double maxZ = pos.getZ() + 0.98;
+
+        // Bottom face
+        line(consumer, pose, minX, minY, minZ, maxX, minY, minZ, r, g, b, a);
+        line(consumer, pose, maxX, minY, minZ, maxX, minY, maxZ, r, g, b, a);
+        line(consumer, pose, maxX, minY, maxZ, minX, minY, maxZ, r, g, b, a);
+        line(consumer, pose, minX, minY, maxZ, minX, minY, minZ, r, g, b, a);
+
+        // Top face
+        line(consumer, pose, minX, maxY, minZ, maxX, maxY, minZ, r, g, b, a);
+        line(consumer, pose, maxX, maxY, minZ, maxX, maxY, maxZ, r, g, b, a);
+        line(consumer, pose, maxX, maxY, maxZ, minX, maxY, maxZ, r, g, b, a);
+        line(consumer, pose, minX, maxY, maxZ, minX, maxY, minZ, r, g, b, a);
+
+        // Vertical edges
+        line(consumer, pose, minX, minY, minZ, minX, maxY, minZ, r, g, b, a);
+        line(consumer, pose, maxX, minY, minZ, maxX, maxY, minZ, r, g, b, a);
+        line(consumer, pose, maxX, minY, maxZ, maxX, maxY, maxZ, r, g, b, a);
+        line(consumer, pose, minX, minY, maxZ, minX, maxY, maxZ, r, g, b, a);
+    }
+
+    private static void line(VertexConsumer consumer, PoseStack.Pose pose,
+                             double x0, double y0, double z0,
                              double x1, double y1, double z1,
-                             double x2, double y2, double z2,
                              float r, float g, float b, float a) {
-        float nx = (float)(x2 - x1);
-        float ny = (float)(y2 - y1);
-        float nz = (float)(z2 - z1);
-        float len = (float)Math.sqrt(nx * nx + ny * ny + nz * nz);
+        float nx = (float) (x1 - x0);
+        float ny = (float) (y1 - y0);
+        float nz = (float) (z1 - z0);
+        float len = (float) Math.sqrt(nx * nx + ny * ny + nz * nz);
         if (len > 0) {
             nx /= len;
             ny /= len;
             nz /= len;
         }
 
-        builder.addVertex(matrix, (float)x1, (float)y1, (float)z1).setColor(r, g, b, a).setNormal(nx, ny, nz);
-        builder.addVertex(matrix, (float)x2, (float)y2, (float)z2).setColor(r, g, b, a).setNormal(nx, ny, nz);
-    }
-
-    private static void renderGhostBlocks(PoseStack poseStack, BlockPos anchor, BlueprintData data) {
-        Minecraft mc = Minecraft.getInstance();
-        BlockRenderDispatcher blockRenderer = mc.getBlockRenderer();
-        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.depthMask(false);
-
-        poseStack.pushPose();
-
-        for (BlueprintData.BlockEntry entry : data.blocks()) {
-            BlockPos rotatedPos = data.rotatePos(entry.x(), entry.y(), entry.z());
-            BlockPos pos = anchor.offset(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ());
-
-            poseStack.pushPose();
-            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-
-            BlockState rotatedState = data.rotateBlockState(entry.state());
-
-            blockRenderer.renderSingleBlock(
-                    rotatedState,
-                    poseStack,
-                    bufferSource,
-                    LightTexture.FULL_BRIGHT,
-                    OverlayTexture.NO_OVERLAY
-            );
-
-            poseStack.popPose();
-        }
-
-        bufferSource.endBatch();
-        poseStack.popPose();
-
-        RenderSystem.depthMask(true);
-        RenderSystem.disableBlend();
+        consumer.addVertex(pose, (float) x0, (float) y0, (float) z0)
+                .setColor(r, g, b, a)
+                .setNormal(pose, nx, ny, nz)
+                .setLineWidth(2.0f);
+        consumer.addVertex(pose, (float) x1, (float) y1, (float) z1)
+                .setColor(r, g, b, a)
+                .setNormal(pose, nx, ny, nz)
+                .setLineWidth(2.0f);
     }
 }

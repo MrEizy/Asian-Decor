@@ -3,7 +3,7 @@ package net.zic.builders_zenith.network;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -12,7 +12,7 @@ import net.zic.builders_zenith.client.renderer.BlueprintPreviewRenderer;
 
 public record BlueprintClearPreviewPacket() implements CustomPacketPayload {
     public static final Type<BlueprintClearPreviewPacket> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, "blueprint_preview_clear"));
+            Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, "blueprint_preview_clear"));
 
     public static final StreamCodec<ByteBuf, BlueprintClearPreviewPacket> STREAM_CODEC = StreamCodec.unit(new BlueprintClearPreviewPacket());
 
