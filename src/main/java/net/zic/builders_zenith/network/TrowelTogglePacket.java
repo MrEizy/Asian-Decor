@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +16,7 @@ import net.zic.builders_zenith.items.buildersgadgets.TrowelItem;
 public record TrowelTogglePacket(boolean mainHand) implements CustomPacketPayload {
 
     public static final Type<TrowelTogglePacket> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, "trowel_toggle"));
+            Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, "trowel_toggle"));
 
     public static final StreamCodec<ByteBuf, TrowelTogglePacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,
@@ -39,10 +39,10 @@ public record TrowelTogglePacket(boolean mainHand) implements CustomPacketPayloa
                 TrowelItem.Mode newMode = TrowelItem.toggleMode(stack);
 
                 // Send message to player
-                player.displayClientMessage(Component.translatable(
+                player.sendOverlayMessage(Component.translatable(
                         "message.builders_zenith.trowel.mode_changed",
                         Component.translatable("tooltip.builders_zenith.trowel.mode." + newMode.getName())
-                ), true);
+                ));
             }
         });
     }

@@ -7,6 +7,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.client.ModKeybinds;
 import net.zic.builders_zenith.client.gui.RadialMenuRenderer;
@@ -14,7 +15,6 @@ import net.zic.builders_zenith.component.ModDataComponents;
 import net.zic.builders_zenith.component.PouchContents;
 import net.zic.builders_zenith.items.buildersgadgets.BlockPouchItem;
 import net.zic.builders_zenith.network.PouchRadialSelectPacket;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +69,7 @@ public class RadialMenuKeyHandler {
 
                 if (selectedSlot >= 0) {
                     // Send packet to select this slot
-                    PacketDistributor.sendToServer(new PouchRadialSelectPacket(
+                    ClientPacketDistributor.sendToServer(new PouchRadialSelectPacket(
                             hand == InteractionHand.MAIN_HAND, selectedSlot));
 
                     // Update client immediately

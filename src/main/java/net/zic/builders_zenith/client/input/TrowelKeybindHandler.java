@@ -9,6 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.items.buildersgadgets.TrowelItem;
@@ -35,16 +36,16 @@ public class TrowelKeybindHandler {
                 ItemStack stack = player.getItemInHand(hand);
                 if (stack.getItem() instanceof TrowelItem) {
                     // Send packet to server
-                    PacketDistributor.sendToServer(new TrowelTogglePacket(hand == InteractionHand.MAIN_HAND));
+                    ClientPacketDistributor.sendToServer(new TrowelTogglePacket(hand == InteractionHand.MAIN_HAND));
 
                     // Update client immediately for responsiveness
                     TrowelItem.Mode newMode = TrowelItem.toggleMode(stack);
 
                     // Show message to player
-                    player.displayClientMessage(Component.translatable(
+                    player.sendOverlayMessage(Component.translatable(
                             "message.builders_zenith.trowel.mode_changed",
                             Component.translatable("tooltip.builders_zenith.trowel.mode." + newMode.getName())
-                    ), true);
+                    ));
 
                     break;
                 }

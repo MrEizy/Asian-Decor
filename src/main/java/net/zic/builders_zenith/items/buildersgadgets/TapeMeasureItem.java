@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -18,7 +19,7 @@ import net.zic.builders_zenith.component.ModDataComponents;
 import net.zic.builders_zenith.component.TapeMeasureDataComponent;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class TapeMeasureItem extends Item {
 
@@ -27,24 +28,23 @@ public class TapeMeasureItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display,
+                                Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
         TapeMeasureDataComponent data = stack.get(ModDataComponents.TAPE_MEASURE_DATA.get());
 
         if (data == null || !data.hasSelection()) {
-            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.no_selection"));
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.tape_measure.no_selection"));
         } else {
             BlockPos pos1 = data.pos1().orElse(null);
             BlockPos pos2 = data.pos2().orElse(null);
 
             if (pos1 != null) {
-                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.pos1_set",
+                tooltip.accept(Component.translatable("tooltip.builders_zenith.tape_measure.pos1_set",
                         pos1.getX(), pos1.getY(), pos1.getZ()));
             }
 
             if (pos2 != null) {
-                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.pos2_set",
+                tooltip.accept(Component.translatable("tooltip.builders_zenith.tape_measure.pos2_set",
                         pos2.getX(), pos2.getY(), pos2.getZ()));
 
                 // Show dimensions if finalized
@@ -53,17 +53,19 @@ public class TapeMeasureItem extends Item {
                     int height = Math.abs(pos2.getY() - pos1.getY()) + 1;
                     int width = Math.abs(pos2.getZ() - pos1.getZ()) + 1;
 
-                    tooltipComponents.add(Component.empty());
-                    tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.dimensions",
+                    tooltip.accept(Component.empty());
+                    tooltip.accept(Component.translatable("tooltip.builders_zenith.tape_measure.dimensions",
                             length, width, height));
                 }
             } else {
-                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.select_pos2"));
+                tooltip.accept(Component.translatable("tooltip.builders_zenith.tape_measure.select_pos2"));
             }
 
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.tape_measure.clear"));
+            tooltip.accept(Component.empty());
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.tape_measure.clear"));
         }
+
+        super.appendHoverText(stack, context, display, tooltip, tooltipFlag);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class TapeMeasureItem extends Item {
                 level.playSound(null, player.blockPosition(), SoundEvents.ITEM_FRAME_REMOVE_ITEM,
                         SoundSource.PLAYERS, 1.0F, 1.0F);
             }
-            return InteractionResult.SUCCESS;
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
 
         // Normal Right Click
@@ -108,7 +110,7 @@ public class TapeMeasureItem extends Item {
             }
         }
 
-        return InteractionResult.SUCCESS;
+        return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
     }
 
     private void setPos1(ItemStack stack, BlockPos pos) {
@@ -171,7 +173,7 @@ public class TapeMeasureItem extends Item {
     }
 
     private void clearSelection(ItemStack stack) {
-        stack.remove(ModDataComponents.TAPE_MEASURE_DATA.get());
+        stack.set(ModDataComponents.TAPE_MEASURE_DATA.get(), TapeMeasureDataComponent.EMPTY);
     }
 
     public static AABB createBounds(BlockPos pos1, BlockPos pos2) {

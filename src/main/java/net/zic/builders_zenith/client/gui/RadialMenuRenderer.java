@@ -1,19 +1,19 @@
 package net.zic.builders_zenith.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.zic.builders_zenith.BuildersZenith;
-import org.jetbrains.annotations.UnknownNullability;
-import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,17 +49,21 @@ public class RadialMenuRenderer {
     private static final float OUTER_RADIUS = 100f;
     private static final float ANIMATION_SPEED = 0.25f;
 
-    // Base colors (dark gray, matching inner circle)
     private static final float BASE_R = 0.15f;
     private static final float BASE_G = 0.15f;
     private static final float BASE_B = 0.15f;
     private static final float BASE_A = 0.85f;
 
-    // Highlight colors (brighter cyan when hovered)
     private static final float HIGHLIGHT_R = 0.2f;
     private static final float HIGHLIGHT_G = 0.8f;
     private static final float HIGHLIGHT_B = 1.0f;
     private static final float HIGHLIGHT_A = 0.9f;
+
+    /** Same pipeline GuiGraphicsExtractor.fill() uses — solid color, no texture. */
+    private static final RenderType GUI_COLOR = RenderType.create(
+            "builders_zenith_gui_color",
+            RenderSetup.builder(RenderPipelines.GUI).createRenderSetup()
+    );
 
     public static void openMenu(List<ItemStack> items) {
         menuOpen = true;
@@ -152,20 +156,26 @@ public class RadialMenuRenderer {
 
         renderBackgroundDim(graphics, screenWidth, screenHeight);
 
-        // Render sections with matching inner circle color
+        // ── Custom geometry via BufferSource ─────────────────────────────────
+        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+        PoseStack poseStack = new PoseStack(); // identity — screen coords are absolute
+        PoseStack.Pose pose = poseStack.last();
+
         for (int i = 0; i < sections.size(); i++) {
-            renderSection(graphics, centerX, centerY, i, sections.get(i));
+            renderSection(pose, bufferSource, centerX, centerY, i, sections.get(i));
         }
 
-        renderDividers(graphics, centerX, centerY);
+        renderDividers(pose, bufferSource, centerX, centerY);
+        renderSelector(pose, bufferSource, centerX, centerY);
+
+        bufferSource.endBatch();
+        // ─────────────────────────────────────────────────────────────────────
 
         renderCenter(graphics, centerX, centerY);
 
         for (int i = 0; i < sections.size(); i++) {
             renderItemIcon(graphics, centerX, centerY, i, sections.get(i));
         }
-
-        renderSelector(graphics, centerX, centerY);
     }
 
     private static void updateHoveredSection(float centerX, float centerY) {
@@ -218,87 +228,91 @@ public class RadialMenuRenderer {
         return angle;
     }
 
-    private static void renderBackgroundDim(@UnknownNullability GuiGraphicsExtractor graphics, int width, int height) {
+    private static void renderBackgroundDim(GuiGraphicsExtractor graphics, int width, int height) {
         int alpha = (int) (100 * openProgress);
         graphics.fill(0, 0, width, height, (alpha << 24));
     }
 
-    private static void renderSection(@UnknownNullability GuiGraphicsExtractor graphics, float centerX, float centerY,
-                                      int index, RadialSection section) {
+    /** Draws each section as a strip of quads (inner→outer→outer→inner). */
+    private static void renderSection(PoseStack.Pose pose, MultiBufferSource bufferSource,
+                                      float centerX, float centerY, int index, RadialSection section) {
         boolean hovered = index == hoveredIndex;
         float innerR = INNER_RADIUS * openProgress;
         float outerR = OUTER_RADIUS * openProgress;
 
-        // Use base color normally, highlight color when hovered
         float r = hovered ? HIGHLIGHT_R : BASE_R;
         float g = hovered ? HIGHLIGHT_G : BASE_G;
         float b = hovered ? HIGHLIGHT_B : BASE_B;
-        // Use same solid alpha for both, no transparency difference
         float a = hovered ? 0.95f : BASE_A;
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f matrix = graphics.pose().last().pose();
+        VertexConsumer consumer = bufferSource.getBuffer(GUI_COLOR);
 
         int segments = 24;
         float startRad = (float) Math.toRadians(section.startAngle);
         float endRad = (float) Math.toRadians(section.endAngle);
 
-        // Center with same color as inner circle
-        builder.addVertex(matrix, centerX, centerY, 0).setColor(r, g, b, a);
+        for (int i = 0; i < segments; i++) {
+            float t0 = i / (float) segments;
+            float t1 = (i + 1) / (float) segments;
+            float angle0 = startRad + (endRad - startRad) * t0;
+            float angle1 = startRad + (endRad - startRad) * t1;
 
-        // Outer arc - same solid color
-        for (int i = 0; i <= segments; i++) {
-            float t = i / (float) segments;
-            float angle = startRad + (endRad - startRad) * t;
-            float x = centerX + (float) Math.cos(angle) * outerR;
-            float y = centerY + (float) Math.sin(angle) * outerR;
-            builder.addVertex(matrix, x, y, 0).setColor(r, g, b, a);
+            float innerX0 = centerX + (float) Math.cos(angle0) * innerR;
+            float innerY0 = centerY + (float) Math.sin(angle0) * innerR;
+            float outerX0 = centerX + (float) Math.cos(angle0) * outerR;
+            float outerY0 = centerY + (float) Math.sin(angle0) * outerR;
+
+            float innerX1 = centerX + (float) Math.cos(angle1) * innerR;
+            float innerY1 = centerY + (float) Math.sin(angle1) * innerR;
+            float outerX1 = centerX + (float) Math.cos(angle1) * outerR;
+            float outerY1 = centerY + (float) Math.sin(angle1) * outerR;
+
+            consumer.addVertex(pose, innerX0, innerY0, 0).setColor(r, g, b, a);
+            consumer.addVertex(pose, outerX0, outerY0, 0).setColor(r, g, b, a);
+            consumer.addVertex(pose, outerX1, outerY1, 0).setColor(r, g, b, a);
+            consumer.addVertex(pose, innerX1, innerY1, 0).setColor(r, g, b, a);
         }
 
-        // Inner arc - same solid color
-        for (int i = segments; i >= 0; i--) {
-            float t = i / (float) segments;
-            float angle = startRad + (endRad - startRad) * t;
-            float x = centerX + (float) Math.cos(angle) * innerR;
-            float y = centerY + (float) Math.sin(angle) * innerR;
-            builder.addVertex(matrix, x, y, 0).setColor(r, g, b, a);
-        }
-
-        BufferUploader.drawWithShader(builder.buildOrThrow());
-
-        // White border when hovered
+        // White border when hovered — thin quads along the outer arc
         if (hovered) {
-            builder = tesselator.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            float br = 1f, bg = 1f, bb = 1f, ba = openProgress;
+            float thick = 0.8f;
 
-            for (int i = 0; i <= segments; i++) {
-                float t = i / (float) segments;
-                float angle = startRad + (endRad - startRad) * t;
-                float x = centerX + (float) Math.cos(angle) * outerR;
-                float y = centerY + (float) Math.sin(angle) * outerR;
-                builder.addVertex(matrix, x, y, 0).setColor(1f, 1f, 1f, openProgress);
+            for (int i = 0; i < segments; i++) {
+                float t0 = i / (float) segments;
+                float t1 = (i + 1) / (float) segments;
+                float angle0 = startRad + (endRad - startRad) * t0;
+                float angle1 = startRad + (endRad - startRad) * t1;
+
+                float x0 = centerX + (float) Math.cos(angle0) * outerR;
+                float y0 = centerY + (float) Math.sin(angle0) * outerR;
+                float x1 = centerX + (float) Math.cos(angle1) * outerR;
+                float y1 = centerY + (float) Math.sin(angle1) * outerR;
+
+                float nx = -(y1 - y0);
+                float ny = (x1 - x0);
+                float len = (float) Math.sqrt(nx * nx + ny * ny);
+                if (len > 0) {
+                    nx = nx / len * thick;
+                    ny = ny / len * thick;
+                }
+
+                consumer.addVertex(pose, x0 + nx, y0 + ny, 0).setColor(br, bg, bb, ba);
+                consumer.addVertex(pose, x0 - nx, y0 - ny, 0).setColor(br, bg, bb, ba);
+                consumer.addVertex(pose, x1 - nx, y1 - ny, 0).setColor(br, bg, bb, ba);
+                consumer.addVertex(pose, x1 + nx, y1 + ny, 0).setColor(br, bg, bb, ba);
             }
-
-            BufferUploader.drawWithShader(builder.buildOrThrow());
         }
     }
 
-    private static void renderDividers(GuiGraphicsExtractor graphics, float centerX, float centerY) {
+    private static void renderDividers(PoseStack.Pose pose, MultiBufferSource bufferSource,
+                                       float centerX, float centerY) {
         if (sections.size() <= 1) return;
 
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f matrix = graphics.pose().last().pose();
-
+        VertexConsumer consumer = bufferSource.getBuffer(GUI_COLOR);
         float innerR = (INNER_RADIUS - 2) * openProgress;
         float outerR = (OUTER_RADIUS + 2) * openProgress;
+        float thick = 0.5f;
 
         for (RadialSection section : sections) {
             float angle = (float) Math.toRadians(section.startAngle);
@@ -307,80 +321,76 @@ public class RadialMenuRenderer {
             float x2 = centerX + (float) Math.cos(angle) * outerR;
             float y2 = centerY + (float) Math.sin(angle) * outerR;
 
-            builder.addVertex(matrix, x1, y1, 0).setColor(0.1f, 0.1f, 0.1f, openProgress * 0.5f);
-            builder.addVertex(matrix, x2, y2, 0).setColor(0.1f, 0.1f, 0.1f, openProgress * 0.5f);
-        }
+            float dx = x2 - x1;
+            float dy = y2 - y1;
+            float len = (float) Math.sqrt(dx * dx + dy * dy);
+            float nx = -dy / len * thick;
+            float ny = dx / len * thick;
 
-        BufferUploader.drawWithShader(builder.buildOrThrow());
+            float r = 0.1f, g = 0.1f, b = 0.1f, a = openProgress * 0.5f;
+
+            consumer.addVertex(pose, x1 + nx, y1 + ny, 0).setColor(r, g, b, a);
+            consumer.addVertex(pose, x1 - nx, y1 - ny, 0).setColor(r, g, b, a);
+            consumer.addVertex(pose, x2 - nx, y2 - ny, 0).setColor(r, g, b, a);
+            consumer.addVertex(pose, x2 + nx, y2 + ny, 0).setColor(r, g, b, a);
+        }
     }
 
-    private static void renderCenter(@UnknownNullability GuiGraphicsExtractor graphics, float centerX, float centerY) {
+    private static void renderCenter(GuiGraphicsExtractor graphics, float centerX, float centerY) {
         float radius = INNER_RADIUS * openProgress * 0.95f;
+        int x1 = (int) (centerX - radius);
+        int y1 = (int) (centerY - radius);
+        int x2 = (int) (centerX + radius);
+        int y2 = (int) (centerY + radius);
+        int color = ((int) (BASE_A * openProgress * 255) << 24)
+                | ((int) (BASE_R * 255) << 16)
+                | ((int) (BASE_G * 255) << 8)
+                | ((int) (BASE_B * 255));
+        graphics.fill(x1, y1, x2, y2, color);
 
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f matrix = graphics.pose().last().pose();
-
-        // Match the base color of sections
-        for (int i = 0; i <= 32; i++) {
-            float angle = (float) (i * Math.PI * 2 / 32);
-            float x = centerX + (float) Math.cos(angle) * radius;
-            float y = centerY + (float) Math.sin(angle) * radius;
-            builder.addVertex(matrix, x, y, 0).setColor(BASE_R, BASE_G, BASE_B, BASE_A * openProgress);
-        }
-
-        BufferUploader.drawWithShader(builder.buildOrThrow());
-
-        // Center text
         if (hoveredIndex >= 0 && hoveredIndex < sections.size()) {
             RadialSection section = sections.get(hoveredIndex);
             String name = section.stack.getHoverName().getString();
             int textWidth = Minecraft.getInstance().font.width(name);
-            graphics.drawString(Minecraft.getInstance().font, name,
+            graphics.text(Minecraft.getInstance().font, name,
                     (int) centerX - textWidth / 2, (int) centerY - 4, 0xFFFFFF, true);
         }
     }
 
-    private static void renderItemIcon(@UnknownNullability GuiGraphicsExtractor graphics, float centerX, float centerY,
+    private static void renderItemIcon(GuiGraphicsExtractor graphics, float centerX, float centerY,
                                        int index, RadialSection section) {
         float midAngle = (section.startAngle + section.endAngle) / 2f;
         float midRad = (float) Math.toRadians(midAngle);
 
-        // Position for item
         float itemRadius = (INNER_RADIUS + OUTER_RADIUS) / 2f * openProgress - 2f;
 
         int itemX = (int) (centerX + (float) Math.cos(midRad) * itemRadius) - 6;
         int itemY = (int) (centerY + (float) Math.sin(midRad) * itemRadius) - 8;
 
-        // Draw item smaller
-        graphics.pose().pushPose();
-        graphics.pose().translate(itemX + 6, itemY + 6, 0);
-        graphics.pose().scale(0.7f, 0.7f, 0.7f);
-        graphics.pose().translate(-(itemX + 6), -(itemY + 6), 0);
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(itemX + 6, itemY + 6);
+        graphics.pose().scale(0.7f, 0.7f);
+        graphics.pose().translate(-(itemX + 6), -(itemY + 6));
 
-        graphics.renderItem(section.stack, itemX, itemY);
+        graphics.item(section.stack, itemX, itemY);
 
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
 
-        // Position for count (below the item)
         if (section.count > 1) {
             float countRadius = itemRadius + 18f;
-
             String countStr = String.valueOf(section.count);
             int textWidth = Minecraft.getInstance().font.width(countStr);
             int countX = (int) (centerX + (float) Math.cos(midRad) * countRadius) - textWidth / 2;
             int countY = (int) (centerY + (float) Math.sin(midRad) * countRadius) - 4;
 
-            graphics.drawString(Minecraft.getInstance().font,
+            graphics.text(Minecraft.getInstance().font,
                     countStr,
                     countX, countY, 0xFFFFFF, true);
         }
     }
 
-    private static void renderSelector(GuiGraphicsExtractor graphics, float centerX, float centerY) {
+    private static void renderSelector(PoseStack.Pose pose, MultiBufferSource bufferSource,
+                                       float centerX, float centerY) {
         Minecraft mc = Minecraft.getInstance();
         double mouseX = mc.mouseHandler.xpos() * mc.getWindow().getGuiScaledWidth() / mc.getWindow().getScreenWidth();
         double mouseY = mc.mouseHandler.ypos() * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getScreenHeight();
@@ -397,16 +407,9 @@ public class RadialMenuRenderer {
         float selectorX = centerX + (float) Math.cos(angle) * selectorR;
         float selectorY = centerY + (float) Math.sin(angle) * selectorR;
 
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f matrix = graphics.pose().last().pose();
+        VertexConsumer consumer = bufferSource.getBuffer(GUI_COLOR);
 
         float size = 8f * openProgress;
-
-        // Color based on hover - cyan when hovering, white when not
         boolean hasHover = hoveredIndex >= 0;
         float r = hasHover ? 0.0f : 1.0f;
         float g = hasHover ? 0.9f : 1.0f;
@@ -415,28 +418,40 @@ public class RadialMenuRenderer {
         float innerX = selectorX - (float) Math.cos(angle) * size * 1.5f;
         float innerY = selectorY - (float) Math.sin(angle) * size * 1.5f;
 
-        builder.addVertex(matrix, innerX, innerY, 0).setColor(r, g, b, openProgress);
-
         float perpX = -(float) Math.sin(angle) * size;
         float perpY = (float) Math.cos(angle) * size;
 
-        builder.addVertex(matrix, selectorX + perpX, selectorY + perpY, 0).setColor(r * 0.7f, g * 0.7f, b * 0.7f, openProgress);
-        builder.addVertex(matrix, selectorX + (float) Math.cos(angle) * size * 0.5f,
-                selectorY + (float) Math.sin(angle) * size * 0.5f, 0).setColor(r, g, b, openProgress);
-        builder.addVertex(matrix, selectorX - perpX, selectorY - perpY, 0).setColor(r * 0.7f, g * 0.7f, b * 0.7f, openProgress);
+        float tipX = selectorX + (float) Math.cos(angle) * size * 0.5f;
+        float tipY = selectorY + (float) Math.sin(angle) * size * 0.5f;
 
-        BufferUploader.drawWithShader(builder.buildOrThrow());
+        // Arrow body as a single quad (4 vertices)
+        consumer.addVertex(pose, innerX, innerY, 0).setColor(r, g, b, openProgress);
+        consumer.addVertex(pose, selectorX + perpX, selectorY + perpY, 0).setColor(r * 0.7f, g * 0.7f, b * 0.7f, openProgress);
+        consumer.addVertex(pose, tipX, tipY, 0).setColor(r, g, b, openProgress);
+        consumer.addVertex(pose, selectorX - perpX, selectorY - perpY, 0).setColor(r * 0.7f, g * 0.7f, b * 0.7f, openProgress);
 
         // Outline
-        builder = tesselator.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+        float lr = 1f, lg = 1f, lb = 1f, la = openProgress;
+        drawLine(pose, bufferSource, innerX, innerY, selectorX + perpX, selectorY + perpY, lr, lg, lb, la);
+        drawLine(pose, bufferSource, selectorX + perpX, selectorY + perpY, tipX, tipY, lr, lg, lb, la);
+        drawLine(pose, bufferSource, tipX, tipY, selectorX - perpX, selectorY - perpY, lr, lg, lb, la);
+        drawLine(pose, bufferSource, selectorX - perpX, selectorY - perpY, innerX, innerY, lr, lg, lb, la);
+    }
 
-        builder.addVertex(matrix, innerX, innerY, 0).setColor(1f, 1f, 1f, openProgress);
-        builder.addVertex(matrix, selectorX + perpX, selectorY + perpY, 0).setColor(1f, 1f, 1f, openProgress);
-        builder.addVertex(matrix, selectorX + (float) Math.cos(angle) * size * 0.5f,
-                selectorY + (float) Math.sin(angle) * size * 0.5f, 0).setColor(1f, 1f, 1f, openProgress);
-        builder.addVertex(matrix, selectorX - perpX, selectorY - perpY, 0).setColor(1f, 1f, 1f, openProgress);
-        builder.addVertex(matrix, innerX, innerY, 0).setColor(1f, 1f, 1f, openProgress);
+    private static void drawLine(PoseStack.Pose pose, MultiBufferSource bufferSource,
+                                 float x0, float y0, float x1, float y1,
+                                 float r, float g, float b, float a) {
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+        float len = (float) Math.sqrt(dx * dx + dy * dy);
+        if (len < 0.001f) return;
+        float nx = -dy / len * 0.5f;
+        float ny = dx / len * 0.5f;
 
-        BufferUploader.drawWithShader(builder.buildOrThrow());
+        VertexConsumer consumer = bufferSource.getBuffer(GUI_COLOR);
+        consumer.addVertex(pose, x0 + nx, y0 + ny, 0).setColor(r, g, b, a);
+        consumer.addVertex(pose, x0 - nx, y0 - ny, 0).setColor(r, g, b, a);
+        consumer.addVertex(pose, x1 - nx, y1 - ny, 0).setColor(r, g, b, a);
+        consumer.addVertex(pose, x1 + nx, y1 + ny, 0).setColor(r, g, b, a);
     }
 }

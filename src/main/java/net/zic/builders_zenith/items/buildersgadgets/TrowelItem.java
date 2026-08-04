@@ -10,6 +10,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -23,6 +24,7 @@ import net.zic.builders_zenith.component.TrowelDataComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 public class TrowelItem extends Item {
 
@@ -65,34 +67,35 @@ public class TrowelItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display,
+                                Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
         TrowelDataComponent data = stack.getOrDefault(ModDataComponents.TROWEL_DATA.get(), TrowelDataComponent.EMPTY);
         Mode mode = data.getMode();
         boolean hasPouchLink = data.hasLinkedPouch();
 
-        tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.mode",
+        tooltip.accept(Component.translatable("tooltip.builders_zenith.trowel.mode",
                 Component.translatable("tooltip.builders_zenith.trowel.mode." + mode.getName())));
 
         if (mode == Mode.POUCH && hasPouchLink) {
             ItemStack pouch = data.getLinkedPouch();
             if (!pouch.isEmpty()) {
-                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.linked_pouch"));
+                tooltip.accept(Component.translatable("tooltip.builders_zenith.trowel.linked_pouch"));
                 PouchContents contents = pouch.getOrDefault(ModDataComponents.POUCH_CONTENTS.get(), PouchContents.EMPTY);
                 int filled = contents.getNonEmptySlotCount();
-                tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.pouch_slots",
+                tooltip.accept(Component.translatable("tooltip.builders_zenith.trowel.pouch_slots",
                         filled, PouchContents.MAX_SLOTS));
             }
         } else if (mode == Mode.POUCH && !hasPouchLink) {
-            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.no_pouch_link"));
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.trowel.no_pouch_link"));
         }
 
-        tooltipComponents.add(Component.empty());
-        tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.usage"));
-        tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.toggle_key", "V"));
+        tooltip.accept(Component.empty());
+        tooltip.accept(Component.translatable("tooltip.builders_zenith.trowel.usage"));
+        tooltip.accept(Component.translatable("tooltip.builders_zenith.trowel.toggle_key", "V"));
 
         if (!hasPouchLink) {
-            tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.trowel.link_instruction"));
+            tooltip.accept(Component.empty());
+            tooltip.accept(Component.translatable("tooltip.builders_zenith.trowel.link_instruction"));
         }
     }
 
@@ -104,7 +107,7 @@ public class TrowelItem extends Item {
         ItemStack trowelStack = context.getItemInHand();
         Level level = context.getLevel();
 
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
 
         TrowelDataComponent data = trowelStack.getOrDefault(ModDataComponents.TROWEL_DATA.get(), TrowelDataComponent.EMPTY);
         Mode mode = data.getMode();
@@ -285,7 +288,7 @@ public class TrowelItem extends Item {
             }
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
     }
 
     public static Mode getMode(ItemStack stack) {
