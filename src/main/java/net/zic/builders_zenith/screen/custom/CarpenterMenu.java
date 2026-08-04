@@ -1,5 +1,6 @@
 package net.zic.builders_zenith.screen.custom;
 import com.google.common.collect.Lists;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -78,7 +79,7 @@ public class CarpenterMenu extends AbstractContainerMenu {
 
             @Override
             public void onTake(Player player, ItemStack stack) {
-                stack.onCraftedBy(player.level(), player, stack.getCount());
+                stack.onCraftedBy(player, stack.getCount());
                 CarpenterMenu.this.resultContainer.awardUsedRecipes(player, this.getRelevantItems());
 
                 // Consume ingredients based on recipe requirement
@@ -178,11 +179,13 @@ public class CarpenterMenu extends AbstractContainerMenu {
         this.resultSlot.set(ItemStack.EMPTY);
 
         if (!stack.isEmpty()) {
-            this.recipes = this.level.getRecipeManager().getRecipesFor(
-                    ModRecipes.CARPENTER_TYPE.get(),
-                    createRecipeInput(container),
-                    this.level
-            );
+            if (this.level instanceof ServerLevel serverLevel) {
+                this.recipes = serverLevel.recipeAccess().recipeMap().getRecipesFor(
+                        ModRecipes.CARPENTER_TYPE.get(),
+                        createRecipeInput(container),
+                        this.level
+                ).toList();
+            }
         }
     }
 
@@ -235,7 +238,7 @@ public class CarpenterMenu extends AbstractContainerMenu {
             itemstack = itemstack1.copy();
 
             if (index == RESULT_SLOT) {
-                item.onCraftedBy(itemstack1, player.level(), player);
+                item.onCraftedBy(itemstack1, player);
                 if (!this.moveItemStackTo(itemstack1, INV_SLOT_START, USE_ROW_SLOT_END, true)) {
                     return ItemStack.EMPTY;
                 }
@@ -244,7 +247,8 @@ public class CarpenterMenu extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(itemstack1, INV_SLOT_START, USE_ROW_SLOT_END, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (this.level.getRecipeManager().getRecipeFor(
+            } else if (this.level instanceof ServerLevel serverLevel
+                    && serverLevel.recipeAccess().getRecipeFor(
                     ModRecipes.CARPENTER_TYPE.get(),
                     new SingleRecipeInput(itemstack1),
                     this.level).isPresent()) {

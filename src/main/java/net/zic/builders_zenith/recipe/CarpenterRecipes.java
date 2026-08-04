@@ -4,11 +4,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -33,27 +37,37 @@ public class CarpenterRecipes implements Recipe<SingleRecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider registries) {
-        return this.result.copy();
+    public ItemStack assemble(SingleRecipeInput singleRecipeInput) {
+        return result.copy();
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return true;
+    public boolean showNotification() {
+        return false;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return this.result;
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_EQUIPMENT;
+    }
+
+    @Override
+    public String group() {
+        return group;
+    }
+
+    @Override
+    public RecipeSerializer<? extends Recipe<SingleRecipeInput>> getSerializer() {
         return ModRecipes.CARPENTER_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<? extends Recipe<SingleRecipeInput>> getType() {
         return ModRecipes.CARPENTER_TYPE.get();
     }
 
@@ -69,45 +83,35 @@ public class CarpenterRecipes implements Recipe<SingleRecipeInput> {
         return result;
     }
 
-    public String getGroup() {
-        return group;
+    // === NEW: Static codecs, no inner Serializer class ===
+
+    public static final MapCodec<CarpenterRecipes> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.optionalFieldOf("group", "").forGetter(CarpenterRecipes::group),
+            Ingredient.CODEC.fieldOf("ingredient").forGetter(CarpenterRecipes::getIngredient),
+            ItemStack.CODEC.fieldOf("result").forGetter(CarpenterRecipes::getResult),
+            Codec.INT.optionalFieldOf("ingredient_count", 1).forGetter(CarpenterRecipes::getIngredientCount)
+    ).apply(instance, CarpenterRecipes::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, CarpenterRecipes> STREAM_CODEC = StreamCodec.of(
+            CarpenterRecipes::toNetwork, CarpenterRecipes::fromNetwork
+    );
+
+    private static void toNetwork(RegistryFriendlyByteBuf buffer, CarpenterRecipes recipe) {
+        buffer.writeUtf(recipe.group(), 32767);
+        Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getIngredient());
+        ItemStack.STREAM_CODEC.encode(buffer, recipe.getResult());
+        buffer.writeInt(recipe.getIngredientCount());
     }
 
-    public static class Serializer implements RecipeSerializer<CarpenterRecipes> {
-        public static final MapCodec<CarpenterRecipes> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                Codec.STRING.optionalFieldOf("group", "").forGetter(CarpenterRecipes::getGroup),
-                Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(CarpenterRecipes::getIngredient),
-                ItemStack.CODEC.fieldOf("result").forGetter(CarpenterRecipes::getResult),
-                Codec.INT.optionalFieldOf("ingredient_count", 1).forGetter(CarpenterRecipes::getIngredientCount)
-        ).apply(instance, CarpenterRecipes::new));
+    private static CarpenterRecipes fromNetwork(RegistryFriendlyByteBuf buffer) {
+        String group = buffer.readUtf(32767);
+        Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+        ItemStack result = ItemStack.STREAM_CODEC.decode(buffer);
+        int count = buffer.readInt();
+        return new CarpenterRecipes(group, ingredient, result, count);
+    }
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, CarpenterRecipes> STREAM_CODEC = StreamCodec.of(
-                Serializer::toNetwork, Serializer::fromNetwork
-        );
-
-        @Override
-        public MapCodec<CarpenterRecipes> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, CarpenterRecipes> streamCodec() {
-            return STREAM_CODEC;
-        }
-
-        private static void toNetwork(RegistryFriendlyByteBuf buffer, CarpenterRecipes recipe) {
-            buffer.writeUtf(recipe.getGroup());
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getIngredient());
-            ItemStack.STREAM_CODEC.encode(buffer, recipe.getResult());
-            buffer.writeInt(recipe.getIngredientCount());
-        }
-
-        private static CarpenterRecipes fromNetwork(RegistryFriendlyByteBuf buffer) {
-            String group = buffer.readUtf();
-            Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-            ItemStack result = ItemStack.STREAM_CODEC.decode(buffer);
-            int count = buffer.readInt();
-            return new CarpenterRecipes(group, ingredient, result, count);
-        }
+    public ItemStack assemble(SingleRecipeInput recipeInput, RegistryAccess registryAccess) {
+        return null;
     }
 }

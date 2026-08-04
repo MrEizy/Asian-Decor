@@ -14,7 +14,6 @@ import net.zic.builders_zenith.screen.ModMenuTypes;
 import net.zic.builders_zenith.screen.custom.ColorMixerScreen;
 import net.zic.builders_zenith.screen.custom.CarpenterScreen;
 import net.zic.builders_zenith.screen.custom.PouchScreen;
-import net.zic.builders_zenith.screen.custom.ShapeMakerScreen;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -31,6 +30,8 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+
+import java.util.List;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(BuildersZenith.MOD_ID)
@@ -95,134 +96,50 @@ public class BuildersZenith {
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.CARPENTER.get(), CarpenterScreen::new);
             event.register(ModMenuTypes.POUCH_MENU.get(), PouchScreen::new);
-            event.register(ModMenuTypes.SHAPE_MAKER.get(), ShapeMakerScreen::new);
             event.register(ModMenuTypes.COLOR_MIXER.get(), ColorMixerScreen::new);
         }
 
 
         @SubscribeEvent
-        public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-            // Register color handlers for all dyed brick FULL BLOCKS
-            ModBlocks.DYED_BRICKS.forEach((type, blockDeferred) -> {
-                event.register((state, level, pos, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get());
-            });
-
-            // Register color handlers for all dyed brick SLABS
-            ModBlocks.DYED_BRICK_SLABS.forEach((type, blockDeferred) -> {
-                event.register((state, level, pos, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get());
-            });
-
-            // Register color handlers for all dyed brick VERTICAL SLABS
-            ModBlocks.DYED_BRICK_VERTICAL_SLABS.forEach((type, blockDeferred) -> {
-                event.register((state, level, pos, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get());
-            });
-
-            // Register color handlers for all dyed brick STAIRS
-            ModBlocks.DYED_BRICK_STAIRS.forEach((type, blockDeferred) -> {
-                event.register((state, level, pos, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get());
-            });
-
-            // Register color handlers for all dyed brick WALLS
-            ModBlocks.DYED_BRICK_WALLS.forEach((type, blockDeferred) -> {
-                event.register((state, level, pos, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get());
-            });
-        }
-
-        @SubscribeEvent
-        public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+        public static void registerBlockColors(RegisterColorHandlersEvent.BlockTintSources event) {
             // Full blocks
             ModBlocks.DYED_BRICKS.forEach((type, blockDeferred) -> {
-                event.register((stack, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get().asItem());
+                event.register(List.of(
+                        _ -> type.getBrickColor().getTextureDiffuseColor(),
+                        _ -> type.getMortarColor().getTextureDiffuseColor()
+                ), blockDeferred.get());
             });
 
             // Slabs
             ModBlocks.DYED_BRICK_SLABS.forEach((type, blockDeferred) -> {
-                event.register((stack, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get().asItem());
+                event.register(List.of(
+                        _ -> type.getBrickColor().getTextureDiffuseColor(),
+                        _ -> type.getMortarColor().getTextureDiffuseColor()
+                ), blockDeferred.get());
             });
 
             // Vertical Slabs
             ModBlocks.DYED_BRICK_VERTICAL_SLABS.forEach((type, blockDeferred) -> {
-                event.register((stack, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get().asItem());
+                event.register(List.of(
+                        _ -> type.getBrickColor().getTextureDiffuseColor(),
+                        _ -> type.getMortarColor().getTextureDiffuseColor()
+                ), blockDeferred.get());
             });
 
             // Stairs
             ModBlocks.DYED_BRICK_STAIRS.forEach((type, blockDeferred) -> {
-                event.register((stack, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get().asItem());
+                event.register(List.of(
+                        _ -> type.getBrickColor().getTextureDiffuseColor(),
+                        _ -> type.getMortarColor().getTextureDiffuseColor()
+                ), blockDeferred.get());
             });
 
             // Walls
             ModBlocks.DYED_BRICK_WALLS.forEach((type, blockDeferred) -> {
-                event.register((stack, tintIndex) -> {
-                    DyeColor color = switch (tintIndex) {
-                        case 0 -> type.getBrickColor();
-                        case 1 -> type.getMortarColor();
-                        default -> DyeColor.WHITE;
-                    };
-                    return color.getTextureDiffuseColor();
-                }, blockDeferred.get().asItem());
+                event.register(List.of(
+                        _ -> type.getBrickColor().getTextureDiffuseColor(),
+                        _ -> type.getMortarColor().getTextureDiffuseColor()
+                ), blockDeferred.get());
             });
         }
 

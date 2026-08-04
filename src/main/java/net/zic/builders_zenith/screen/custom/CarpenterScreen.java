@@ -1,11 +1,13 @@
 package net.zic.builders_zenith.screen.custom;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,33 +18,24 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.recipe.CarpenterRecipes;
 
-
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
-    private static final ResourceLocation BG_LOCATION =
-            ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, "textures/gui/container/carpenter.png");
+    private static final Identifier BG_LOCATION =
+            Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, "textures/gui/container/carpenter.png");
 
-    // Sprite locations (you'll need to create these or use vanilla ones)
-    private static final ResourceLocation SCROLLER_SPRITE =
-            ResourceLocation.withDefaultNamespace("container/stonecutter/scroller");
-    private static final ResourceLocation SCROLLER_DISABLED_SPRITE =
-            ResourceLocation.withDefaultNamespace("container/stonecutter/scroller_disabled");
-    private static final ResourceLocation RECIPE_SELECTED_SPRITE =
-            ResourceLocation.withDefaultNamespace("container/stonecutter/recipe_selected");
-    private static final ResourceLocation RECIPE_HIGHLIGHTED_SPRITE =
-            ResourceLocation.withDefaultNamespace("container/stonecutter/recipe_highlighted");
-    private static final ResourceLocation RECIPE_SPRITE =
-            ResourceLocation.withDefaultNamespace("container/stonecutter/recipe");
+    private static final Identifier SCROLLER_SPRITE =
+            Identifier.withDefaultNamespace("container/stonecutter/scroller");
+    private static final Identifier SCROLLER_DISABLED_SPRITE =
+            Identifier.withDefaultNamespace("container/stonecutter/scroller_disabled");
+    private static final Identifier RECIPE_SELECTED_SPRITE =
+            Identifier.withDefaultNamespace("container/stonecutter/recipe_selected");
+    private static final Identifier RECIPE_HIGHLIGHTED_SPRITE =
+            Identifier.withDefaultNamespace("container/stonecutter/recipe_highlighted");
+    private static final Identifier RECIPE_SPRITE =
+            Identifier.withDefaultNamespace("container/stonecutter/recipe");
 
-    private static final int SCROLLER_WIDTH = 12;
-    private static final int SCROLLER_HEIGHT = 15;
-    private static final int RECIPES_COLUMNS = 4;
-    private static final int RECIPES_ROWS = 3;
-    private static final int RECIPES_IMAGE_SIZE_WIDTH = 16;
-    private static final int RECIPES_IMAGE_SIZE_HEIGHT = 18;
-    private static final int SCROLLER_FULL_HEIGHT = 54;
     private static final int RECIPES_X = 52;
     private static final int RECIPES_Y = 14;
 
@@ -58,36 +51,27 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
-    }
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
 
-    @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        int i = this.leftPos;
-        int j = this.topPos;
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BG_LOCATION, this.leftPos, this.topPos, 0.0F, 0.0F,
+                this.imageWidth, this.imageHeight, 256, 256);
 
-        // Background texture
-        guiGraphics.blit(BG_LOCATION, i, j, 0, 0, this.imageWidth, this.imageHeight);
-
-        // Scrollbar
         int k = (int)(41.0F * this.scrollOffs);
-        ResourceLocation scrollerSprite = this.isScrollBarActive() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE;
-        guiGraphics.blitSprite(scrollerSprite, i + 119, j + 15 + k, 12, 15);
+        Identifier scrollerSprite = this.isScrollBarActive() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE;
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, scrollerSprite,
+                this.leftPos + 119, this.topPos + 15 + k, 12, 15);
 
-        // Recipe buttons area
         int l = this.leftPos + RECIPES_X;
         int i1 = this.topPos + RECIPES_Y;
         int j1 = this.startIndex + 12;
-
-        this.renderButtons(guiGraphics, mouseX, mouseY, l, i1, j1);
-        this.renderRecipes(guiGraphics, l, i1, j1);
+        this.renderButtons(graphics, mouseX, mouseY, l, i1, j1);
+        this.renderRecipes(graphics, l, i1, j1);
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
-        super.renderTooltip(guiGraphics, x, y);
+    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        super.extractTooltip(graphics, mouseX, mouseY);
 
         if (this.displayRecipes) {
             int i = this.leftPos + RECIPES_X;
@@ -100,36 +84,32 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
                 int j1 = i + i1 % 4 * 16;
                 int k1 = j + i1 / 4 * 18 + 2;
 
-                if (x >= j1 && x < j1 + 16 && y >= k1 && y < k1 + 18) {
+                if (mouseX >= j1 && mouseX < j1 + 16 && mouseY >= k1 && mouseY < k1 + 18) {
                     CarpenterRecipes recipe = list.get(l).value();
-                    ItemStack result = recipe.getResultItem(this.minecraft.level.registryAccess());
+                    ItemStack result = recipe.getResult();
 
-                    // Build tooltip with ingredient cost
                     Component costText = Component.translatable("tooltip.builders_zenith.ingredient_cost",
                             recipe.getIngredientCount());
 
                     List<net.minecraft.util.FormattedCharSequence> formattedLines =
                             net.minecraft.locale.Language.getInstance().getVisualOrder(
-                                    java.util.List.of(
-                                            result.getHoverName(),
-                                            costText
-                                    )
+                                    List.of(result.getHoverName(), costText)
                             );
 
-                    guiGraphics.renderTooltip(this.font, formattedLines, x, y);
+                    graphics.setTooltipForNextFrame(this.font, formattedLines, mouseX, mouseY);
                 }
             }
         }
     }
 
-    private void renderButtons(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y, int lastVisibleElementIndex) {
+    private void renderButtons(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int x, int y, int lastVisibleElementIndex) {
         for (int i = this.startIndex; i < lastVisibleElementIndex && i < this.menu.getNumRecipes(); ++i) {
             int j = i - this.startIndex;
             int k = x + j % 4 * 16;
             int l = j / 4;
             int i1 = y + l * 18 + 2;
 
-            ResourceLocation sprite;
+            Identifier sprite;
             if (i == this.menu.getSelectedRecipeIndex()) {
                 sprite = RECIPE_SELECTED_SPRITE;
             } else if (mouseX >= k && mouseY >= i1 && mouseX < k + 16 && mouseY < i1 + 18) {
@@ -138,11 +118,11 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
                 sprite = RECIPE_SPRITE;
             }
 
-            guiGraphics.blitSprite(sprite, k, i1 - 1, 16, 18);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, k, i1 - 1, 16, 18);
         }
     }
 
-    private void renderRecipes(GuiGraphics guiGraphics, int x, int y, int startIndex) {
+    private void renderRecipes(GuiGraphicsExtractor guiGraphics, int x, int y, int startIndex) {
         List<RecipeHolder<CarpenterRecipes>> list = this.menu.getRecipes();
 
         for (int i = this.startIndex; i < startIndex && i < this.menu.getNumRecipes(); ++i) {
@@ -152,18 +132,20 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
             int i1 = y + l * 18 + 2;
 
             CarpenterRecipes recipe = list.get(i).value();
-            ItemStack result = recipe.getResultItem(this.minecraft.level.registryAccess());
+            ItemStack result = recipe.getResult();
 
             ItemStack displayStack = result.copy();
 
-            guiGraphics.renderItem(displayStack, k, i1);
-            guiGraphics.renderItemDecorations(this.font, displayStack, k, i1);
+            guiGraphics.item(displayStack, k, i1);
+            guiGraphics.itemDecorations(this.font, displayStack, k, i1);
         }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         this.scrolling = false;
+        double mouseX = event.x();
+        double mouseY = event.y();
 
         if (this.displayRecipes) {
             int i = this.leftPos + RECIPES_X;
@@ -184,7 +166,6 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
                 }
             }
 
-            // Check if clicking scrollbar
             i = this.leftPos + 119;
             j = this.topPos + 9;
             if (mouseX >= i && mouseX < i + 12 && mouseY >= j && mouseY < j + 54) {
@@ -192,20 +173,20 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
             }
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
         if (this.scrolling && this.isScrollBarActive()) {
             int i = this.topPos + 14;
             int j = i + 54;
-            this.scrollOffs = ((float)mouseY - (float)i - 7.5F) / ((float)(j - i) - 15.0F);
+            this.scrollOffs = ((float)event.y() - (float)i - 7.5F) / ((float)(j - i) - 15.0F);
             this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
             this.startIndex = (int)((double)(this.scrollOffs * (float)this.getOffscreenRows()) + 0.5) * 4;
             return true;
         }
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(event, dx, dy);
     }
 
     @Override
