@@ -6,10 +6,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -23,43 +24,39 @@ import net.zic.builders_zenith.component.HandheldFillerData;
 import net.zic.builders_zenith.component.ModDataComponents;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class HandheldFillerItem extends Item {
 
     private static final Map<UUID, BlockPos> startPositions = new HashMap<>();
-    // Queue of pending placements: Player UUID -> List of positions to place
     private static final Map<UUID, Queue<BlockPlacement>> pendingPlacements = new HashMap<>();
-    // Track tick counters for each player
     private static final Map<UUID, Integer> placementTicks = new HashMap<>();
 
-    private static final int PLACEMENT_DELAY = 1; // 10 ticks = 0.5 seconds
+    private static final int PLACEMENT_DELAY = 1;
 
     private record BlockPlacement(BlockPos pos, Block block, UUID playerId, int originalCharge) {}
 
     public HandheldFillerItem(Properties properties) {
         super(properties);
-        // Register server tick handler
         NeoForge.EVENT_BUS.addListener(this::onServerTick);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display,
+                                Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
         HandheldFillerData data = stack.getOrDefault(ModDataComponents.HANDHELD_FILLER_DATA.get(), new HandheldFillerData());
 
-        tooltipComponents.add(Component.literal("Charge: " + data.charge() + " / " + HandheldFillerData.MAX_CHARGE));
+        tooltip.accept(Component.literal("Charge: " + data.charge() + " / " + HandheldFillerData.MAX_CHARGE));
 
         data.copiedBlock().ifPresent(block -> {
-            tooltipComponents.add(Component.literal("Stored: " + block.getName().getString()));
+            tooltip.accept(Component.literal("Stored: " + block.getName().getString()));
         });
-
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        // Check for charging first
         InteractionHand otherHand = hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         ItemStack otherHandStack = player.getItemInHand(otherHand);
 
@@ -75,11 +72,10 @@ public class HandheldFillerItem extends Item {
                     level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.0F);
                     player.sendOverlayMessage(Component.literal("Charged! Current: " + newCharge));
                 }
-                return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
             }
         }
 
-        // Shift right-click: Copy block
         if (player.isShiftKeyDown()) {
             BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
 
@@ -94,11 +90,11 @@ public class HandheldFillerItem extends Item {
                 }
 
                 level.playSound(player, pos, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
             }
         }
 
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -109,7 +105,6 @@ public class HandheldFillerItem extends Item {
 
         if (player == null) return InteractionResult.PASS;
 
-        // Check for charging first
         InteractionHand otherHand = context.getHand() == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         ItemStack otherHandStack = player.getItemInHand(otherHand);
 
@@ -125,11 +120,10 @@ public class HandheldFillerItem extends Item {
                     level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.0F);
                     player.sendOverlayMessage(Component.literal("Charged! Current: " + newCharge));
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
             }
         }
 
-        // Start filling mode - store position and start using item
         HandheldFillerData data = stack.getOrDefault(ModDataComponents.HANDHELD_FILLER_DATA.get(), new HandheldFillerData());
 
         if (data.charge() > 0 && data.copiedBlock().isPresent()) {
@@ -137,36 +131,33 @@ public class HandheldFillerItem extends Item {
                 startPositions.put(player.getUUID(), pos);
             }
             player.startUsingItem(context.getHand());
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
 
         return InteractionResult.PASS;
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged) {
-        if (!(livingEntity instanceof Player player)) return;
-        if (level.isClientSide()) return;
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged) {
+        if (!(livingEntity instanceof Player player)) return false;
+        if (level.isClientSide()) return false;
 
         BlockPos startPos = startPositions.remove(player.getUUID());
-        if (startPos == null) return;
+        if (startPos == null) return false;
 
-        // Get end position - what player is looking at now
         BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-        if (hitResult.getType() != BlockHitResult.Type.BLOCK) return;
+        if (hitResult.getType() != BlockHitResult.Type.BLOCK) return false;
 
         BlockPos endPos = hitResult.getBlockPos();
 
         HandheldFillerData data = stack.getOrDefault(ModDataComponents.HANDHELD_FILLER_DATA.get(), new HandheldFillerData());
 
-        if (data.charge() <= 0 || data.copiedBlock().isEmpty()) return;
+        if (data.charge() <= 0 || data.copiedBlock().isEmpty()) return false;
 
         Block targetBlock = data.copiedBlock().get();
 
-        // Calculate all positions between start and end (inclusive)
         List<BlockPos> positions = getPositionsBetween(startPos, endPos);
 
-        // Filter to only positions that can be replaced and that player has blocks for
         Queue<BlockPlacement> placements = new LinkedList<>();
         int availableCharge = data.charge();
 
@@ -180,22 +171,20 @@ public class HandheldFillerItem extends Item {
         }
 
         if (!placements.isEmpty()) {
-            // Deduct all charge upfront
             int totalCost = placements.size();
             int newCharge = data.charge() - totalCost;
             stack.set(ModDataComponents.HANDHELD_FILLER_DATA.get(),
                     new HandheldFillerData(newCharge, data.copiedBlock()));
 
-            // Store pending placements
             pendingPlacements.put(player.getUUID(), placements);
             placementTicks.put(player.getUUID(), 0);
 
-            player.sendOverlayMessage(Component.literal("Placing " + placements.size() + " blocks...");
+            player.sendOverlayMessage(Component.literal("Placing " + placements.size() + " blocks..."));
         }
+        return false;
     }
 
     private void onServerTick(ServerTickEvent.Post event) {
-        // Process pending placements
         Iterator<Map.Entry<UUID, Queue<BlockPlacement>>> iterator = pendingPlacements.entrySet().iterator();
 
         while (iterator.hasNext()) {
@@ -203,46 +192,32 @@ public class HandheldFillerItem extends Item {
             UUID playerId = entry.getKey();
             Queue<BlockPlacement> queue = entry.getValue();
 
-            // Increment tick counter
             int ticks = placementTicks.getOrDefault(playerId, 0) + 1;
             placementTicks.put(playerId, ticks);
 
-            // Only place every PLACEMENT_DELAY ticks
             if (ticks < PLACEMENT_DELAY) continue;
 
-            // Reset tick counter
             placementTicks.put(playerId, 0);
 
-            // Get next placement
             BlockPlacement placement = queue.poll();
             if (placement == null) {
-                // Queue empty, clean up
                 iterator.remove();
                 placementTicks.remove(playerId);
                 continue;
             }
 
-            // Find player
-            Player player = null;
-            for (var level : event.getServer().getAllLevels()) {
-                player = level.getPlayerByUUID(playerId);
-                if (player != null) break;
-            }
+            Player player = event.getServer().getPlayerList().getPlayer(playerId);
 
             if (player == null) {
-                // Player offline, refund remaining blocks and clean up
                 iterator.remove();
                 placementTicks.remove(playerId);
                 continue;
             }
 
-            // Check if player still has the block
             if (!hasBlockInInventory(player, placement.block())) {
-                // Skip this block, player ran out
                 continue;
             }
 
-            // Place the block
             Level level = player.level();
             BlockState placeState = placement.block().defaultBlockState();
 
@@ -252,7 +227,6 @@ public class HandheldFillerItem extends Item {
                 level.playSound(null, placement.pos(), placeState.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 0.5F, 1.0F);
             }
 
-            // If queue is now empty, clean up
             if (queue.isEmpty()) {
                 iterator.remove();
                 placementTicks.remove(playerId);
@@ -294,8 +268,9 @@ public class HandheldFillerItem extends Item {
 
     private boolean hasBlockInInventory(Player player, Block block) {
         ItemStack blockStack = new ItemStack(block);
-        for (ItemStack invStack : player.getInventory().getNonEquipmentItems()) {
-            if (ItemStack.isSameItem(invStack, blockStack)) {
+        Inventory inv = player.getInventory();
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            if (ItemStack.isSameItem(inv.getItem(i), blockStack)) {
                 return true;
             }
         }
@@ -304,12 +279,13 @@ public class HandheldFillerItem extends Item {
 
     private void consumeBlockFromInventory(Player player, Block block) {
         ItemStack blockStack = new ItemStack(block);
-        for (int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
-            ItemStack invStack = player.getInventory().getNonEquipmentItems().get(i);
+        Inventory inv = player.getInventory();
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            ItemStack invStack = inv.getItem(i);
             if (ItemStack.isSameItem(invStack, blockStack)) {
                 invStack.shrink(1);
                 if (invStack.isEmpty()) {
-                    player.getInventory().getNonEquipmentItems().set(i, ItemStack.EMPTY);
+                    inv.setItem(i, ItemStack.EMPTY);
                 }
                 return;
             }
