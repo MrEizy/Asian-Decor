@@ -18,9 +18,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         dropSelf(ModBlocks.CARPENTER.get());
-        dropSelf(ModBlocks.SHAPE_MAKER.get());
         dropSelf(ModBlocks.COLOR_MIXER.get());
-        //dropSelf(ModBlocks.WINGED_TABLE.get());
 
 
 

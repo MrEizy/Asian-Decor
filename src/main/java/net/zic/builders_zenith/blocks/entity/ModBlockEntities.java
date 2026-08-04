@@ -15,10 +15,8 @@ public class ModBlockEntities {
 
 
     public static final Supplier<BlockEntityType<ColorMixerBlockEntity>> COLOR_MIXER =
-            BLOCK_ENTITIES.register("color_mixer", () -> BlockEntityType.Builder.of(
-                    ColorMixerBlockEntity::new,
-                    ModBlocks.COLOR_MIXER.get()
-            ).build(null));
+            BLOCK_ENTITIES.register("color_mixer", () -> new BlockEntityType<>(
+                    ColorMixerBlockEntity::new, ModBlocks.COLOR_MIXER.get()));
 
 
 
