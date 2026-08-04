@@ -2,13 +2,12 @@ package net.zic.builders_zenith.screen.custom;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
 import net.zic.builders_zenith.component.ModDataComponents;
 import net.zic.builders_zenith.component.PouchContents;
 import net.zic.builders_zenith.items.buildersgadgets.BlockPouchItem;
@@ -22,7 +21,7 @@ public class PouchMenu extends AbstractContainerMenu {
     private final ItemStack pouchStack;
     private final InteractionHand hand;
     private final Inventory playerInventory;
-    private final ItemStackHandler itemHandler;
+    private final SimpleContainer container;
 
     public PouchMenu(int containerId, Inventory playerInventory, FriendlyByteBuf extraData) {
         this(containerId, playerInventory,
@@ -31,12 +30,12 @@ public class PouchMenu extends AbstractContainerMenu {
     }
 
     private static ItemStack getPouchFromInventory(Inventory inv) {
-        ItemStack main = inv.getSelected();
+        ItemStack main = inv.getSelectedItem();
         return main.getItem() instanceof BlockPouchItem ? main : inv.player.getOffhandItem();
     }
 
     private static InteractionHand getHandFromInventory(Inventory inv) {
-        return inv.getSelected().getItem() instanceof BlockPouchItem ?
+        return inv.getSelectedItem().getItem() instanceof BlockPouchItem ?
                 InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
     }
 
@@ -48,39 +47,42 @@ public class PouchMenu extends AbstractContainerMenu {
 
         PouchContents contents = pouchStack.getOrDefault(ModDataComponents.POUCH_CONTENTS.get(), PouchContents.EMPTY);
 
-        this.itemHandler = new ItemStackHandler(CONTAINER_SIZE) {
+        this.container = new SimpleContainer(CONTAINER_SIZE) {
             @Override
-            public boolean isItemValid(int slot, ItemStack stack) {
+            public boolean canPlaceItem(int slot, ItemStack stack) {
                 return stack.getItem() instanceof net.minecraft.world.item.BlockItem;
             }
         };
 
         List<ItemStack> items = contents.toItemList();
         for (int i = 0; i < CONTAINER_SIZE; i++) {
-            this.itemHandler.setStackInSlot(i, items.get(i).copy());
+            this.container.setItem(i, items.get(i).copy());
         }
 
+        // Pouch slots
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
                 int slotIndex = row * 9 + col;
                 int x = 8 + col * 18;
                 int y = 18 + row * 18;
-                this.addSlot(new SlotItemHandler(this.itemHandler, slotIndex, x, y));
+                this.addSlot(new Slot(this.container, slotIndex, x, y));
             }
         }
 
+        // Player inventory
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
                 this.addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 86 + row * 18));
             }
         }
 
+        // Player hotbar
         for (int col = 0; col < 9; col++) {
             final int slotIndex = col;
             this.addSlot(new Slot(playerInventory, col, 8 + col * 18, 144) {
                 @Override
                 public boolean mayPickup(Player player) {
-                    if (slotIndex == playerInventory.selected && hand == InteractionHand.MAIN_HAND) {
+                    if (slotIndex == playerInventory.getSelectedSlot() && hand == InteractionHand.MAIN_HAND) {
                         return false;
                     }
                     return super.mayPickup(player);
@@ -96,11 +98,11 @@ public class PouchMenu extends AbstractContainerMenu {
     }
 
     private void saveContents() {
-        if (playerInventory.player.level().isClientSide) return;
+        if (playerInventory.player.level().isClientSide()) return;
 
         List<ItemStack> items = new ArrayList<>();
         for (int i = 0; i < CONTAINER_SIZE; i++) {
-            items.add(this.itemHandler.getStackInSlot(i).copy());
+            items.add(this.container.getItem(i).copy());
         }
 
         PouchContents oldContents = pouchStack.getOrDefault(ModDataComponents.POUCH_CONTENTS.get(), PouchContents.EMPTY);

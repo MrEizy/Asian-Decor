@@ -8,6 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.component.ModDataComponents;
@@ -35,7 +36,7 @@ public class PouchInputHandler {
 
                 int direction = scrollDelta > 0 ? -1 : 1;
 
-                PacketDistributor.sendToServer(new PouchScrollPacket(hand == InteractionHand.MAIN_HAND, direction));
+                ClientPacketDistributor.sendToServer(new PouchScrollPacket(hand == InteractionHand.MAIN_HAND, direction));
 
                 PouchContents contents = stack.getOrDefault(ModDataComponents.POUCH_CONTENTS.get(), PouchContents.EMPTY);
                 PouchContents newContents = contents.cycleSelection(direction);

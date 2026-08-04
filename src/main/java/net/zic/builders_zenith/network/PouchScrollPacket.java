@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -15,7 +15,7 @@ import net.zic.builders_zenith.items.buildersgadgets.BlockPouchItem;
 
 public record PouchScrollPacket(boolean mainHand, int direction) implements CustomPacketPayload {
     public static final Type<PouchScrollPacket> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(BuildersZenith.MOD_ID, "pouch_scroll"));
+            Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, "pouch_scroll"));
 
     public static final StreamCodec<ByteBuf, PouchScrollPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,
@@ -43,18 +43,16 @@ public record PouchScrollPacket(boolean mainHand, int direction) implements Cust
 
                 ItemStack selected = newContents.getSelectedStack();
                 if (!selected.isEmpty()) {
-                    player.displayClientMessage(
+                    player.sendOverlayMessage(
                             net.minecraft.network.chat.Component.translatable(
                                     "message.builders_zenith.block_pouch.selected",
                                     selected.getHoverName(),
                                     selected.getCount()
-                            ),
-                            true
+                            )
                     );
                 } else {
-                    player.displayClientMessage(
-                            net.minecraft.network.chat.Component.translatable("message.builders_zenith.block_pouch.empty"),
-                            true
+                    player.sendOverlayMessage(
+                            net.minecraft.network.chat.Component.translatable("message.builders_zenith.block_pouch.empty")
                     );
                 }
             }
