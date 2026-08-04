@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -40,10 +39,10 @@ public class BlockPouchItem extends Item {
             if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
                 openMenu(serverPlayer, stack, hand);
             }
-            return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
 
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -82,9 +81,7 @@ public class BlockPouchItem extends Item {
                 )
         );
 
-        InteractionResult result = tryPlaceBlock(placeContext, blockItem, pouchStack, contents, selectedStack, player);
-
-        return result;
+        return tryPlaceBlock(placeContext, blockItem, pouchStack, contents, selectedStack, player);
     }
 
     private InteractionResult tryPlaceBlock(BlockPlaceContext context, BlockItem blockItem,
@@ -122,7 +119,7 @@ public class BlockPouchItem extends Item {
             pouchStack.set(ModDataComponents.POUCH_CONTENTS.get(), newContents);
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
     }
 
     private void openMenu(ServerPlayer player, ItemStack stack, InteractionHand hand) {
@@ -133,22 +130,25 @@ public class BlockPouchItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context,
+                                net.minecraft.world.item.component.TooltipDisplay display,
+                                java.util.function.Consumer<Component> tooltipAdder,
+                                TooltipFlag tooltipFlag) {
         PouchContents contents = stack.getOrDefault(ModDataComponents.POUCH_CONTENTS.get(), PouchContents.EMPTY);
         ItemStack selected = contents.getSelectedStack();
 
         if (!selected.isEmpty()) {
-            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.block_pouch.selected",
+            tooltipAdder.accept(Component.translatable("tooltip.builders_zenith.block_pouch.selected",
                     selected.getHoverName()).withStyle(net.minecraft.ChatFormatting.GRAY));
-            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.block_pouch.count",
+            tooltipAdder.accept(Component.translatable("tooltip.builders_zenith.block_pouch.count",
                     selected.getCount()).withStyle(net.minecraft.ChatFormatting.GRAY));
         } else {
-            tooltipComponents.add(Component.translatable("tooltip.builders_zenith.block_pouch.empty")
+            tooltipAdder.accept(Component.translatable("tooltip.builders_zenith.block_pouch.empty")
                     .withStyle(net.minecraft.ChatFormatting.GRAY));
         }
 
         int filled = contents.getNonEmptySlotCount();
-        tooltipComponents.add(Component.translatable("tooltip.builders_zenith.block_pouch.slots",
+        tooltipAdder.accept(Component.translatable("tooltip.builders_zenith.block_pouch.slots",
                 filled, PouchContents.MAX_SLOTS).withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
     }
 
