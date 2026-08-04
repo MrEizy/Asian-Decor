@@ -1,12 +1,11 @@
 package net.zic.builders_zenith.screen.custom;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.SlotItemHandler;
 import net.zic.builders_zenith.blocks.ModBlocks;
 import net.zic.builders_zenith.blocks.entity.ColorMixerBlockEntity;
 import net.zic.builders_zenith.screen.ModMenuTypes;
@@ -49,26 +48,26 @@ public class ColorMixerMenu extends AbstractContainerMenu {
         addPlayerInventory(inv);
 
         // Base slot - only bricks or dyed bricks
-        this.addSlot(new SlotItemHandler(entity.itemHandler, SLOT_BASE, BASE_SLOT_X, BASE_SLOT_Y));
+        this.addSlot(new Slot(entity.getContainer(), SLOT_BASE, BASE_SLOT_X, BASE_SLOT_Y));
 
         // Primary dye slot - only dyes
-        this.addSlot(new SlotItemHandler(entity.itemHandler, SLOT_PRIMARY_DYE, PRIMARY_DYE_SLOT_X, PRIMARY_DYE_SLOT_Y) {
+        this.addSlot(new Slot(entity.getContainer(), SLOT_PRIMARY_DYE, PRIMARY_DYE_SLOT_X, PRIMARY_DYE_SLOT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.getItem() instanceof DyeItem;
+                return stack.has(DataComponents.DYE);
             }
         });
 
         // Secondary dye slot - only dyes
-        this.addSlot(new SlotItemHandler(entity.itemHandler, SLOT_SECONDARY_DYE, SECONDARY_DYE_SLOT_X, SECONDARY_DYE_SLOT_Y) {
+        this.addSlot(new Slot(entity.getContainer(), SLOT_SECONDARY_DYE, SECONDARY_DYE_SLOT_X, SECONDARY_DYE_SLOT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.getItem() instanceof DyeItem;
+                return stack.has(DataComponents.DYE);
             }
         });
 
         // Result slot - CANNOT place items in, but CAN ALWAYS pickup (even while processing)
-        this.addSlot(new SlotItemHandler(entity.itemHandler, SLOT_RESULT, RESULT_SLOT_X, RESULT_SLOT_Y) {
+        this.addSlot(new Slot(entity.getContainer(), SLOT_RESULT, RESULT_SLOT_X, RESULT_SLOT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false; // Cannot insert items

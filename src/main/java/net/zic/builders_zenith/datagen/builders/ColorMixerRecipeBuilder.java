@@ -1,8 +1,11 @@
 package net.zic.builders_zenith.datagen.builders;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -40,8 +43,8 @@ public class ColorMixerRecipeBuilder {
         // Recipe 1: Vanilla Bricks + Any Dye + Any Dye = Dynamic Dyed Brick
         NonNullList<Ingredient> ingredients = NonNullList.create();
         ingredients.add(Ingredient.of(Items.BRICKS));                    // Slot 0: Vanilla Bricks
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 1: Any Dye (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 2: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 1: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 2: Any Dye (Tag)
 
         // Placeholder result - actual result determined by dye colors
         ItemStack placeholderResult = new ItemStack(
@@ -59,15 +62,15 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/vanilla_bricks_to_dyed"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
     private static void generateRecolorRecipe(RecipeOutput output) {
         // Recipe 2: Any Dyed Brick + Any Dye + Any Dye = Dynamic Dyed Brick
         NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(Ingredient.of(ModTags.Items.DYED_BRICKS));       // Slot 0: Any Dyed Brick (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 1: Any Dye (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 2: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYED_BRICKS)));       // Slot 0: Any Dyed Brick (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 1: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 2: Any Dye (Tag)
 
         // Placeholder result - actual result determined by dye colors
         ItemStack placeholderResult = new ItemStack(
@@ -85,7 +88,7 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/recolor_any"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
     // ========== SLAB RECIPES ==========
@@ -93,8 +96,8 @@ public class ColorMixerRecipeBuilder {
     private static void generateVanillaVerticalSlabRecipe(RecipeOutput output) {
         NonNullList<Ingredient> ingredients = NonNullList.create();
         ingredients.add(Ingredient.of(ModBlocks.BRICK_VERTICAL_SLAB)); // Or a new vertical slab item
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));
 
         ItemStack placeholderResult = new ItemStack(
                 ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(DyedBrickType.WHITE_WHITE).get(), 8);
@@ -111,14 +114,14 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/vanilla_vertical_slabs_to_dyed"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
     private static void generateRecolorVerticalSlabRecipe(RecipeOutput output) {
         NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(Ingredient.of(ModTags.Items.DYED_BRICK_VERTICAL_SLABS));
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYED_BRICK_VERTICAL_SLABS)));
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));
 
         ItemStack placeholderResult = new ItemStack(
                 ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(DyedBrickType.WHITE_WHITE).get(), 8);
@@ -135,15 +138,15 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/recolor_vertical_slab_any"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
     private static void generateVanillaSlabRecipe(RecipeOutput output) {
         // Recipe: Vanilla Brick Slab + Any Dye + Any Dye = Dynamic Dyed Brick Slab
         NonNullList<Ingredient> ingredients = NonNullList.create();
         ingredients.add(Ingredient.of(Items.BRICK_SLAB));                // Slot 0: Vanilla Brick Slab
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 1: Any Dye (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 2: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 1: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 2: Any Dye (Tag)
 
         // FIXED: Use DYED_BRICK_SLABS instead of DYED_BRICKS
         ItemStack placeholderResult = new ItemStack(
@@ -161,15 +164,15 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/vanilla_slabs_to_dyed"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
     private static void generateRecolorSlabRecipe(RecipeOutput output) {
         // Recipe: Any Dyed Brick Slab + Any Dye + Any Dye = Dynamic Dyed Brick Slab
         NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(Ingredient.of(ModTags.Items.DYED_BRICK_SLABS));  // Slot 0: Any Dyed Brick Slab (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 1: Any Dye (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 2: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYED_BRICK_SLABS))); // Slot 0: Any Dyed Brick Slab (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES))); // Slot 1: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES))); // Slot 2: Any Dye (Tag)
 
         // FIXED: Use DYED_BRICK_SLABS instead of DYED_BRICKS
         ItemStack placeholderResult = new ItemStack(
@@ -187,7 +190,7 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/recolor_slab_any"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
     // ========== STAIRS RECIPES ==========
@@ -195,9 +198,9 @@ public class ColorMixerRecipeBuilder {
     private static void generateVanillaStairsRecipe(RecipeOutput output) {
         // Recipe: Vanilla Brick Stairs + Any Dye + Any Dye = Dynamic Dyed Brick Stairs
         NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(Ingredient.of(Items.BRICK_STAIRS));              // Slot 0: Vanilla Brick Stairs
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 1: Any Dye (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 2: Any Dye (Tag)
+        ingredients.add(Ingredient.of(Items.BRICK_STAIRS)); // Slot 0: Vanilla Brick Stairs
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES))); // Slot 1: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES))); // Slot 2: Any Dye (Tag)
 
         // FIXED: Use DYED_BRICK_STAIRS instead of DYED_BRICKS
         ItemStack placeholderResult = new ItemStack(
@@ -215,15 +218,15 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/vanilla_stairs_to_dyed"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
     private static void generateRecolorStairsRecipe(RecipeOutput output) {
         // Recipe: Any Dyed Brick Stairs + Any Dye + Any Dye = Dynamic Dyed Brick Stairs
         NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(Ingredient.of(ModTags.Items.DYED_BRICK_STAIRS)); // Slot 0: Any Dyed Brick Stairs (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 1: Any Dye (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 2: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYED_BRICK_STAIRS))); // Slot 0: Any Dyed Brick Stairs (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 1: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 2: Any Dye (Tag)
 
         // FIXED: Use DYED_BRICK_STAIRS instead of DYED_BRICKS
         ItemStack placeholderResult = new ItemStack(
@@ -241,7 +244,7 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/recolor_stairs_any"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
     // ========== WALL RECIPES ==========
@@ -250,8 +253,8 @@ public class ColorMixerRecipeBuilder {
         // Recipe: Vanilla Brick Wall + Any Dye + Any Dye = Dynamic Dyed Brick Wall
         NonNullList<Ingredient> ingredients = NonNullList.create();
         ingredients.add(Ingredient.of(Items.BRICK_WALL));                // Slot 0: Vanilla Brick Wall
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 1: Any Dye (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 2: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 1: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES)));              // Slot 2: Any Dye (Tag)
 
         // FIXED: Use DYED_BRICK_WALLS instead of DYED_BRICKS
         ItemStack placeholderResult = new ItemStack(
@@ -269,15 +272,15 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/vanilla_walls_to_dyed"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 
     private static void generateRecolorWallRecipe(RecipeOutput output) {
         // Recipe: Any Dyed Brick Wall + Any Dye + Any Dye = Dynamic Dyed Brick Wall
         NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(Ingredient.of(ModTags.Items.DYED_BRICK_WALLS));  // Slot 0: Any Dyed Brick Wall (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 1: Any Dye (Tag)
-        ingredients.add(Ingredient.of(ModTags.Items.DYES));              // Slot 2: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYED_BRICK_WALLS))); // Slot 0: Any Dyed Brick Wall (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES))); // Slot 1: Any Dye (Tag)
+        ingredients.add(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ModTags.Items.DYES))); // Slot 2: Any Dye (Tag)
 
         // FIXED: Use DYED_BRICK_WALLS instead of DYED_BRICKS
         ItemStack placeholderResult = new ItemStack(
@@ -295,6 +298,6 @@ public class ColorMixerRecipeBuilder {
                 "color_mixer/recolor_wall_any"
         );
 
-        output.accept(id, recipe, null);
+        output.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }
 }

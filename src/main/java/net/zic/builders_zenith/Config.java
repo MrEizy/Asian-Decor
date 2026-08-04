@@ -3,9 +3,11 @@ package net.zic.builders_zenith;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -28,7 +30,7 @@ public class Config
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
-    public static Map<Item, Integer> handheldFillerChargeItems = new HashMap<>();
+    public static Map<Optional<Holder.Reference<Item>>, Integer> handheldFillerChargeItems = new HashMap<Optional<Holder.Reference<Item>>, Integer>();
 
     private static boolean validateChargeItemEntry(final Object obj)
     {
@@ -36,7 +38,7 @@ public class Config
         String[] parts = str.split(",");
         if (parts.length != 2) return false;
         try {
-            ResourceLocation.parse(parts[0]);
+            Identifier.parse(parts[0]);
             Integer.parseInt(parts[1].trim());
             return true;
         } catch (Exception e) {
@@ -48,10 +50,10 @@ public class Config
     static void onLoad(final ModConfigEvent event)
     {
         // Parse handheld filler charge items
-        handheldFillerChargeItems = new HashMap<>();
+        handheldFillerChargeItems = new HashMap<Optional<Holder.Reference<Item>>, Integer>();
         for (String entry : HANDHELD_FILLER_CHARGE_ITEMS.get()) {
             String[] parts = entry.split(",");
-            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(parts[0]));
+            Optional<Holder.Reference<Item>> item = BuiltInRegistries.ITEM.get(Identifier.parse(parts[0]));
             int value = Integer.parseInt(parts[1].trim());
             handheldFillerChargeItems.put(item, value);
         }

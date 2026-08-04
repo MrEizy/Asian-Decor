@@ -11,7 +11,9 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -38,6 +40,11 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
         return !ingredients.isEmpty() && ingredients.get(0).test(input.item());
     }
 
+    @Override
+    public ItemStack assemble(SingleRecipeInput singleRecipeInput) {
+        return this.result.copy();
+    }
+
     public boolean canCraft(ItemStack baseStack, DyeColor primaryDye, DyeColor secondaryDye) {
         if (ingredients.isEmpty() || !ingredients.get(0).test(baseStack)) {
             return false;
@@ -47,7 +54,6 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
             return false;
         }
 
-        // Check primary dye slot accepts the dye (for tag-based ingredients)
         if (ingredients.size() > 1) {
             if (primaryDye == null) return false;
             ItemStack primaryDyeStack = new ItemStack(getDyeItem(primaryDye));
@@ -56,7 +62,6 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
             }
         }
 
-        // Check secondary dye slot accepts the dye
         if (ingredients.size() > 2) {
             if (secondaryDye == null) return false;
             ItemStack secondaryDyeStack = new ItemStack(getDyeItem(secondaryDye));
@@ -72,19 +77,10 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
         return 8;
     }
 
-    @Override
-    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider registries) {
-        return this.result.copy();
-    }
-
-    /**
-     * Assemble result dynamically based on dye colors and recipe type
-     */
     public ItemStack assembleWithDyes(DyeColor primaryDye, DyeColor secondaryDye) {
         if (primaryDye != null && secondaryDye != null) {
             DyedBrickType resultType = DyedBrickType.fromColors(primaryDye, secondaryDye);
 
-            // Determine which block type to return based on recipe group
             if (group.contains("slab")) {
                 return new ItemStack(ModBlocks.DYED_BRICK_SLABS.get(resultType).get(), 8);
             } else if (group.contains("stairs")) {
@@ -94,51 +90,48 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
             } else if (group.contains("vertical_slab")) {
                 return new ItemStack(ModBlocks.DYED_BRICK_VERTICAL_SLABS.get(resultType).get(), 8);
             } else {
-                // Default to full bricks
                 return new ItemStack(ModBlocks.DYED_BRICKS.get(resultType).get(), 8);
             }
         }
-        // Fallback to placeholder
         return this.result.copy();
     }
 
-    /**
-     * Check if this is the vanilla brick recipe
-     */
     public boolean isVanillaRecipe() {
         return group != null && group.contains("vanilla");
     }
 
-    /**
-     * Check if this is the recolor recipe
-     */
     public boolean isRecolorRecipe() {
         return group != null && group.contains("recolor");
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return true;
+    public String group() {
+        return group;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return this.result;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends Recipe<SingleRecipeInput>> getSerializer() {
         return ModRecipes.COLOR_MIXER_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<? extends Recipe<SingleRecipeInput>> getType() {
         return ModRecipes.COLOR_MIXER_TYPE.get();
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return ingredients;
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return null;
     }
 
     public String getGroup() { return group; }
@@ -165,49 +158,39 @@ public class ColorMixerRecipe implements Recipe<SingleRecipeInput> {
         };
     }
 
-    public static class Serializer implements RecipeSerializer<ColorMixerRecipe> {
-        public static final MapCodec<ColorMixerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                Codec.STRING.optionalFieldOf("group", "").forGetter(ColorMixerRecipe::getGroup),
-                Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").forGetter(r -> java.util.List.copyOf(r.ingredients)),
-                ItemStack.CODEC.fieldOf("result").forGetter(r -> r.result),
-                Codec.INT.optionalFieldOf("processing_time", 100).forGetter(ColorMixerRecipe::getProcessingTime)
-        ).apply(instance, (group, ingredients, result, processingTime) ->
-                new ColorMixerRecipe(group, NonNullList.copyOf(ingredients), result, processingTime)));
+    // === NEW: Static codecs, no inner Serializer class ===
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, ColorMixerRecipe> STREAM_CODEC = StreamCodec.of(
-                Serializer::toNetwork, Serializer::fromNetwork
-        );
+    public static final MapCodec<ColorMixerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.optionalFieldOf("group", "").forGetter(ColorMixerRecipe::getGroup),
+            Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(r -> java.util.List.copyOf(r.ingredients)),
+            ItemStack.CODEC.fieldOf("result").forGetter(r -> r.result),
+            Codec.INT.optionalFieldOf("processing_time", 100).forGetter(ColorMixerRecipe::getProcessingTime)
+    ).apply(instance, (group, ingredients, result, processingTime) ->
+            new ColorMixerRecipe(group, NonNullList.copyOf(ingredients), result, processingTime)));
 
-        @Override
-        public MapCodec<ColorMixerRecipe> codec() {
-            return CODEC;
+    public static final StreamCodec<RegistryFriendlyByteBuf, ColorMixerRecipe> STREAM_CODEC = StreamCodec.of(
+            ColorMixerRecipe::toNetwork, ColorMixerRecipe::fromNetwork
+    );
+
+    private static void toNetwork(RegistryFriendlyByteBuf buffer, ColorMixerRecipe recipe) {
+        buffer.writeUtf(recipe.getGroup());
+        buffer.writeVarInt(recipe.ingredients.size());
+        for (Ingredient ing : recipe.ingredients) {
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ing);
         }
+        ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
+        buffer.writeInt(recipe.processingTime);
+    }
 
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, ColorMixerRecipe> streamCodec() {
-            return STREAM_CODEC;
+    private static ColorMixerRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+        String group = buffer.readUtf();
+        int ingredientCount = buffer.readVarInt();
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        for (int i = 0; i < ingredientCount; i++) {
+            ingredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
         }
-
-        private static void toNetwork(RegistryFriendlyByteBuf buffer, ColorMixerRecipe recipe) {
-            buffer.writeUtf(recipe.getGroup());
-            buffer.writeVarInt(recipe.ingredients.size());
-            for (Ingredient ing : recipe.ingredients) {
-                Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ing);
-            }
-            ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
-            buffer.writeInt(recipe.processingTime);
-        }
-
-        private static ColorMixerRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
-            String group = buffer.readUtf();
-            int ingredientCount = buffer.readVarInt();
-            NonNullList<Ingredient> ingredients = NonNullList.create();
-            for (int i = 0; i < ingredientCount; i++) {
-                ingredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
-            }
-            ItemStack result = ItemStack.STREAM_CODEC.decode(buffer);
-            int processingTime = buffer.readInt();
-            return new ColorMixerRecipe(group, ingredients, result, processingTime);
-        }
+        ItemStack result = ItemStack.STREAM_CODEC.decode(buffer);
+        int processingTime = buffer.readInt();
+        return new ColorMixerRecipe(group, ingredients, result, processingTime);
     }
 }

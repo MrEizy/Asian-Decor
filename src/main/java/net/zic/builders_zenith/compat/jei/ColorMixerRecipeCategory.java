@@ -7,14 +7,15 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.blocks.ModBlocks;
 import net.zic.builders_zenith.blocks.custom.DyedBrickType;
@@ -24,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecipe> {
+public class ColorMixerRecipeCategory implements IRecipeCategory<RecipeHolder<ColorMixerRecipe>> {
 
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
             BuildersZenith.MOD_ID, "textures/gui/jemri/color_mixing.png");
@@ -40,7 +41,7 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
     }
 
     @Override
-    public RecipeType<ColorMixerRecipe> getRecipeType() {
+    public IRecipeType<RecipeHolder<ColorMixerRecipe>> getRecipeType() {
         return JEIPlugin.COLOR_MIXER_RECIPE_TYPE;
     }
 
@@ -65,7 +66,8 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, ColorMixerRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ColorMixerRecipe> recipeHolder, IFocusGroup focuses) {
+        ColorMixerRecipe recipe = recipeHolder.value();
         String group = recipe.getGroup();
         boolean isVerticalSlab = group.contains("vertical_slab");
         boolean isSlab = !isVerticalSlab && group.contains("slab");
@@ -161,10 +163,11 @@ public class ColorMixerRecipeCategory implements IRecipeCategory<ColorMixerRecip
     }
 
     @Override
-    public void draw(ColorMixerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics,
+    public void draw(RecipeHolder<ColorMixerRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics,
                      double mouseX, double mouseY) {
         guiGraphics.blit(TEXTURE, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
+        ColorMixerRecipe recipe = recipeHolder.value();
         int processingTime = recipe.getProcessingTime();
         if (processingTime > 0) {
             String timeText = (processingTime / 20) + "s";
