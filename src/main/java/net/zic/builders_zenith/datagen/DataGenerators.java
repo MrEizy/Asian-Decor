@@ -24,7 +24,7 @@ public class DataGenerators {
 
         // Client
         generator.addProvider(true, new ModModelProvider(packOutput));
-        generator.addProvider(true, new lang(packOutput, "en_us"));
+        generator.addProvider(true, new lang(packOutput));
 
         // Server
         generator.addProvider(true, new LootTableProvider(packOutput, Collections.emptySet(),

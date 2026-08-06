@@ -1,37 +1,35 @@
 package net.zic.builders_zenith.datagen;
 
+import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.ConditionBuilder;
 import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
-import net.minecraft.client.data.models.model.ModelLocationUtils;
-import net.minecraft.client.data.models.model.ModelTemplate;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.data.models.model.*;
+import net.minecraft.client.color.item.Constant;
+import net.minecraft.client.renderer.block.model.BlockStateModelWrapper;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
-import net.minecraft.world.level.block.state.properties.Half;
-import net.minecraft.world.level.block.state.properties.SlabType;
-import net.minecraft.world.level.block.state.properties.StairsShape;
-import net.minecraft.world.level.block.state.properties.WallSide;
+import net.minecraft.world.level.block.state.properties.*;
 import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.blocks.ModBlocks;
 import net.zic.builders_zenith.blocks.custom.DyedBrickType;
 import net.zic.builders_zenith.blocks.custom.blockz.VerticalSlabBlock;
 import net.zic.builders_zenith.items.ModItems;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ModModelProvider extends ModelProvider {
@@ -51,8 +49,8 @@ public class ModModelProvider extends ModelProvider {
 
         // ── Simple full-cube blocks ────────────────────────────────────────────
         blockModels.createTrivialCube(ModBlocks.PREVIEW_BLOCK.get());
-        blockModels.createTrivialCube(ModBlocks.CARPENTER.get());
-        blockModels.createTrivialCube(ModBlocks.COLOR_MIXER.get());
+        horizontalFacingBlock(blockModels, ModBlocks.CARPENTER.get(), modLoc("block/carpenterblock"));
+        horizontalFacingBlock(blockModels, ModBlocks.COLOR_MIXER.get(), modLoc("block/color_mixer"));
 
         // ── Wood vertical slabs ──────────────────────────────────────────────
         registerVerticalSlab(blockModels, ModBlocks.OAK_VERTICAL_SLAB.get(), Blocks.OAK_PLANKS, "oak_planks");
@@ -110,7 +108,7 @@ public class ModModelProvider extends ModelProvider {
 
         // ── Dyed bricks ──────────────────────────────────────────────────────
         for (DyedBrickType type : DyedBrickType.values()) {
-            registerDyedBrickFamily(blockModels, type);
+            registerDyedBrickFamily(blockModels, itemModels, type);
         }
     }
 
@@ -125,7 +123,7 @@ public class ModModelProvider extends ModelProvider {
                 TextureSlot.SIDE, TextureSlot.BOTTOM, TextureSlot.TOP
         );
 
-        Material material = new Material(TextureAtlas.LOCATION_BLOCKS);
+        Material material = new Material(Identifier.fromNamespaceAndPath("minecraft", "block/" + texturePath));
 
         TextureMapping textures = new TextureMapping()
                 .put(TextureSlot.SIDE,   material)
@@ -179,7 +177,7 @@ public class ModModelProvider extends ModelProvider {
     // Dyed Brick Family (shared templates across all colors)
     // ========================================================================
 
-    private void registerDyedBrickFamily(BlockModelGenerators blockModels, DyedBrickType type) {
+    private void registerDyedBrickFamily(BlockModelGenerators blockModels, ItemModelGenerators itemModels, DyedBrickType type) {
         Block brick   = ModBlocks.DYED_BRICKS.get(type).get();
         Block slab    = ModBlocks.DYED_BRICK_SLABS.get(type).get();
         Block stairs  = ModBlocks.DYED_BRICK_STAIRS.get(type).get();
@@ -203,6 +201,28 @@ public class ModModelProvider extends ModelProvider {
         stairsBlock(blockModels, stairs, stairsModel, stairsInner, stairsOuter);
         wallBlock(blockModels, wall, wallPost, wallSide, wallSideTall, wallInventory);
         verticalSlabBlock(blockModels, vSlab, vSlabModel, brickModel);
+
+        // The block-tint registration in BuildersZenith.java only colors the
+        // in-world block. Item icons use a separate, data-driven tint system —
+        // without this, every dyed brick item renders with its raw (white)
+        // texture even though the placed block is tinted correctly.
+        // tintindex 0 = brick color, tintindex 1 = mortar color, matching the
+        // order used in RegisterColorHandlersEvent.BlockTintSources.
+        applyDyedItemTint(itemModels, type, brick.asItem(), brickModel);
+        applyDyedItemTint(itemModels, type, slab.asItem(), slabBottom);
+        applyDyedItemTint(itemModels, type, stairs.asItem(), stairsModel);
+        applyDyedItemTint(itemModels, type, wall.asItem(), wallInventory);
+        applyDyedItemTint(itemModels, type, vSlab.asItem(), vSlabModel);
+    }
+
+    private void applyDyedItemTint(ItemModelGenerators itemModels, DyedBrickType type, Item item, Identifier model) {
+        itemModels.itemModelOutput.accept(
+                item,
+                ItemModelUtils.tintedModel(model, new ItemTintSource[]{
+                        new Constant(type.getBrickColor().getTextureDiffuseColor()),
+                        new Constant(type.getMortarColor().getTextureDiffuseColor())
+                })
+        );
     }
 
     // ========================================================================
@@ -213,7 +233,6 @@ public class ModModelProvider extends ModelProvider {
         blockModels.blockStateOutput.accept(
                 MultiVariantGenerator.dispatch(block, BlockModelGenerators.plainVariant(model))
         );
-        blockModels.registerSimpleItemModel(block, model);
     }
 
     private void slabBlock(BlockModelGenerators blockModels, Block slab, Identifier bottom, Identifier top, Identifier doubleSlab) {
@@ -225,7 +244,6 @@ public class ModModelProvider extends ModelProvider {
         blockModels.blockStateOutput.accept(
                 MultiVariantGenerator.dispatch(slab).with(dispatch)
         );
-        blockModels.registerSimpleItemModel(slab, bottom);
     }
 
     private void stairsBlock(BlockModelGenerators blockModels, Block stairs, Identifier straight, Identifier inner, Identifier outer) {
@@ -295,7 +313,6 @@ public class ModModelProvider extends ModelProvider {
         blockModels.blockStateOutput.accept(
                 MultiVariantGenerator.dispatch(stairs).with(dispatch)
         );
-        blockModels.registerSimpleItemModel(stairs, straight);
     }
 
     private void wallBlock(BlockModelGenerators blockModels, Block wall,
@@ -312,7 +329,20 @@ public class ModModelProvider extends ModelProvider {
                         .with(new ConditionBuilder().term(WallBlock.WEST, WallSide.LOW), BlockModelGenerators.plainVariant(side).with(BlockModelGenerators.Y_ROT_180))
                         .with(new ConditionBuilder().term(WallBlock.WEST, WallSide.TALL), BlockModelGenerators.plainVariant(sideTall).with(BlockModelGenerators.Y_ROT_180))
         );
-        blockModels.registerSimpleItemModel(wall, inventory);
+    }
+
+    private void horizontalFacingBlock(BlockModelGenerators blockModels, Block block, Identifier model) {
+        PropertyDispatch.C1<MultiVariant, Direction> dispatch =
+                PropertyDispatch.initial(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING)
+                        .select(Direction.NORTH, BlockModelGenerators.plainVariant(model))
+                        .select(Direction.EAST,  BlockModelGenerators.plainVariant(model).with(BlockModelGenerators.Y_ROT_90))
+                        .select(Direction.SOUTH, BlockModelGenerators.plainVariant(model).with(BlockModelGenerators.Y_ROT_180))
+                        .select(Direction.WEST,  BlockModelGenerators.plainVariant(model).with(BlockModelGenerators.Y_ROT_270));
+
+        blockModels.blockStateOutput.accept(
+                MultiVariantGenerator.dispatch(block).with(dispatch)
+        );
+        blockModels.registerSimpleItemModel(block, model);
     }
 
     private void verticalSlabBlock(BlockModelGenerators blockModels, Block vSlab,
@@ -325,12 +355,12 @@ public class ModModelProvider extends ModelProvider {
                         .with(new ConditionBuilder().term(VerticalSlabBlock.DOUBLE, false).term(VerticalSlabBlock.FACING, Direction.SOUTH), BlockModelGenerators.plainVariant(slabModel).with(BlockModelGenerators.Y_ROT_180))
                         .with(new ConditionBuilder().term(VerticalSlabBlock.DOUBLE, false).term(VerticalSlabBlock.FACING, Direction.WEST), BlockModelGenerators.plainVariant(slabModel).with(BlockModelGenerators.Y_ROT_270))
         );
-        blockModels.registerSimpleItemModel(vSlab, slabModel);
     }
 
     // ========================================================================
     // Helpers
     // ========================================================================
+
 
     private Identifier mcLoc(String path) {
         return Identifier.fromNamespaceAndPath("minecraft", path);

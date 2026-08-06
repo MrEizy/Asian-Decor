@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "E": {
-      "item": "minecraft:jungle_planks"
-    }
+    "E": "minecraft:jungle_planks"
   },
   "pattern": [
     "E  ",

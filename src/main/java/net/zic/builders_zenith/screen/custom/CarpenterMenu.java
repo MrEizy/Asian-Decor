@@ -197,7 +197,7 @@ public class CarpenterMenu extends AbstractContainerMenu {
             // Check if we have enough ingredients
             ItemStack inputStack = this.inputSlot.getItem();
             if (inputStack.getCount() >= recipe.getIngredientCount()) {
-                ItemStack result = recipe.assemble(createRecipeInput(this.container), this.level.registryAccess());
+                ItemStack result = recipe.assemble(createRecipeInput(this.container));
                 if (result.isItemEnabled(this.level.enabledFeatures())) {
                     this.resultContainer.setRecipeUsed(recipeHolder);
                     this.resultSlot.set(result);

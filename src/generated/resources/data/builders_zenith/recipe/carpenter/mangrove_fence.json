@@ -1,9 +1,7 @@
 {
   "type": "builders_zenith:carpenter",
   "group": "building",
-  "ingredient": {
-    "item": "minecraft:mangrove_planks"
-  },
+  "ingredient": "minecraft:mangrove_planks",
   "ingredient_count": 4,
   "result": {
     "count": 12,

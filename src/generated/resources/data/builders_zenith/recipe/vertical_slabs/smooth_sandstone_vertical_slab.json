@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "E": {
-      "item": "minecraft:smooth_sandstone"
-    }
+    "E": "minecraft:smooth_sandstone"
   },
   "pattern": [
     "E  ",

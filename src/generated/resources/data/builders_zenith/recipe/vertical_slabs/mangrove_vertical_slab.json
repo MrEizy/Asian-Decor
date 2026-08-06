@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "E": {
-      "item": "minecraft:mangrove_planks"
-    }
+    "E": "minecraft:mangrove_planks"
   },
   "pattern": [
     "E  ",

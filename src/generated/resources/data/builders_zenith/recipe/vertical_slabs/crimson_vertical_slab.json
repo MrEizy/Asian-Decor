@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "E": {
-      "item": "minecraft:crimson_planks"
-    }
+    "E": "minecraft:crimson_planks"
   },
   "pattern": [
     "E  ",

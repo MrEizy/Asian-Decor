@@ -20,7 +20,7 @@ import net.zic.builders_zenith.recipe.CarpenterRecipes;
 
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+
 public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
     private static final Identifier BG_LOCATION =
             Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, "textures/gui/container/carpenter.png");
@@ -86,7 +86,7 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
 
                 if (mouseX >= j1 && mouseX < j1 + 16 && mouseY >= k1 && mouseY < k1 + 18) {
                     CarpenterRecipes recipe = list.get(l).value();
-                    ItemStack result = recipe.getResult();
+                    ItemStack result = recipe.getResult().create();
 
                     Component costText = Component.translatable("tooltip.builders_zenith.ingredient_cost",
                             recipe.getIngredientCount());
@@ -132,7 +132,7 @@ public class CarpenterScreen extends AbstractContainerScreen<CarpenterMenu> {
             int i1 = y + l * 18 + 2;
 
             CarpenterRecipes recipe = list.get(i).value();
-            ItemStack result = recipe.getResult();
+            ItemStack result = recipe.getResult().create();
 
             ItemStack displayStack = result.copy();
 

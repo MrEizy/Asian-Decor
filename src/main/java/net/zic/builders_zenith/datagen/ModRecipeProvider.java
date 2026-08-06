@@ -12,8 +12,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -190,7 +192,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private void generateColorMixerRecipes(RecipeOutput recipeOutput) {
-        ColorMixerRecipeBuilder.generateAllRecipes(recipeOutput);
+        ColorMixerRecipeBuilder.generateAllRecipes(this.registries, recipeOutput);
     }
 
     private void generateCarpenterRecipes(RecipeOutput recipeOutput) {
@@ -403,8 +405,9 @@ public class ModRecipeProvider extends RecipeProvider {
     private void carpenter(RecipeOutput recipeOutput, ItemLike input, ItemLike result,
                            int ingredientCount, int resultCount, String recipeName) {
         Ingredient ingredient = Ingredient.of(input);
-        ItemStack resultStack = new ItemStack(result.asItem(), resultCount);
-        CarpenterRecipes recipe = new CarpenterRecipes("building", ingredient, resultStack, ingredientCount);
+        ItemStackTemplate resultTemplate = new ItemStackTemplate(result.asItem(), resultCount);
+        CarpenterRecipes recipe = new CarpenterRecipes("building", ingredient, resultTemplate, ingredientCount);
+
         Identifier id = Identifier.fromNamespaceAndPath(BuildersZenith.MOD_ID, "carpenter/" + recipeName);
         recipeOutput.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null);
     }

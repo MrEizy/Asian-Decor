@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "minecraft:axes"
-    },
-    "E": {
-      "tag": "minecraft:planks"
-    },
-    "I": {
-      "item": "minecraft:iron_ingot"
-    },
-    "S": {
-      "tag": "minecraft:wooden_slabs"
-    }
+    "A": "#minecraft:axes",
+    "E": "#minecraft:planks",
+    "I": "minecraft:iron_ingot",
+    "S": "#minecraft:wooden_slabs"
   },
   "pattern": [
     "SIS",
@@ -21,7 +13,6 @@
     "EEE"
   ],
   "result": {
-    "count": 1,
     "id": "builders_zenith:carpenterblock"
   }
 }

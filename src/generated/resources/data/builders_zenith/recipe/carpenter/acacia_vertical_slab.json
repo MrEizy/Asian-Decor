@@ -1,9 +1,7 @@
 {
   "type": "builders_zenith:carpenter",
   "group": "building",
-  "ingredient": {
-    "item": "minecraft:acacia_planks"
-  },
+  "ingredient": "minecraft:acacia_planks",
   "ingredient_count": 2,
   "result": {
     "count": 16,

@@ -6,8 +6,8 @@ import net.zic.builders_zenith.BuildersZenith;
 import net.zic.builders_zenith.blocks.custom.DyedBrickType;
 
 public class lang extends LanguageProvider {
-    public lang(PackOutput output, String locale) {
-        super(output, BuildersZenith.MOD_ID, locale);
+    public lang(PackOutput output) {
+        super(output, BuildersZenith.MOD_ID, "en_us");
     }
 
     @Override
@@ -105,6 +105,27 @@ public class lang extends LanguageProvider {
 
             // Walls
             String wallId = "block.builders_zenith.dyed_brick_wall_" + type.getSerializedName();
+            add(wallId, "Dyed Brick Wall");
+        }
+        // All Dyed Bricks - same name for all, tooltips show the difference
+        for (DyedBrickType type : DyedBrickType.values()) {
+            String blockId = "item.builders_zenith.dyed_brick_" + type.getSerializedName();
+            add(blockId, "Dyed Bricks");
+
+            // Stairs
+            String stairsId = "item.builders_zenith.dyed_brick_stairs_" + type.getSerializedName();
+            add(stairsId, "Dyed Brick Stairs");
+
+            // Slabs
+            String slabId = "item.builders_zenith.dyed_brick_slab_" + type.getSerializedName();
+            add(slabId, "Dyed Brick Slab");
+
+            // Slabs
+            String slabVertId = "item.builders_zenith.dyed_brick_vertical_slab_" + type.getSerializedName();
+            add(slabVertId, "Dyed Brick Vertical Slab");
+
+            // Walls
+            String wallId = "item.builders_zenith.dyed_brick_wall_" + type.getSerializedName();
             add(wallId, "Dyed Brick Wall");
         }
 

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "E": {
-      "item": "minecraft:deepslate_tiles"
-    }
+    "E": "minecraft:deepslate_tiles"
   },
   "pattern": [
     "E  ",

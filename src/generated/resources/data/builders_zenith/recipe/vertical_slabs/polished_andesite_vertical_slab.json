@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "E": {
-      "item": "minecraft:polished_andesite"
-    }
+    "E": "minecraft:polished_andesite"
   },
   "pattern": [
     "E  ",

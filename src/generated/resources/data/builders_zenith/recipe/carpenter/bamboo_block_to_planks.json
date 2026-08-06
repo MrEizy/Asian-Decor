@@ -1,9 +1,8 @@
 {
   "type": "builders_zenith:carpenter",
   "group": "building",
-  "ingredient": {
-    "item": "minecraft:bamboo_block"
-  },
+  "ingredient": "minecraft:bamboo_block",
+  "ingredient_count": 1,
   "result": {
     "count": 6,
     "id": "minecraft:bamboo_planks"

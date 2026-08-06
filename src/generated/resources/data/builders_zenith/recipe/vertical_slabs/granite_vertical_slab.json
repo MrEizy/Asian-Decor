@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "E": {
-      "item": "minecraft:granite"
-    }
+    "E": "minecraft:granite"
   },
   "pattern": [
     "E  ",

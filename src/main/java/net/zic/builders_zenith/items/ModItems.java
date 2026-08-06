@@ -12,26 +12,27 @@ import net.zic.builders_zenith.items.buildersgadgets.*;
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(BuildersZenith.MOD_ID);
 
-    public static final DeferredItem<Item> WHITE_BLOCK_POUCH = ITEMS.register("white_block_pouch",
-            () -> new BlockPouchItem(new Item.Properties()));
+    public static final DeferredItem<Item> WHITE_BLOCK_POUCH = ITEMS.registerItem("white_block_pouch",
+            BlockPouchItem::new);
 
 
-    public static final DeferredItem<Item> BLUEPRINT = ITEMS.register("blueprint",
-            () -> new BlueprintItem(new Item.Properties()));
+    public static final DeferredItem<Item> BLUEPRINT = ITEMS.registerItem("blueprint",
+            BlueprintItem::new);
 
-    public static final DeferredItem<Item> TAPE_MEASURE = ITEMS.register("tape_measure",
-            () -> new TapeMeasureItem(new Item.Properties().stacksTo(1).durability(64)));
-
-
-    public static final DeferredItem<Item> TROWEL = ITEMS.register("trowel",
-            () -> new TrowelItem(new Item.Properties().stacksTo(1).durability(64)));
+    public static final DeferredItem<Item> TAPE_MEASURE = ITEMS.registerItem("tape_measure",
+            TapeMeasureItem::new, props -> props.stacksTo(1).durability(64));
 
 
+    public static final DeferredItem<Item> TROWEL = ITEMS.registerItem("trowel",
+            TrowelItem::new, props -> props.stacksTo(1).durability(64));
 
-    public static final DeferredItem<Item> HANDHELD_FILLER = ITEMS.register("handheld_filler",
-            () -> new HandheldFillerItem(new Item.Properties()
+
+
+    public static final DeferredItem<Item> HANDHELD_FILLER = ITEMS.registerItem("handheld_filler",
+            HandheldFillerItem::new,
+            props -> props
                     .stacksTo(1)
-                    .component(ModDataComponents.HANDHELD_FILLER_DATA.get(), new HandheldFillerData())));
+                    .component(ModDataComponents.HANDHELD_FILLER_DATA.get(), new HandheldFillerData()));
 
 
 

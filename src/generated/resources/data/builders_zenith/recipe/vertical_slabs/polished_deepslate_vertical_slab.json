@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "E": {
-      "item": "minecraft:polished_deepslate"
-    }
+    "E": "minecraft:polished_deepslate"
   },
   "pattern": [
     "E  ",

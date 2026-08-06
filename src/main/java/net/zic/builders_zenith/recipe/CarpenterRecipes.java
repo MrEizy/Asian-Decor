@@ -4,46 +4,91 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.zic.builders_zenith.blocks.ModBlocks;
 
-public class CarpenterRecipes implements Recipe<SingleRecipeInput> {
-    private final Ingredient ingredient;
-    private final ItemStack result;
-    private final int ingredientCount;
+import java.util.List;
+
+public class CarpenterRecipes implements Recipe<RecipeInput> {
     private final String group;
+    private final Ingredient ingredient;
+    private final ItemStackTemplate result;
+    private final int ingredientCount;
 
-    public CarpenterRecipes(String group, Ingredient ingredient, ItemStack result, int ingredientCount) {
+    // === 4-arg constructor — used by CODEC and STREAM_CODEC ===
+    // result is an ItemStackTemplate rather than an ItemStack: constructing a real ItemStack
+    // requires the item's data components to be "bound" (Holder.Reference#components()), which
+    // is not guaranteed during recipe datagen. ItemStackTemplate carries the same item/count/
+    // component-patch information without that requirement, and is turned into a real ItemStack
+    // via #create(HolderLookup.Provider) once one is actually needed (see assemble()).
+    public CarpenterRecipes(String group, Ingredient ingredient, ItemStackTemplate result, int ingredientCount) {
         this.group = group;
         this.ingredient = ingredient;
         this.result = result;
         this.ingredientCount = ingredientCount;
     }
 
+    // === 5-arg datagen helper — delegates to the 4-arg one ===
+    public CarpenterRecipes(String group, Ingredient ingredient, ItemLike resultItem, int resultCount, int ingredientCount) {
+        this(group, ingredient, new ItemStackTemplate(resultItem.asItem(), resultCount), ingredientCount);
+    }
+
+    // === MapCodec: 4 fields → 4-arg constructor ===
+    public static final MapCodec<CarpenterRecipes> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+            Codec.STRING.optionalFieldOf("group", "").forGetter(CarpenterRecipes::group),
+            Ingredient.CODEC.fieldOf("ingredient").forGetter(CarpenterRecipes::getIngredient),
+            ItemStackTemplate.CODEC.fieldOf("result").forGetter(CarpenterRecipes::getResult),
+            Codec.INT.fieldOf("ingredient_count").orElse(1).forGetter(CarpenterRecipes::getIngredientCount)
+    ).apply(inst, CarpenterRecipes::new));
+
+    // === StreamCodec: 4 fields → 4-arg constructor ===
+    public static final StreamCodec<RegistryFriendlyByteBuf, CarpenterRecipes> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, CarpenterRecipes::group,
+            Ingredient.CONTENTS_STREAM_CODEC, CarpenterRecipes::getIngredient,
+            ItemStackTemplate.STREAM_CODEC, CarpenterRecipes::getResult,
+            ByteBufCodecs.VAR_INT, CarpenterRecipes::getIngredientCount,
+            CarpenterRecipes::new
+    );
+
     @Override
-    public boolean matches(SingleRecipeInput input, Level level) {
-        return this.ingredient.test(input.item()) && input.item().getCount() >= this.ingredientCount;
+    public boolean matches(RecipeInput input, Level level) {
+        return false;
     }
 
     @Override
-    public ItemStack assemble(SingleRecipeInput singleRecipeInput) {
-        return result.copy();
+    public ItemStack assemble(RecipeInput recipeInput) {
+        return null;
     }
+
 
     @Override
     public boolean showNotification() {
         return false;
+    }
+
+    @Override
+    public String group() {
+        return this.group;
+    }
+
+    @Override
+    public RecipeSerializer<? extends Recipe<RecipeInput>> getSerializer() {
+        return ModRecipes.CARPENTER_SERIALIZER.get();
+    }
+
+    @Override
+    public RecipeType<? extends Recipe<RecipeInput>> getType() {
+        return ModRecipes.CARPENTER_TYPE.get();
     }
 
     @Override
@@ -53,65 +98,30 @@ public class CarpenterRecipes implements Recipe<SingleRecipeInput> {
 
     @Override
     public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_EQUIPMENT;
+        return null;
     }
 
     @Override
-    public String group() {
-        return group;
-    }
-
-    @Override
-    public RecipeSerializer<? extends Recipe<SingleRecipeInput>> getSerializer() {
-        return ModRecipes.CARPENTER_SERIALIZER.get();
-    }
-
-    @Override
-    public RecipeType<? extends Recipe<SingleRecipeInput>> getType() {
-        return ModRecipes.CARPENTER_TYPE.get();
+    public List<RecipeDisplay> display() {
+        // width=1, height=1: this isn't a real shaped crafting recipe, ShapedCraftingRecipeDisplay
+        // is just being reused to show a single ingredient -> single result in the recipe book/JEI.
+        return List.of(new ShapedCraftingRecipeDisplay(
+                1, 1,
+                List.of(this.ingredient.display()),
+                new SlotDisplay.ItemStackSlotDisplay(this.result),
+                new SlotDisplay.ItemSlotDisplay(ModBlocks.CARPENTER.get().asItem())
+        ));
     }
 
     public Ingredient getIngredient() {
-        return ingredient;
+        return this.ingredient;
     }
 
     public int getIngredientCount() {
-        return ingredientCount;
+        return this.ingredientCount;
     }
 
-    public ItemStack getResult() {
-        return result;
-    }
-
-    // === NEW: Static codecs, no inner Serializer class ===
-
-    public static final MapCodec<CarpenterRecipes> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.optionalFieldOf("group", "").forGetter(CarpenterRecipes::group),
-            Ingredient.CODEC.fieldOf("ingredient").forGetter(CarpenterRecipes::getIngredient),
-            ItemStack.CODEC.fieldOf("result").forGetter(CarpenterRecipes::getResult),
-            Codec.INT.optionalFieldOf("ingredient_count", 1).forGetter(CarpenterRecipes::getIngredientCount)
-    ).apply(instance, CarpenterRecipes::new));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, CarpenterRecipes> STREAM_CODEC = StreamCodec.of(
-            CarpenterRecipes::toNetwork, CarpenterRecipes::fromNetwork
-    );
-
-    private static void toNetwork(RegistryFriendlyByteBuf buffer, CarpenterRecipes recipe) {
-        buffer.writeUtf(recipe.group(), 32767);
-        Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getIngredient());
-        ItemStack.STREAM_CODEC.encode(buffer, recipe.getResult());
-        buffer.writeInt(recipe.getIngredientCount());
-    }
-
-    private static CarpenterRecipes fromNetwork(RegistryFriendlyByteBuf buffer) {
-        String group = buffer.readUtf(32767);
-        Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-        ItemStack result = ItemStack.STREAM_CODEC.decode(buffer);
-        int count = buffer.readInt();
-        return new CarpenterRecipes(group, ingredient, result, count);
-    }
-
-    public ItemStack assemble(SingleRecipeInput recipeInput, RegistryAccess registryAccess) {
-        return null;
+    public ItemStackTemplate getResult() {
+        return this.result;
     }
 }

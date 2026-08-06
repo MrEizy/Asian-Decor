@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "E": {
-      "item": "minecraft:polished_blackstone_bricks"
-    }
+    "E": "minecraft:polished_blackstone_bricks"
   },
   "pattern": [
     "E  ",

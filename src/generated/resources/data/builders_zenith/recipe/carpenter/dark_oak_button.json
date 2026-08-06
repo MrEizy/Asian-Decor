@@ -1,9 +1,8 @@
 {
   "type": "builders_zenith:carpenter",
   "group": "building",
-  "ingredient": {
-    "item": "minecraft:dark_oak_planks"
-  },
+  "ingredient": "minecraft:dark_oak_planks",
+  "ingredient_count": 1,
   "result": {
     "count": 8,
     "id": "minecraft:dark_oak_button"

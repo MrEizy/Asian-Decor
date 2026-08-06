@@ -1,9 +1,8 @@
 {
   "type": "builders_zenith:carpenter",
   "group": "building",
-  "ingredient": {
-    "item": "minecraft:cherry_log"
-  },
+  "ingredient": "minecraft:cherry_log",
+  "ingredient_count": 1,
   "result": {
     "count": 6,
     "id": "minecraft:cherry_planks"

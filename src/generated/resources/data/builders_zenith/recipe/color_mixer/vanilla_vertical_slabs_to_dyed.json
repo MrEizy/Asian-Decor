@@ -1,19 +1,11 @@
 {
   "type": "builders_zenith:color_mixer",
+  "count": 8,
   "group": "dyed_brick_vertical_slabs_vanilla",
   "ingredients": [
-    {
-      "item": "builders_zenith:brick_vertical_slab"
-    },
-    {
-      "tag": "c:dyes"
-    },
-    {
-      "tag": "c:dyes"
-    }
+    "builders_zenith:brick_vertical_slab",
+    "#c:dyes",
+    "#c:dyes"
   ],
-  "result": {
-    "count": 8,
-    "id": "builders_zenith:dyed_brick_vertical_slab_white_white"
-  }
+  "result": "builders_zenith:dyed_brick_vertical_slab_white_white"
 }

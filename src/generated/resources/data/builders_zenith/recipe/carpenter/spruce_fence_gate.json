@@ -1,9 +1,7 @@
 {
   "type": "builders_zenith:carpenter",
   "group": "building",
-  "ingredient": {
-    "item": "minecraft:spruce_planks"
-  },
+  "ingredient": "minecraft:spruce_planks",
   "ingredient_count": 2,
   "result": {
     "count": 4,

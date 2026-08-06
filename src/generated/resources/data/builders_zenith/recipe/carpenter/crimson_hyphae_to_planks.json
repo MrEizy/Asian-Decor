@@ -1,9 +1,8 @@
 {
   "type": "builders_zenith:carpenter",
   "group": "building",
-  "ingredient": {
-    "item": "minecraft:crimson_hyphae"
-  },
+  "ingredient": "minecraft:crimson_hyphae",
+  "ingredient_count": 1,
   "result": {
     "count": 6,
     "id": "minecraft:crimson_planks"
